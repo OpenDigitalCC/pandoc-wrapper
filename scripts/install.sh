@@ -74,13 +74,16 @@ fi
 
 echo "Installing pandoc-wrapper into $PREFIX"
 
-install -d "$BINDIR" "$LIBDIR" "$SHAREDIR/templates" "$SHAREDIR/brands"
+install -d "$BINDIR" "$LIBDIR" "$SHAREDIR/templates" "$SHAREDIR/brands" "$PREFIX/share/man/man1"
 
 # Driver
 install -m 0755 "$REPO_ROOT/md-to-pdf.sh" "$BINDIR/md-to-pdf"
 
 # Helper
 install -m 0755 "$REPO_ROOT/scripts/extract-frontmatter.pl" "$LIBDIR/extract-frontmatter.pl"
+
+# Man page
+install -m 0644 "$REPO_ROOT/man/md-to-pdf.1" "$PREFIX/share/man/man1/md-to-pdf.1"
 
 # Templates (LaTeX templates, shared preamble, Lua filter)
 install -m 0644 "$REPO_ROOT"/pandoc/templates/*.latex "$SHAREDIR/templates/" 2>/dev/null || true

@@ -24,6 +24,7 @@ mkdir -p "$BUILD/DEBIAN" \
          "$BUILD/usr/lib/md-to-pdf" \
          "$BUILD/usr/share/pandoc-wrapper/templates" \
          "$BUILD/usr/share/pandoc-wrapper/brands" \
+         "$BUILD/usr/share/man/man1" \
          "$BUILD/usr/share/doc/$PKG"
 mkdir -p "$DIST"
 
@@ -39,6 +40,10 @@ done
 # Bundled default brand.
 cp -r "$REPO_ROOT/pandoc/brands/plain" "$BUILD/usr/share/pandoc-wrapper/brands/plain"
 find "$BUILD/usr/share/pandoc-wrapper/brands" -type f -exec chmod 0644 {} +
+
+# Man page (gzipped, as policy expects).
+install -m 0644 "$REPO_ROOT/man/md-to-pdf.1" "$BUILD/usr/share/man/man1/md-to-pdf.1"
+gzip -9n "$BUILD/usr/share/man/man1/md-to-pdf.1"
 
 # Docs + example config.
 install -m 0644 "$REPO_ROOT"/pandoc/documentation/*.md "$BUILD/usr/share/doc/$PKG/" 2>/dev/null || true

@@ -1,0 +1,151 @@
+.TH MD-TO-PDF 1 "June 2026" "pandoc-wrapper 1.0.0" "User Commands"
+.SH NAME
+md-to-pdf \- convert Markdown to a branded PDF via Pandoc and XeLaTeX
+.SH SYNOPSIS
+.B md-to-pdf
+.RI [ OPTIONS ]
+.IR "markdown-file(s) | directory | URL"
+.SH DESCRIPTION
+.B md-to-pdf
+turns Markdown with YAML front matter into a styled, branded PDF. It merges a
+brand configuration with the document, runs Pandoc with a Lua filter (special
+boxes, styled datatables, charts) and an Eisvogel-based LaTeX template, and
+produces a PDF with XeLaTeX.
+.PP
+Multiple input files are concatenated in order; a directory is searched for
+.I .md
+and
+.I .yaml
+files; an http(s) URL is downloaded first.
+.SH OPTIONS
+.TP
+.B \-\-order\-alpha
+Sort multiple input files alphabetically before concatenating.
+.TP
+.B \-\-debug
+Print verbose debug output.
+.TP
+.B \-\-no\-viewer
+Do not open the PDF viewer after a successful build.
+.TP
+.BR \-h ", " \-\-help
+Show a help summary (including the resolved paths) and exit.
+.SH BRANDS
+A document selects a brand in its front matter:
+.PP
+.RS
+.B brand:
+.I name
+.RE
+.PP
+.B plain
+is the default brand and ships with the tool. Your own brands live in an
+external base folder, one subfolder per brand:
+.PP
+.RS
+.IR <base> / <name> /template.yaml
+.RE
+.PP
+together with that brand's assets (for example
+.IR logo.png ,
+.IR cover.pdf ).
+Assets are referenced by
+.B bare filename
+in
+.IR template.yaml ;
+the build adds the brand folder to Pandoc's
+.B \-\-resource\-path
+and to
+.B TEXINPUTS
+so they resolve. A brand is therefore self\-contained and portable \- it can
+live in its own repository or package.
+.PP
+The brands base is resolved in this order:
+.IP 1. 3
+the
+.B MD_TO_PDF_BRANDS
+environment variable;
+.IP 2. 3
+the
+.B brands_dir
+setting in the configuration file (see below);
+.IP 3. 3
+the bundled default brand
+.RB ( plain ),
+which is always available as a fallback.
+.SH CONFIGURATION
+The configuration file is read from
+.IR $XDG_CONFIG_HOME/pandoc-wrapper/config
+(by default
+.IR ~/.config/pandoc-wrapper/config ),
+or from the path in
+.BR MD_TO_PDF_CONFIG .
+It uses simple
+.I key = value
+lines. The key that matters is the brands base:
+.PP
+.RS
+.B brands_dir =
+.I /path/to/your/brands
+.RE
+.PP
+A leading
+.B ~
+is expanded to your home directory. When no brands base is configured,
+.B md-to-pdf
+uses the bundled
+.B plain
+brand and prints a one\-line hint on each run.
+.SH FILES
+.TP
+.I ~/.config/pandoc-wrapper/config
+Per\-user configuration (\fBbrands_dir\fR).
+.TP
+.I /usr/share/pandoc-wrapper/templates/
+LaTeX templates, the shared preamble and the Lua filter.
+.TP
+.I /usr/share/pandoc-wrapper/brands/plain/
+The bundled default brand.
+.SH ENVIRONMENT
+.TP
+.B MD_TO_PDF_BRANDS
+Override the brands base folder.
+.TP
+.B MD_TO_PDF_TEMPLATES
+Override the templates folder.
+.TP
+.B MD_TO_PDF_CONFIG
+Override the configuration file path.
+.TP
+.B MD_TO_PDF_VIEWER
+PDF viewer to open on success (default
+.IR /usr/bin/evince ).
+.SH EXAMPLES
+Build a document with the default brand:
+.PP
+.RS
+.B md-to-pdf report.md
+.RE
+.PP
+Configure your own brands once, then use them:
+.PP
+.RS
+.B mkdir -p ~/.config/pandoc-wrapper
+.br
+.B echo 'brands_dir = ~/pandoc-brands' > ~/.config/pandoc-wrapper/config
+.br
+.B md-to-pdf --no-viewer report.md
+.RE
+.PP
+Create a new brand by copying the default:
+.PP
+.RS
+.B cp -r /usr/share/pandoc-wrapper/brands/plain ~/pandoc-brands/acme
+.RE
+.SH SEE ALSO
+.BR pandoc (1),
+.BR xelatex (1).
+Full authoring and template documentation is installed under
+.IR /usr/share/doc/pandoc-wrapper/ .
+.SH AUTHOR
+Stuart J Mackintosh <sjm@opendigital.cc>

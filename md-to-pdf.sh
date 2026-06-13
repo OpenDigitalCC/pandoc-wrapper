@@ -60,8 +60,12 @@ INCDIR="${INCDIR:-$HOME/.pandoc/templates}"
 #   2. brands_dir from the config file (authoritative)
 #   3. otherwise the first existing of: a co-located brands tree, the XDG data
 #      default, the legacy ~/.pandoc/brands - defaulting to the XDG path.
+# BRANDS_CONFIGURED records whether the user pointed us at a brands base (env or
+# config). When not, we fall back to the bundled default and hint how to set one.
+BRANDS_CONFIGURED=1
 BRANDDIR="${MD_TO_PDF_BRANDS:-$(read_config_value brands_dir || true)}"
 if [[ -z "$BRANDDIR" ]]; then
+    BRANDS_CONFIGURED=0
     _xdg_brands="${XDG_DATA_HOME:-$HOME/.local/share}/pandoc-wrapper/brands"
     for _c in "${_ASSET_BASE:+$_ASSET_BASE/brands}" "$_xdg_brands" "$HOME/.pandoc/brands"; do
         [[ -n "$_c" && -d "$_c" ]] && { BRANDDIR="$_c"; break; }
@@ -309,10 +313,56 @@ collect_source_files() {
     fi
 }
 
+print_help() {
+    cat <<EOF
+Usage: md-to-pdf [OPTIONS] <markdown file(s) / directory / URL>
+
+Convert Markdown with YAML front matter to a branded PDF via Pandoc and XeLaTeX.
+
+Options:
+  --order-alpha   Sort multiple input files alphabetically
+  --debug         Verbose debug output
+  --no-viewer     Do not open the PDF viewer after building
+  -h, --help      Show this help and exit
+
+Brands:
+  Choose a brand in a document's front matter:  brand: <name>
+  'plain' is the bundled default. Your own brands live in an external base
+  folder - one subfolder per brand: <base>/<name>/template.yaml plus its assets
+  (logo.png, cover.pdf, ...), referenced by bare filename.
+
+  The brands base is resolved in order:
+    1. \$MD_TO_PDF_BRANDS environment variable
+    2. brands_dir in the config file
+    3. the bundled default brand (plain)
+
+Configuration:
+  Config file: ${CONFIG_FILE}
+  Point it at your brands base, e.g.:
+    brands_dir = \$HOME/pandoc-brands
+
+Resolved paths now:
+  templates : ${INCDIR}
+  brands    : ${BRANDDIR}$([[ $BRANDS_CONFIGURED -eq 0 ]] && echo "  (bundled default - no brands_dir configured)")
+
+See 'man md-to-pdf' for full documentation.
+EOF
+}
+
+# A one-line nudge for users who have not configured their own brands base.
+print_brands_hint() {
+    [[ $BRANDS_CONFIGURED -eq 0 ]] || return 0
+    echo "md-to-pdf: no brands_dir configured; using bundled 'plain'. Run 'md-to-pdf --help' to set up your own brands." >&2
+}
+
 # Parse command-line options
 parse_options() {
     for arg in "$@"; do
         case "$arg" in
+            -h|--help)
+                print_help
+                exit 0
+                ;;
             --order-alpha)
                 ORDER_ALPHA=1
                 debug_log "Alphabetical ordering enabled"
@@ -663,6 +713,7 @@ main() {
     collect_source_files "$@"
     validate_arguments
     validate_working_directory
+    print_brands_hint
     
     process_source_files
     extract_metadata
