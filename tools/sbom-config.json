@@ -1,0 +1,44 @@
+{
+  "component": {
+    "name": "pandoc-wrapper",
+    "version": "1.0.0",
+    "description": "Markdown to branded PDF publishing pipeline",
+    "license": "BSD-3-Clause",
+    "vcs": "https://github.com/OpenDigitalCC/pandoc-wrapper"
+  },
+  "files": [
+    { "path": "md-to-pdf.sh",                         "bucket": "code",     "license": "BSD-3-Clause" },
+    { "path": "scripts/extract-frontmatter.pl",       "bucket": "code",     "license": "BSD-3-Clause" },
+    { "path": "scripts/install.sh",                   "bucket": "code",     "license": "BSD-3-Clause" },
+    { "path": "scripts/build-deb.sh",                 "bucket": "code",     "license": "BSD-3-Clause" },
+    { "path": "tools/make-sbom.pl",                   "bucket": "code",     "license": "BSD-3-Clause" },
+    { "path": "pandoc/templates/document-filters.lua","bucket": "template", "license": "BSD-3-Clause" },
+    { "path": "pandoc/templates/pipeline-preamble.tex","bucket": "template","license": "BSD-3-Clause" },
+    { "path": "pandoc/templates/eisvogel-wrapper.latex","bucket": "template","license": "BSD-3-Clause", "note": "derived from Eisvogel 3.4.0" },
+    { "path": "pandoc/templates/mvp.latex",           "bucket": "template", "license": "BSD-3-Clause", "note": "derived from the pandoc default template (dual GPL-2+/BSD-3, used under BSD-3)" },
+    { "path": "pandoc/templates/conformance-test.md", "bucket": "template", "license": "BSD-3-Clause" },
+    { "path": "pandoc/brands/plain/template.yaml",    "bucket": "brand",    "license": "BSD-3-Clause" },
+    { "path": "man/md-to-pdf.1",                      "bucket": "doc",      "license": "BSD-3-Clause" }
+  ],
+  "bundled": [
+    {
+      "name": "Eisvogel",
+      "version": "3.4.0",
+      "license": "BSD-3-Clause",
+      "purl": "pkg:github/Wandmalfarbe/pandoc-latex-template@v3.4.0",
+      "url": "https://github.com/Wandmalfarbe/pandoc-latex-template",
+      "used_by": "eisvogel-wrapper.latex (derived); pristine copy in pandoc/templates/vendor/"
+    }
+  ],
+  "dependencies": [
+    { "name": "pandoc",          "kind": "runtime",  "license": "GPL-2.0-or-later", "debian_pkg": "pandoc",                     "purl": "pkg:deb/debian/pandoc",                     "description": "Markdown to LaTeX/PDF converter (invoked)" },
+    { "name": "texlive-xetex",   "kind": "runtime",  "license": "LPPL-1.3c",        "debian_pkg": "texlive-xetex",              "purl": "pkg:deb/debian/texlive-xetex",              "description": "XeLaTeX PDF engine" },
+    { "name": "texlive-latex-recommended", "kind": "runtime", "license": "LPPL-1.3c", "debian_pkg": "texlive-latex-recommended", "purl": "pkg:deb/debian/texlive-latex-recommended", "description": "KOMA-Script document classes" },
+    { "name": "texlive-latex-extra", "kind": "runtime", "license": "LPPL-1.3c",     "debian_pkg": "texlive-latex-extra",        "purl": "pkg:deb/debian/texlive-latex-extra",        "description": "tcolorbox, multirow, pgf-pie, needspace, wrapfig" },
+    { "name": "texlive-pictures","kind": "runtime",  "license": "LPPL-1.3c",        "debian_pkg": "texlive-pictures",           "purl": "pkg:deb/debian/texlive-pictures",           "description": "pgf / pgfplots / tikz" },
+    { "name": "texlive-fonts-extra", "kind": "runtime", "license": "LPPL-1.3c",     "debian_pkg": "texlive-fonts-extra",        "purl": "pkg:deb/debian/texlive-fonts-extra",        "description": "fontawesome5, sourcesanspro, sourcecodepro" },
+    { "name": "YAML::XS",        "kind": "runtime",  "license": "Artistic-1.0-Perl OR GPL-1.0-or-later", "debian_pkg": "libyaml-libyaml-perl", "purl": "pkg:cpan/YAML-LibYAML", "description": "Front-matter YAML parser (extract-frontmatter.pl)" },
+    { "name": "evince",          "kind": "optional", "license": "GPL-2.0-or-later", "debian_pkg": "evince",                     "purl": "pkg:deb/debian/evince",                     "description": "Default PDF viewer (Recommends)" },
+    { "name": "fonts-open-sans", "kind": "optional", "license": "Apache-2.0",       "debian_pkg": "fonts-open-sans",            "purl": "pkg:deb/debian/fonts-open-sans",            "description": "Default body font for the plain brand (Recommends)" }
+  ]
+}

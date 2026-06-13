@@ -45,8 +45,9 @@ find "$BUILD/usr/share/pandoc-wrapper/brands" -type f -exec chmod 0644 {} +
 install -m 0644 "$REPO_ROOT/man/md-to-pdf.1" "$BUILD/usr/share/man/man1/md-to-pdf.1"
 gzip -9n "$BUILD/usr/share/man/man1/md-to-pdf.1"
 
-# Docs + example config.
+# Docs + example config + SBOM (generated fresh so it matches what ships).
 install -m 0644 "$REPO_ROOT"/pandoc/documentation/*.md "$BUILD/usr/share/doc/$PKG/" 2>/dev/null || true
+perl "$REPO_ROOT/tools/make-sbom.pl" --version "$VERSION" --out "$BUILD/usr/share/doc/$PKG/sbom.json" >/dev/null
 cat > "$BUILD/usr/share/doc/$PKG/config.example" <<EOF
 # Copy to ~/.config/pandoc-wrapper/config and edit.
 # Base folder holding your brand subfolders (<name>/template.yaml + assets).

@@ -18,6 +18,8 @@ scripts/
 ├── extract-frontmatter.pl       YAML::XS front-matter reader
 ├── install.sh                   user/system installer
 └── build-deb.sh                 builds the .deb (dpkg-deb, no root)
+tools/make-sbom.pl               regenerates sbom.json from tools/sbom-config.json
+sbom.json                        CycloneDX 1.6 SBOM (regenerate after changing what ships)
 pandoc/
 ├── templates/
 │   ├── document-filters.lua     boxes, datatables, charts -> raw LaTeX
