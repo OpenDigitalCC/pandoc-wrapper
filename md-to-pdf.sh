@@ -69,9 +69,9 @@ if [[ -z "$BRANDDIR" ]]; then
     BRANDDIR="${BRANDDIR:-$_xdg_brands}"
 fi
 
-# Bundled default brands ship with the tool (plain, _example). They are the
-# fallback when a brand is not in the user's external brands base, so `plain`
-# stays available no matter where brands_dir points.
+# The bundled default brand (plain) ships with the tool. It is the fallback when
+# a brand is not in the user's external brands base, so `plain` stays available
+# no matter where brands_dir points.
 BUNDLED_BRANDDIR="${_ASSET_BASE:+$_ASSET_BASE/brands}"
 
 PDF_VIEWER="${MD_TO_PDF_VIEWER:-/usr/bin/evince}"

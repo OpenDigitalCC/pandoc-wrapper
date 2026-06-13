@@ -22,9 +22,7 @@ pandoc/
 │   ├── pipeline-preamble.tex    portable shim (filter's package deps)
 │   ├── vendor/                  pristine upstream Eisvogel (provenance)
 │   └── Archive/                 superseded forks
-├── brands/                     bundled DEFAULT brands only
-│   ├── plain/template.yaml      the default brand
-│   └── _example/               scaffold brand to copy
+├── brands/plain/               the only bundled brand (default + copy-me ref)
 │                               (org brands live in a separate repo - see below)
 ├── documentation/              authoring guides + REF-* + contract/maturation
 └── experiments/                ad-hoc test documents (PDF outputs gitignored)
@@ -39,9 +37,9 @@ pandoc/
 itself (`../share/pandoc-wrapper`), falling back to legacy `~/.pandoc`.
 
 **Brands.** Each brand is a folder `<base>/<name>/template.yaml` plus its
-assets (logos, cover PDFs). Only `plain` (default) and `_example`
-(scaffold) ship in this repo, as bundled defaults. Organisation brands
-live OUTSIDE the repo, managed separately - on this host at
+assets (logos, cover PDFs). Only `plain` ships in this repo - the default
+brand, also the reference to copy for new ones. Organisation brands live
+OUTSIDE the repo, managed separately - on this host at
 `/srv/projects/pandoc-brands/` (its own git repo).
 
 Resolution (`load_brand_config`): external base first, then bundled

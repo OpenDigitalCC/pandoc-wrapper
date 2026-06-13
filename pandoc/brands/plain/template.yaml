@@ -1,8 +1,13 @@
 ---
 # Plain Brand Configuration
-# A clean, professional, unaffiliated style for documents
-# intended to be wrapped or rebranded by others
-
+#
+# The default brand: a clean, professional, unaffiliated style. It is also the
+# reference to copy when creating a new brand - it is deliberately neutral and
+# exercises every brand setting. To make a new brand:
+#
+#   cp -r plain <your-brand>     (in your brands base; see README.md)
+#   # edit colours, fonts, identity, and the title-page logo/cover below
+#
 # Brand identity
 institute: ""
 subject: ""
@@ -89,6 +94,14 @@ toc-depth: 2
 
 # Title page configuration
 titlepage: true
+
+# --- Title-page logo (drop logo.png into this brand folder, then uncomment) ---
+# titlepage-logo: logo.png
+# logo-width: 35mm
+
+# --- OR a full-page PDF/image cover (drop cover.pdf in, then uncomment).
+#     This replaces the generated title-page layout with your artwork. ---
+# titlepage-background: cover.pdf
 
 # Typography
 mainfont: "Open Sans"

@@ -11,9 +11,10 @@
 #   user   (default): prefix = ~/.local
 #   system          : prefix = /usr/local   (override with --prefix DIR)
 #
-# BRANDS. 'plain' and the '_example' scaffold ship WITH the tool as bundled
-# defaults (<prefix>/share/pandoc-wrapper/brands) and are the always-available
-# fallback. Your organisation brands live OUTSIDE the tool, in an external base
+# BRANDS. The 'plain' brand ships WITH the tool as the bundled default
+# (<prefix>/share/pandoc-wrapper/brands) and is the always-available fallback
+# (and the reference to copy). Your organisation brands live OUTSIDE the tool,
+# in an external base
 # of brand subfolders (<name>/template.yaml + assets) that you manage separately
 # (e.g. its own repo). The installer creates that base and points the config at
 # it; you populate it with your brands.
@@ -86,9 +87,9 @@ install -m 0644 "$REPO_ROOT"/pandoc/templates/*.latex "$SHAREDIR/templates/" 2>/
 install -m 0644 "$REPO_ROOT"/pandoc/templates/*.tex   "$SHAREDIR/templates/" 2>/dev/null || true
 install -m 0644 "$REPO_ROOT"/pandoc/templates/*.lua   "$SHAREDIR/templates/" 2>/dev/null || true
 
-# Bundled default brands (plain + the _example scaffold) ship WITH the tool as
-# the always-available fallback. Organisation brands are NOT bundled - they live
-# in the external brands base, managed separately.
+# The bundled default brand (plain) ships WITH the tool as the always-available
+# fallback (and copy-me reference). Organisation brands are NOT bundled - they
+# live in the external brands base, managed separately.
 for bdir in "$REPO_ROOT"/pandoc/brands/*/; do
     [[ -d "$bdir" ]] || continue
     cp -r "$bdir" "$SHAREDIR/brands/$(basename "$bdir")"
@@ -102,7 +103,7 @@ if [[ ! -f "$CONFIG_FILE" ]]; then
     {
         echo "# pandoc-wrapper configuration"
         echo "# Base folder holding your brand subfolders (<name>/template.yaml + assets)."
-        echo "# 'plain' and '_example' ship with the tool; add your own brands here."
+        echo "# 'plain' ships with the tool as the default; add your own brands here."
         echo "brands_dir = $BRANDS_DIR"
     } > "$CONFIG_FILE"
     echo "  wrote config: $CONFIG_FILE"
@@ -114,7 +115,7 @@ echo "Installed:"
 echo "  driver   : $BINDIR/md-to-pdf"
 echo "  helper   : $LIBDIR/extract-frontmatter.pl"
 echo "  templates: $SHAREDIR/templates"
-echo "  defaults : $SHAREDIR/brands (plain, _example)"
+echo "  default  : $SHAREDIR/brands (plain)"
 echo "  brands   : $BRANDS_DIR (your brands - add them here)"
 
 # PATH hint for user installs
