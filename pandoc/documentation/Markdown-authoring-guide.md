@@ -514,6 +514,12 @@ Software | OS licences | Annual renewal
 
 "Infrastructure" spans three rows, "Software" spans two.
 
+Row spans require the LaTeX `multirow` package. The build pipeline now
+loads it automatically for every document, so you don't need to do
+anything. If you ever see a build fail with `Undefined control sequence`
+on a line ending in `\multirow` (exit code 43), see the troubleshooting
+note at the end of this guide.
+
 # Charts
 
 Charts are defined as fenced code blocks. Data lines use `Label: Value` format.
@@ -735,6 +741,46 @@ footer-right: ""
 Setting a field to an empty string `""` suppresses the default content for that
 position. Leaving the field out entirely keeps the brand default. The defaults
 are: title top-left, date top-right, author bottom-left, page number bottom-right.
+
+# Troubleshooting
+
+## "Undefined control sequence ... \multirow" (exit code 43)
+
+The full error looks like this:
+
+```text
+PDF generation failed with exit code 43.
+
+Error producing PDF.
+! Undefined control sequence.
+l.992 ...ration, compliance, accounts) & \multirow
+```
+
+Cause
+: A datatable used a row span (a blank leading cell), which the filter
+  renders with the LaTeX `\multirow` command, but the `multirow` package
+  was not loaded by the template.
+
+Fix
+: The pipeline now loads `multirow` automatically for every document, so
+  an up-to-date pipeline will not hit this. If you are on an older copy of
+  `document-filters.lua`, either update it, or add this line to your
+  document front matter as a one-off workaround:
+
+```yaml
+header-includes: |
+  \usepackage{multirow}
+```
+
+If the failure persists, confirm the `multirow` package is installed in
+your TeX distribution (it ships in `texlive-latex-extra` on Debian).
+
+## Other PDF build failures
+
+For any other `exit code` failure, the build script writes the full
+LaTeX log; the on-screen dialog (or the `pandoc-stdout.txt` file noted in
+the terminal output) shows the failing line. The first `! ` line is the
+real error - read that rather than the cascade of errors after it.
 
 # British English
 

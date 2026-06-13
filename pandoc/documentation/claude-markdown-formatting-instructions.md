@@ -214,6 +214,12 @@ Datatable options:
 
 Markdown `**bold**` in cell text is converted automatically. LaTeX special characters are escaped automatically.
 
+Row spans (blank leading cell) are rendered with LaTeX `\multirow`; the
+pipeline loads the required package automatically. If a document must run
+through an older pipeline that fails with `Undefined control sequence
+... \multirow` (exit code 43), either avoid row spans or add
+`header-includes: \usepackage{multirow}` to the front matter.
+
 ## Links and Citations
 
 ### Standard Links
