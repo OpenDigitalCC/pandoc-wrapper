@@ -11,15 +11,37 @@ DEBUG=0
 ORDER_ALPHA=0
 NO_VIEWER=0
 
-# Configuration
-INCDIR=~/.pandoc/templates
-BRANDDIR=~/.pandoc/brands
-PDF_VIEWER=/usr/bin/evince
-P_ENGINE=xelatex
-
-# Resolve the directory this script lives in, so bundled helpers can be found
-# whether the script is run from the repo, ~/.local/bin, or /usr/bin.
+# Resolve the directory this script lives in, so bundled helpers and assets can
+# be found whether the script is run from the repo, ~/.local/bin, or /usr/bin.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Locate the templates/brands asset tree. Order of preference:
+#   1. explicit environment overrides (set by an installer or the user)
+#   2. an asset tree shipped next to this script (system / prefix install)
+#   3. the per-user default under ~/.pandoc
+locate_assets() {
+    local base
+    for base in \
+        "$SCRIPT_DIR/../share/pandoc-wrapper" \
+        "$SCRIPT_DIR/pandoc" \
+        "/usr/share/pandoc-wrapper" \
+        "/usr/local/share/pandoc-wrapper"; do
+        if [[ -d "$base/templates" ]]; then
+            echo "$base"
+            return 0
+        fi
+    done
+    return 1
+}
+
+# Configuration (environment overrides win; then a co-located asset tree; then ~/.pandoc)
+_ASSET_BASE="$(locate_assets || true)"
+INCDIR="${MD_TO_PDF_TEMPLATES:-${_ASSET_BASE:+$_ASSET_BASE/templates}}"
+INCDIR="${INCDIR:-$HOME/.pandoc/templates}"
+BRANDDIR="${MD_TO_PDF_BRANDS:-${_ASSET_BASE:+$_ASSET_BASE/brands}}"
+BRANDDIR="${BRANDDIR:-$HOME/.pandoc/brands}"
+PDF_VIEWER="${MD_TO_PDF_VIEWER:-/usr/bin/evince}"
+P_ENGINE=xelatex
 
 # Declarative front-matter registry: YAML key -> shell variable it populates.
 # To react to a new front-matter field, add one line here - nothing else in the
@@ -545,6 +567,9 @@ initialize_environment() {
     TMPDIR=$(mktemp -d)
     WD="${WD:-"$(pwd)"}"
     FNMAX=$(( $(getconf NAME_MAX "$WD") - 20 ))
+    # Let templates \input shared includes (e.g. pipeline-preamble.tex) from the
+    # templates directory. Trailing colon preserves the default search path.
+    export TEXINPUTS="${INCDIR}:${TEXINPUTS:-}"
 }
 
 cleanup() {

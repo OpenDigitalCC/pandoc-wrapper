@@ -24,10 +24,23 @@ pandoc/
 
 ## Deployment model
 
-The script reads templates and brands from `~/.pandoc/templates` and
-`~/.pandoc/brands`, **not** from this repo directly. The repo is the
-source of truth; a deploy step (currently manual) copies into
-`~/.pandoc`. There is no install script yet - see RECOMMENDATIONS.md.
+`scripts/install.sh` installs the pipeline FHS-style under a prefix
+(`~/.local` per-user by default, `/usr/local` with `--system`):
+`bin/md-to-pdf`, `lib/md-to-pdf/extract-frontmatter.pl`,
+`share/pandoc-wrapper/{templates,brands}`. The driver locates its assets
+relative to itself (`../share/pandoc-wrapper`), then falls back to the
+legacy `~/.pandoc`, and honours `MD_TO_PDF_TEMPLATES`/`MD_TO_PDF_BRANDS`
+overrides. The repo is the source of truth.
+
+## Template layering (see TEMPLATE-CONTRACT.md, MATURATION.md)
+
+Three layers: a swappable **base template** (look only); the portable
+**`pipeline-preamble.tex`** shim (every package the Lua filter's output
+needs - tables, boxes, charts); and **brand** YAML (colours/identity
+only). `mvp.latex` is the minimal reference template;
+`conformance-test.md` is the fixture a template must render to be
+compatible. The driver puts the templates dir on `TEXINPUTS` so
+templates can `\input{pipeline-preamble}`.
 
 ## How a build flows
 

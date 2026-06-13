@@ -1,0 +1,42 @@
+%% pipeline-preamble.tex
+%%
+%% Portable preamble carrying every LaTeX dependency the pandoc-wrapper Lua
+%% filter's output relies on - tables (datatables), boxes (::: divs) and charts
+%% (pie/bar) - plus the handful of generic typographic settings the pipeline
+%% assumes. It is deliberately template-INDEPENDENT: it contains no Eisvogel or
+%% KOMA-specific commands, so any base template that pulls it in (via \input or
+%% by header-includes injection) can render the full feature set.
+%%
+%% This is the "shim" layer: the common ground between a stock base template
+%% (e.g. Eisvogel or the MVP) and the brand layer. Load it once.
+
+% xcolor must see the table option before anything else loads it (hyperref etc).
+\PassOptionsToPackage{table}{xcolor}
+
+% --- Tables (datatable feature: longtable + coloured rows + row spans) ---
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{colortbl}
+
+% --- Boxes (::: divs rendered to tcolorbox by the filter) ---
+\usepackage[most]{tcolorbox}
+\usepackage{needspace}
+\usepackage{wrapfig}
+\usepackage{fontawesome5}
+
+% --- Charts (piechart / barchart rendered to TikZ/pgf) ---
+\usepackage{pgfplots}
+\usepackage{pgf-pie}
+\pgfplotsset{compat=1.18}
+
+% --- Generic typography / layout the pipeline assumes ---
+\usepackage{microtype}
+\usepackage[labelfont=bf]{caption}
+\setkeys{Gin}{width=1\textwidth,keepaspectratio}
+\renewcommand{\tabcolsep}{2mm}
+\renewcommand{\arraystretch}{1.1}
+\hyphenpenalty=5000
+\tolerance=1000
