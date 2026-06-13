@@ -153,7 +153,6 @@ header-includes: |
   \usepackage{longtable,booktabs,colortbl}
   \usepackage{tabularx}
   \usepackage[table]{xcolor}
-  \usepackage{markdown}
   \usepackage[labelfont=bf]{caption}
   \usepackage{pgf-pie}
   \usepackage{pgfplots}

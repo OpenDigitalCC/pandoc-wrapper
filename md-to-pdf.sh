@@ -17,6 +17,44 @@ BRANDDIR=~/.pandoc/brands
 PDF_VIEWER=/usr/bin/evince
 P_ENGINE=xelatex
 
+# Resolve the directory this script lives in, so bundled helpers can be found
+# whether the script is run from the repo, ~/.local/bin, or /usr/bin.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Declarative front-matter registry: YAML key -> shell variable it populates.
+# To react to a new front-matter field, add one line here - nothing else in the
+# parsing path needs to change. Multiple YAML keys may target the same variable
+# (e.g. template / pandoc-template).
+declare -A META_FIELDS=(
+    [brand]=DOC_BRAND
+    [title]=DOC_TITLE
+    [subtitle]=DOC_SUBTITLE
+    [template]=DOC_P_TEMPLATE
+    [pandoc-template]=DOC_P_TEMPLATE
+    [pdf-engine]=DOC_P_ENGINE
+    [top-level-division]=DOC_P_TLD
+    [type]=DOC_TYPE
+    [printready]=DOC_PRINTREADY
+    [date]=DOC_DATE
+)
+
+# Locate a bundled helper across the layouts the script may be installed in.
+find_helper() {
+    local name="$1" c
+    for c in \
+        "$SCRIPT_DIR/scripts/$name" \
+        "$SCRIPT_DIR/$name" \
+        "$SCRIPT_DIR/../lib/md-to-pdf/$name" \
+        "$SCRIPT_DIR/../share/md-to-pdf/$name" \
+        "/usr/lib/md-to-pdf/$name"; do
+        if [[ -f "$c" ]]; then
+            echo "$c"
+            return 0
+        fi
+    done
+    return 1
+}
+
 # Initialize variables
 TMPDIR=""
 FNMAX=0
@@ -307,36 +345,31 @@ load_brand_config() {
 }
 
 extract_metadata() {
-    # Extract only the YAML frontmatter (between first --- and second ---)
-    # This avoids parsing YAML examples in code blocks
-    local yaml_frontmatter
-    yaml_frontmatter=$(echo "$MDCONTENT" | awk '/^---$/{if(++count==1) next; if(count==2) exit} count==1')
-    
-    debug_log "YAML frontmatter extracted:"
-    debug_log "$yaml_frontmatter"
-    
-    # Extract brand first (needed to load brand config)
-    DOC_BRAND=$(echo "$yaml_frontmatter" | awk -F ': ' '$1=="brand" {$1=""; print substr($0,2)}' | xargs)
-    debug_log "DOC_BRAND: '$DOC_BRAND'"
-    
-    # Extract title and clean it up - handle colons in quoted values
-    DOC_TITLE=$(echo "$yaml_frontmatter" | awk -F ': ' '$1=="title" {$1=""; print substr($0,2)}' | tr -d '"' | tr -d "'" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
-    debug_log "DOC_TITLE: '$DOC_TITLE'"
-    
-    # Extract subtitle and clean it up
-    DOC_SUBTITLE=$(echo "$yaml_frontmatter" | awk -F ': ' '$1=="subtitle" {$1=""; print substr($0,2)}' | tr -d '"' | tr -d "'" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
-    debug_log "DOC_SUBTITLE: '$DOC_SUBTITLE'"
-    
-    # Extract template (check both "template:" and "pandoc-template:")
-    DOC_P_TEMPLATE=$(echo "$yaml_frontmatter" | awk -F ': ' '$1=="pandoc-template" || $1=="template" {$1=""; print substr($0,2); exit}' | tr -d '"' | tr -d "'" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
-    debug_log "DOC_P_TEMPLATE: '$DOC_P_TEMPLATE'"
-    
-    # Extract other metadata and strip quotes
-    DOC_P_ENGINE=$(echo "$yaml_frontmatter" | awk -F ': ' '$1=="pdf-engine" {$1=""; print substr($0,2)}' | tr -d '"' | tr -d "'" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
-    DOC_P_TLD=$(echo "$yaml_frontmatter" | awk -F ': ' '$1=="top-level-division" {$1=""; print substr($0,2)}' | tr -d '"' | tr -d "'" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
-    DOC_TYPE=$(echo "$yaml_frontmatter" | awk -F ': ' '$1=="type" {$1=""; print substr($0,2)}' | tr -d '"' | tr -d "'" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
-    DOC_PRINTREADY=$(echo "$yaml_frontmatter" | awk -F ': ' '$1=="printready" {$1=""; print substr($0,2)}' | xargs)
-    DOC_DATE=$(echo "$yaml_frontmatter" | awk -F ': ' '$1=="date" {$1=""; print substr($0,2)}' | tr -d '"' | tr -d "'" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
+    # Parse the first YAML front-matter block with a real YAML parser, driven by
+    # the META_FIELDS registry. This correctly handles quoted colons, multi-line
+    # scalars, and booleans, and never mistakes a YAML example in a fenced code
+    # block for front matter.
+    local helper
+    if ! helper=$(find_helper extract-frontmatter.pl); then
+        echo "Warning: extract-frontmatter.pl helper not found; front matter not parsed" >&2
+        return 0
+    fi
+    if ! command -v perl >/dev/null 2>&1; then
+        echo "Warning: perl not available; front matter not parsed" >&2
+        return 0
+    fi
+
+    # The helper emits NUL-delimited "yamlkey=value" records for the requested
+    # keys. Map each YAML key onto its registered shell variable.
+    local rec yamlkey val var
+    while IFS= read -r -d '' rec; do
+        yamlkey=${rec%%=*}
+        val=${rec#*=}
+        var=${META_FIELDS[$yamlkey]}
+        [[ -n $var ]] && printf -v "$var" '%s' "$val"
+    done < <(printf '%s' "$MDCONTENT" | perl "$helper" "${!META_FIELDS[@]}")
+
+    debug_log "Parsed front matter: DOC_BRAND='$DOC_BRAND' DOC_TITLE='$DOC_TITLE' DOC_P_TEMPLATE='$DOC_P_TEMPLATE' DOC_DATE='$DOC_DATE' DOC_PRINTREADY='$DOC_PRINTREADY'"
 }
 
 generate_filename() {
