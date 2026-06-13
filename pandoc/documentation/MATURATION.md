@@ -156,6 +156,19 @@ non-standard. The installer instead uses `~/.local/share/pandoc-wrapper`; the
 driver still falls back to `~/.pandoc` so existing setups keep working. New
 installs should prefer the XDG path.
 
+## Brands as external, self-contained folders (implemented)
+
+Brands are user data, not tool data, so they live outside the tool in a
+configurable base. Each brand is now a folder - `<base>/<name>/template.yaml`
+plus its own assets (logos, cover PDFs) - rather than a flat
+`brand-<name>.yaml`. The base is resolved from `MD_TO_PDF_BRANDS`, then
+`brands_dir` in `~/.config/pandoc-wrapper/config`, then a default; the installer
+seeds it and writes the config. The build adds the selected brand's folder to
+`--resource-path` and `TEXINPUTS`, so a brand references its logo or cover by
+bare filename and stays portable - it can be kept in its own repo, a synced
+folder, or a package. `pandoc/brands/_example/` is the scaffold to copy;
+legacy flat brand files still load as a fallback.
+
 # Packaging
 
 The pipeline is very packageable - it is a script, a Perl helper, and data

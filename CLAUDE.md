@@ -11,26 +11,41 @@ produce a styled PDF.
 
 ```
 md-to-pdf.sh                     driver script (Bash)
+scripts/
+├── extract-frontmatter.pl       YAML::XS front-matter reader
+└── install.sh                   user/system installer
 pandoc/
 ├── templates/
 │   ├── document-filters.lua     boxes, datatables, charts -> raw LaTeX
-│   ├── eisvogel-reorganized.latex   default template (brand: plain)
-│   ├── report.latex / eisvogel.latex  alternative templates
-│   └── examples/                upstream Eisvogel example docs (reference)
-├── brands/brand-*.yaml          per-brand colour/typography/layout config
-├── documentation/              authoring guides + REF-* reference docs
+│   ├── eisvogel-wrapper.latex   default template (pristine Eisvogel + inserts)
+│   ├── mvp.latex                standalone minimal template
+│   ├── pipeline-preamble.tex    portable shim (filter's package deps)
+│   ├── vendor/                  pristine upstream Eisvogel (provenance)
+│   └── Archive/                 superseded forks
+├── brands/<name>/template.yaml   per-brand config + assets (folder per brand)
+│   └── _example/                scaffold brand to copy
+├── documentation/              authoring guides + REF-* + contract/maturation
 └── experiments/                ad-hoc test documents (PDF outputs gitignored)
 ```
 
 ## Deployment model
 
-`scripts/install.sh` installs the pipeline FHS-style under a prefix
+`scripts/install.sh` installs the TOOL FHS-style under a prefix
 (`~/.local` per-user by default, `/usr/local` with `--system`):
 `bin/md-to-pdf`, `lib/md-to-pdf/extract-frontmatter.pl`,
-`share/pandoc-wrapper/{templates,brands}`. The driver locates its assets
-relative to itself (`../share/pandoc-wrapper`), then falls back to the
-legacy `~/.pandoc`, and honours `MD_TO_PDF_TEMPLATES`/`MD_TO_PDF_BRANDS`
-overrides. The repo is the source of truth.
+`share/pandoc-wrapper/templates`. The driver locates templates relative to
+itself (`../share/pandoc-wrapper`), falling back to legacy `~/.pandoc`.
+
+**Brands are user data, kept OUTSIDE the tool.** Each brand is a folder
+`<brands-base>/<name>/template.yaml` plus its assets (logos, cover PDFs).
+The brands base is resolved: `MD_TO_PDF_BRANDS` env → `brands_dir` in
+`~/.config/pandoc-wrapper/config` → a co-located/XDG default. The installer
+seeds the base from the bundled defaults (without overwriting edits) and
+writes the config. `load_brand_config` adds the brand folder to
+`--resource-path` and `TEXINPUTS` so folder-local assets resolve by bare
+filename. The repo's `pandoc/brands/<name>/` are the bundled defaults;
+`pandoc/brands/_example/` is the scaffold for new brands. Legacy flat
+`brand-<name>.yaml` is still accepted as a fallback.
 
 ## Template layering (see TEMPLATE-CONTRACT.md, MATURATION.md)
 

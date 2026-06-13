@@ -34,14 +34,46 @@ locate_assets() {
     return 1
 }
 
-# Configuration (environment overrides win; then a co-located asset tree; then ~/.pandoc)
+# Read a `key = value` setting from the config file without sourcing it.
+# Config path: $MD_TO_PDF_CONFIG, else XDG (~/.config/pandoc-wrapper/config).
+CONFIG_FILE="${MD_TO_PDF_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/pandoc-wrapper/config}"
+read_config_value() {
+    local key="$1" v
+    [[ -f "$CONFIG_FILE" ]] || return 1
+    v=$(grep -E "^[[:space:]]*${key}[[:space:]]*=" "$CONFIG_FILE" | tail -1 \
+        | sed -E "s/^[[:space:]]*${key}[[:space:]]*=[[:space:]]*//; s/[[:space:]]*\$//")
+    [[ -n "$v" ]] || return 1
+    # Expand a leading ~ to $HOME.
+    [[ "$v" == "~"* ]] && v="${HOME}${v#\~}"
+    echo "$v"
+}
+
+# Configuration. Templates ship with the tool; brands are user data and live in a
+# separate, configurable base folder (outside this repo), so brands can be
+# managed in their own repos/packages.
 _ASSET_BASE="$(locate_assets || true)"
 INCDIR="${MD_TO_PDF_TEMPLATES:-${_ASSET_BASE:+$_ASSET_BASE/templates}}"
 INCDIR="${INCDIR:-$HOME/.pandoc/templates}"
-BRANDDIR="${MD_TO_PDF_BRANDS:-${_ASSET_BASE:+$_ASSET_BASE/brands}}"
-BRANDDIR="${BRANDDIR:-$HOME/.pandoc/brands}"
+
+# Brands base resolution:
+#   1. MD_TO_PDF_BRANDS environment override (authoritative)
+#   2. brands_dir from the config file (authoritative)
+#   3. otherwise the first existing of: a co-located brands tree, the XDG data
+#      default, the legacy ~/.pandoc/brands - defaulting to the XDG path.
+BRANDDIR="${MD_TO_PDF_BRANDS:-$(read_config_value brands_dir || true)}"
+if [[ -z "$BRANDDIR" ]]; then
+    _xdg_brands="${XDG_DATA_HOME:-$HOME/.local/share}/pandoc-wrapper/brands"
+    for _c in "${_ASSET_BASE:+$_ASSET_BASE/brands}" "$_xdg_brands" "$HOME/.pandoc/brands"; do
+        [[ -n "$_c" && -d "$_c" ]] && { BRANDDIR="$_c"; break; }
+    done
+    BRANDDIR="${BRANDDIR:-$_xdg_brands}"
+fi
+
 PDF_VIEWER="${MD_TO_PDF_VIEWER:-/usr/bin/evince}"
 P_ENGINE=xelatex
+
+# Per-brand asset directory (logos, cover PDFs); set when a brand loads.
+BRAND_ASSET_DIR=""
 
 # Declarative front-matter registry: YAML key -> shell variable it populates.
 # To react to a new front-matter field, add one line here - nothing else in the
@@ -336,33 +368,47 @@ process_source_files() {
 # Brand configuration functions
 load_brand_config() {
     local brand="$1"
-    local brand_file="${BRANDDIR}/brand-${brand}.yaml"
-    
+
+    # New layout: <brands-base>/<brand>/template.yaml (folder also holds assets).
+    # Legacy fallback: <brands-base>/brand-<brand>.yaml (flat).
+    local brand_dir="${BRANDDIR}/${brand}"
+    local brand_file="${brand_dir}/template.yaml"
     if [[ ! -f "$brand_file" ]]; then
-        echo "Warning: Brand file not found: $brand_file" >&2
-        return 1
+        local legacy="${BRANDDIR}/brand-${brand}.yaml"
+        if [[ -f "$legacy" ]]; then
+            brand_file="$legacy"
+            brand_dir="$BRANDDIR"
+        else
+            echo "Warning: Brand '$brand' not found (looked for $brand_file and $legacy)" >&2
+            return 1
+        fi
     fi
-    
+
     debug_log "Loading brand config: $brand_file"
-    
+
+    # The brand folder holds this brand's assets (logos, cover PDFs). Expose it so
+    # the pandoc invocation can add it to the graphics/resource search paths.
+    BRAND_ASSET_DIR="$brand_dir"
+
     # Read brand content
     local brand_content
     brand_content=$(cat "$brand_file")
-    
+
     # Prepend brand config before document content
     # This way document settings override brand defaults
     MDCONTENT="${brand_content}"$'\n\n'"${MDCONTENT}"
-    
+
     log_message "Loaded brand config: $brand"
-    
-    # Check for brand-specific Lua filter
-    local brand_lua="${BRANDDIR}/brand-${brand}.lua"
+
+    # Check for brand-specific Lua filter (folder layout, then legacy)
+    local brand_lua="${brand_dir}/filter.lua"
+    [[ -f "$brand_lua" ]] || brand_lua="${BRANDDIR}/brand-${brand}.lua"
     if [[ -f "$brand_lua" ]]; then
         debug_log "Found brand Lua filter: $brand_lua"
         BRAND_LUA="$brand_lua"
         log_message "Loaded brand Lua filter: $brand"
     fi
-    
+
     return 0
 }
 
@@ -517,13 +563,24 @@ run_pandoc() {
         lua_filters="$lua_filters --lua-filter=\"$BRAND_LUA\""
         debug_log "Including brand Lua filter: $BRAND_LUA"
     fi
-    
+
+    # Resolve brand-local and working-directory assets (logos, cover PDFs, images).
+    # pandoc --resource-path covers Markdown images; TEXINPUTS covers LaTeX
+    # \includegraphics / titlepage-background used by the template.
+    local resource_path="$WD"
+    [[ -n "$BRAND_ASSET_DIR" ]] && resource_path="${BRAND_ASSET_DIR}:${resource_path}"
+    if [[ -n "$BRAND_ASSET_DIR" ]]; then
+        export TEXINPUTS="${BRAND_ASSET_DIR}:${TEXINPUTS}"
+        debug_log "Brand assets on path: $BRAND_ASSET_DIR"
+    fi
+
     # Build the complete pandoc command
-    local pandoc_cmd="pandoc $pandoc_debug $(load_filters) $lua_filters --pdf-engine=\"$P_ENGINE\" ${P_TEMPLATE} $P_TLD --metadata=date:\"$DOC_DATE\" -f markdown+inline_notes \"$contentfile\" -t pdf -o \"$dstfile\""
-    
+    local pandoc_cmd="pandoc $pandoc_debug $(load_filters) $lua_filters --resource-path=\"$resource_path\" --pdf-engine=\"$P_ENGINE\" ${P_TEMPLATE} $P_TLD --metadata=date:\"$DOC_DATE\" -f markdown+inline_notes \"$contentfile\" -t pdf -o \"$dstfile\""
+
     # Run pandoc
     if pandoc $pandoc_debug \
         $(eval echo "$lua_filters") \
+        --resource-path="$resource_path" \
         --pdf-engine="$P_ENGINE" \
         ${P_TEMPLATE} \
         $P_TLD \
