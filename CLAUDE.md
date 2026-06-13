@@ -38,7 +38,7 @@ pandoc/
 
 **Versioning:** `VERSION` is the single source of truth; `bump-version.sh`
 stamps it into `SCRIPT_VERSION` (md-to-pdf.sh) and the man page `.TH`, and the
-SBOM reads it directly. `build-deb.sh` bumps the **minor** per deb by default
+SBOM reads it directly. `build-deb.sh` bumps the **patch** per deb by default
 (`--no-bump` to build the current version unchanged, or pass `X.Y.Z`).
 
 ## Deployment model

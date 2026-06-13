@@ -77,13 +77,13 @@ The `VERSION` file is the single source of truth; `scripts/bump-version.sh`
 stamps it into the driver (`SCRIPT_VERSION`) and the man page.
 
 ```bash
-./scripts/build-deb.sh            # bumps the MINOR version, then builds the deb
+./scripts/build-deb.sh            # bumps the PATCH version, then builds the deb
 ./scripts/build-deb.sh --no-bump  # build the current VERSION (test builds)
 ./scripts/build-deb.sh 2.0.0      # set an exact version, then build
-scripts/bump-version.sh major     # or minor / patch / X.Y.Z, without building
+scripts/bump-version.sh minor     # or major / patch / X.Y.Z, without building
 ```
 
-So each released deb bumps the minor automatically; major and patch are
+So each released deb bumps the patch automatically; minor and major are
 deliberate (`bump-version.sh`, or pass `X.Y.Z`). The SBOM reads `VERSION`, so it
 stays in step. Commit the version bump (VERSION + the stamped files) with the
 release.
