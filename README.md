@@ -145,6 +145,13 @@ versioning, a slides template, automated tests, driver hardening) is tracked in
 
 ## Licence
 
-BSD-3-Clause. The bundled `eisvogel-wrapper.latex` derives from the Eisvogel
-template (© Pascal Wagler, John MacFarlane), also BSD-3-Clause; see
-`pandoc/templates/vendor/`.
+The tool and the bundled `plain` brand are **BSD-3-Clause** - see `LICENSE`.
+The bundled templates derive from BSD-3-Clause upstreams whose copyright notices
+are retained: `eisvogel-wrapper.latex` from Eisvogel (© Pascal Wagler, John
+MacFarlane; pristine copy under `pandoc/templates/vendor/`), and `mvp.latex` from
+the pandoc default template (© John MacFarlane; dual GPL-2+/BSD-3-Clause, used
+under BSD-3). Pandoc and TeX Live are runtime dependencies, not bundled.
+
+Organisation **brands are not covered by this licence**: they contain logos and
+brand identities owned by the respective organisations and are managed in a
+separate, private repository (all rights reserved).

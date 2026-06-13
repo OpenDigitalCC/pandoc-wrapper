@@ -102,6 +102,12 @@ Copyright: 2017-2026 Pascal Wagler; 2014-2026 John MacFarlane
 License: BSD-3-Clause
  Derived from the Eisvogel pandoc LaTeX template (v3.4.0).
 
+Files: usr/share/pandoc-wrapper/templates/mvp.latex
+Copyright: 2014-2026 John MacFarlane
+License: BSD-3-Clause
+ Derived from the pandoc default LaTeX template (dual GPL-2+/BSD-3-Clause;
+ used here under the BSD-3-Clause option).
+
 License: BSD-3-Clause
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the conditions of the

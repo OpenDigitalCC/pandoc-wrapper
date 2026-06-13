@@ -1,4 +1,9 @@
 #!/bin/bash
+#
+# md-to-pdf - Markdown to branded PDF publishing pipeline.
+# Copyright (c) 2018-2026 Stuart J Mackintosh <sjm@opendigital.cc>
+# SPDX-License-Identifier: BSD-3-Clause
+# See the LICENSE file for full terms and third-party attributions.
 
 # Script version marker
 SCRIPT_VERSION="1.0.0"
