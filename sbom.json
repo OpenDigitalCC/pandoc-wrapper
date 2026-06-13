@@ -5,7 +5,7 @@
       "hashes" : [
         {
           "alg" : "SHA-256",
-          "content" : "9a320a504bb5afc49cd5bc35b0d7244842ebc7b0bf940e8224ac41c8677e4755"
+          "content" : "581154684568fc2799a7c6f3b9dd65e0afe90783e00f96a2dcdfde048c0f0140"
         }
       ],
       "licenses" : [
@@ -30,9 +30,9 @@
           "value" : "md-to-pdf.sh"
         }
       ],
-      "purl" : "pkg:generic/opendigital/md-to-pdf.sh@1.0.0",
+      "purl" : "pkg:generic/opendigital/md-to-pdf.sh@1.1.0",
       "type" : "file",
-      "version" : "1.0.0"
+      "version" : "1.1.0"
     },
     {
       "hashes" : [
@@ -63,9 +63,9 @@
           "value" : "scripts/extract-frontmatter.pl"
         }
       ],
-      "purl" : "pkg:generic/opendigital/scripts/extract-frontmatter.pl@1.0.0",
+      "purl" : "pkg:generic/opendigital/scripts/extract-frontmatter.pl@1.1.0",
       "type" : "file",
-      "version" : "1.0.0"
+      "version" : "1.1.0"
     },
     {
       "hashes" : [
@@ -96,15 +96,15 @@
           "value" : "scripts/install.sh"
         }
       ],
-      "purl" : "pkg:generic/opendigital/scripts/install.sh@1.0.0",
+      "purl" : "pkg:generic/opendigital/scripts/install.sh@1.1.0",
       "type" : "file",
-      "version" : "1.0.0"
+      "version" : "1.1.0"
     },
     {
       "hashes" : [
         {
           "alg" : "SHA-256",
-          "content" : "ccfdb04b30fbf4fa8bf015906469ee47e8b8e7defaa707b330d8f5b6cd25ccb3"
+          "content" : "8532ac37723c924137c929affc3cba42da6e16d1fe6ca17bed6373545d68c063"
         }
       ],
       "licenses" : [
@@ -129,15 +129,15 @@
           "value" : "scripts/build-deb.sh"
         }
       ],
-      "purl" : "pkg:generic/opendigital/scripts/build-deb.sh@1.0.0",
+      "purl" : "pkg:generic/opendigital/scripts/build-deb.sh@1.1.0",
       "type" : "file",
-      "version" : "1.0.0"
+      "version" : "1.1.0"
     },
     {
       "hashes" : [
         {
           "alg" : "SHA-256",
-          "content" : "0af5e75e677e5cddf035256f18c38631a58ea46cbc7dd7b7f79c6aa0dfcbc87f"
+          "content" : "01260789e33415b280bc89da11f21e0d350d57fc90ed0fe972de503604277d7b"
         }
       ],
       "licenses" : [
@@ -162,9 +162,9 @@
           "value" : "tools/make-sbom.pl"
         }
       ],
-      "purl" : "pkg:generic/opendigital/tools/make-sbom.pl@1.0.0",
+      "purl" : "pkg:generic/opendigital/tools/make-sbom.pl@1.1.0",
       "type" : "file",
-      "version" : "1.0.0"
+      "version" : "1.1.0"
     },
     {
       "hashes" : [
@@ -195,9 +195,9 @@
           "value" : "pandoc/templates/document-filters.lua"
         }
       ],
-      "purl" : "pkg:generic/opendigital/pandoc/templates/document-filters.lua@1.0.0",
+      "purl" : "pkg:generic/opendigital/pandoc/templates/document-filters.lua@1.1.0",
       "type" : "file",
-      "version" : "1.0.0"
+      "version" : "1.1.0"
     },
     {
       "hashes" : [
@@ -228,9 +228,9 @@
           "value" : "pandoc/templates/pipeline-preamble.tex"
         }
       ],
-      "purl" : "pkg:generic/opendigital/pandoc/templates/pipeline-preamble.tex@1.0.0",
+      "purl" : "pkg:generic/opendigital/pandoc/templates/pipeline-preamble.tex@1.1.0",
       "type" : "file",
-      "version" : "1.0.0"
+      "version" : "1.1.0"
     },
     {
       "hashes" : [
@@ -265,9 +265,9 @@
           "value" : "pandoc/templates/eisvogel-wrapper.latex"
         }
       ],
-      "purl" : "pkg:generic/opendigital/pandoc/templates/eisvogel-wrapper.latex@1.0.0",
+      "purl" : "pkg:generic/opendigital/pandoc/templates/eisvogel-wrapper.latex@1.1.0",
       "type" : "file",
-      "version" : "1.0.0"
+      "version" : "1.1.0"
     },
     {
       "hashes" : [
@@ -302,9 +302,9 @@
           "value" : "pandoc/templates/mvp.latex"
         }
       ],
-      "purl" : "pkg:generic/opendigital/pandoc/templates/mvp.latex@1.0.0",
+      "purl" : "pkg:generic/opendigital/pandoc/templates/mvp.latex@1.1.0",
       "type" : "file",
-      "version" : "1.0.0"
+      "version" : "1.1.0"
     },
     {
       "hashes" : [
@@ -335,9 +335,9 @@
           "value" : "pandoc/templates/conformance-test.md"
         }
       ],
-      "purl" : "pkg:generic/opendigital/pandoc/templates/conformance-test.md@1.0.0",
+      "purl" : "pkg:generic/opendigital/pandoc/templates/conformance-test.md@1.1.0",
       "type" : "file",
-      "version" : "1.0.0"
+      "version" : "1.1.0"
     },
     {
       "hashes" : [
@@ -368,15 +368,15 @@
           "value" : "pandoc/brands/plain/template.yaml"
         }
       ],
-      "purl" : "pkg:generic/opendigital/pandoc/brands/plain/template.yaml@1.0.0",
+      "purl" : "pkg:generic/opendigital/pandoc/brands/plain/template.yaml@1.1.0",
       "type" : "file",
-      "version" : "1.0.0"
+      "version" : "1.1.0"
     },
     {
       "hashes" : [
         {
           "alg" : "SHA-256",
-          "content" : "426c7f9f3fa59b23d87497058fdf47336ce3108f7b703d87f24a4f5ff8c78d0d"
+          "content" : "e566ebc72bcd0228089e61545bf18c6bdca9819a667d680532f736feff0e8b82"
         }
       ],
       "licenses" : [
@@ -401,9 +401,9 @@
           "value" : "man/md-to-pdf.1"
         }
       ],
-      "purl" : "pkg:generic/opendigital/man/md-to-pdf.1@1.0.0",
+      "purl" : "pkg:generic/opendigital/man/md-to-pdf.1@1.1.0",
       "type" : "file",
-      "version" : "1.0.0"
+      "version" : "1.1.0"
     },
     {
       "bom-ref" : "pkg:github/Wandmalfarbe/pandoc-latex-template@v3.4.0",
@@ -713,17 +713,17 @@
       ],
       "name" : "pandoc-wrapper",
       "type" : "application",
-      "version" : "1.0.0"
+      "version" : "1.1.0"
     },
-    "timestamp" : "2026-06-13T13:02:45Z",
+    "timestamp" : "2026-06-13T13:26:12Z",
     "tools" : [
       {
         "name" : "make-sbom.pl",
-        "version" : "1.0.0"
+        "version" : "1.1.0"
       }
     ]
   },
-  "serialNumber" : "urn:uuid:ee6494ca-1da2-4744-b32e-ab49403430d2",
+  "serialNumber" : "urn:uuid:18d5b144-c0b5-452a-9c6c-b07e8a47f11b",
   "specVersion" : "1.6",
   "version" : 1
 }

@@ -49,7 +49,7 @@ USAGE
 
 sub main {
     my $cfg     = load_json( $opt{config} );
-    my $version = $opt{version} // $cfg->{component}{version} // '0.0.0';
+    my $version = $opt{version} // read_version_file() // $cfg->{component}{version} // '0.0.0';
     my $sbom    = build_sbom( $cfg, $version );
     write_canonical_json( $opt{out}, $sbom );
     print STDERR "make-sbom: wrote $opt{out} ("
@@ -158,6 +158,17 @@ sub license_entry {
 sub props_list {
     my ($h) = @_;
     return [ map { { name => $_, value => $h->{$_} } } sort keys %$h ];
+}
+
+sub read_version_file {
+    my $vf = "$REPO_ROOT/VERSION";
+    return undef unless -f $vf;
+    open my $fh, '<', $vf or return undef;
+    my $v = <$fh>;
+    close $fh;
+    return undef unless defined $v;
+    $v =~ s/\s+//g;
+    return length $v ? $v : undef;
 }
 
 sub load_json {

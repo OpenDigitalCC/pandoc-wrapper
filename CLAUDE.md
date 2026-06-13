@@ -20,6 +20,8 @@ scripts/
 └── build-deb.sh                 builds the .deb (dpkg-deb, no root)
 tools/make-sbom.pl               regenerates sbom.json from tools/sbom-config.json
 sbom.json                        CycloneDX 1.6 SBOM (regenerate after changing what ships)
+VERSION                          single source of truth for the version
+scripts/bump-version.sh          bump VERSION + stamp SCRIPT_VERSION/man page
 pandoc/
 ├── templates/
 │   ├── document-filters.lua     boxes, datatables, charts -> raw LaTeX
@@ -33,6 +35,11 @@ pandoc/
 ├── skills/                      the pandoc-markdown skill (claude.ai + Claude Code)
 └── documentation/               authoring guide, template contract, filter README
 ```
+
+**Versioning:** `VERSION` is the single source of truth; `bump-version.sh`
+stamps it into `SCRIPT_VERSION` (md-to-pdf.sh) and the man page `.TH`, and the
+SBOM reads it directly. `build-deb.sh` bumps the **minor** per deb by default
+(`--no-bump` to build the current version unchanged, or pass `X.Y.Z`).
 
 ## Deployment model
 

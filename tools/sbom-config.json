@@ -1,7 +1,6 @@
 {
   "component": {
     "name": "pandoc-wrapper",
-    "version": "1.0.0",
     "description": "Markdown to branded PDF publishing pipeline",
     "license": "BSD-3-Clause",
     "vcs": "https://github.com/OpenDigitalCC/pandoc-wrapper"

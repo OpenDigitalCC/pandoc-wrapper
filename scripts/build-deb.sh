@@ -9,12 +9,25 @@
 
 set -euo pipefail
 
-VERSION="${1:-1.0.0}"
 ARCH="all"
 PKG="pandoc-wrapper"
 MAINTAINER="Stuart J Mackintosh <sjm@opendigital.cc>"
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Versioning: each deb bumps the minor component (the single source of truth is
+# the VERSION file, stamped into the shipped artifacts by bump-version.sh).
+#   build-deb.sh            bump minor, then build
+#   build-deb.sh --no-bump  build the current VERSION unchanged (test builds)
+#   build-deb.sh X.Y.Z      set an exact version, then build
+case "${1:-}" in
+    "")                   bash "$REPO_ROOT/scripts/bump-version.sh" minor >/dev/null ;;
+    --no-bump)            : ;;
+    [0-9]*.[0-9]*.[0-9]*) bash "$REPO_ROOT/scripts/bump-version.sh" "$1" >/dev/null ;;
+    *) echo "usage: build-deb.sh [--no-bump | X.Y.Z]" >&2; exit 2 ;;
+esac
+VERSION="$(tr -d '[:space:]' < "$REPO_ROOT/VERSION")"
+
 BUILD="$REPO_ROOT/tmp/deb-build/${PKG}_${VERSION}"
 DIST="$REPO_ROOT/dist"
 
