@@ -20,3 +20,6 @@ pandoc.log.json
 
 # Stray empty artefact
 pandoc/documentation/.pdf
+
+# Built packages
+/dist/
