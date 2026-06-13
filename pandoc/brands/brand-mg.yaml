@@ -1,0 +1,169 @@
+---
+# MacKintosh Group Brand Configuration
+# Colours and identity from MacKintosh Group Brand Guidelines
+
+# Brand identity
+institute: MacKintosh Group
+subject: MacKintosh Group Document
+
+# ---------------------------------------------------------------
+# Brand colour definitions
+# All colours defined once here; auto-generated as \definecolor
+# in LaTeX by document-filters.lua
+# ---------------------------------------------------------------
+
+brand-colours:
+  # Primary brand palette (from brand guidelines)
+  mk-green: "3C665C"
+  mk-red: "BF202F"
+  mk-blue: "5264AE"
+
+  # Derived tones
+  mk-dark: "2A3A35"
+  mk-grey: "5A5E62"
+  mk-green-light: "E0EBE8"
+  mk-red-light: "F5DCDF"
+  mk-blue-light: "DDDFF0"
+
+  # Semantic aliases (for komafont references)
+  DeepPurple: "3C665C"
+  TealBlue: "5264AE"
+  DarkGray: "5A5E62"
+
+  # Template utility colours
+  caption-color: "5A5E62"
+  heading-color: "2A3A35"
+  default-linkcolor: "5264AE"
+  default-urlcolor: "3C665C"
+  default-citecolor: "3C665C"
+
+# ---------------------------------------------------------------
+# Chart colours
+# ---------------------------------------------------------------
+
+chart-colours:
+  - mk-green
+  - mk-red
+  - mk-blue
+  - mk-dark
+  - mk-grey
+
+# ---------------------------------------------------------------
+# Box colours
+# ---------------------------------------------------------------
+
+box-colours:
+  frame-info: mk-green!80
+  bg-info: mk-green-light!30
+  frame-accent: mk-blue!80
+  bg-accent: mk-blue-light!20
+  frame-highlight: mk-green!80
+  bg-highlight: mk-green-light!20
+  frame-contrast: mk-red!70
+  bg-contrast: mk-red-light!15
+
+# ---------------------------------------------------------------
+# Title page colours
+# ---------------------------------------------------------------
+
+titlepage-color: mk-green
+titlepage-text-color: white
+titlepage-rule-color: mk-red
+
+# Template and engine
+template: eisvogel-reorganized
+pdf-engine: xelatex
+from: markdown-smart
+
+# Backpage config
+backpage-publisher: "MacKintosh Group"
+
+# Document structure
+book: true
+documentclass: scrbook
+top-level-division: chapter
+minitoc: true
+minitoc-depth: 2
+
+numbersections: true
+secnumdepth: 2
+toc: true
+toc-depth: 2
+
+# Title page configuration
+titlepage: true
+
+# Typography
+mainfont: "Open Sans"
+fontsize: 11pt
+
+# Page layout
+classoption:
+  - oneside
+margin-left: 2cm
+margin-right: 5cm
+margin-top: 2cm
+margin-bottom: 1.5cm
+
+# Headers and footers
+header-center: ""
+header-left: ""
+header-right: ""
+footer-left: CONFIDENTIAL
+footer-center: ""
+
+# Styling
+colorlinks: true
+footnotes-pretty: true
+float-placement-figure: H
+listings: true
+
+# Endnotes configuration
+endnotes-heading: References
+footnotes-as-endnotes: true
+endnotes-custom-heading: true
+endnotes-symmetric-margins: true
+
+# Code highlighting
+pandoc-latex-environment:
+  noteblock: [note]
+  tipblock: [tip]
+  warningblock: [warning]
+  cautionblock: [caution]
+  importantblock: [important]
+  marginbox: [marginbox]
+  examplebox: [examplebox]
+  widebox: [widebox]
+  textbox: [textbox]
+
+# Structural LaTeX only (definecolor auto-generated from brand-colours)
+header-includes: |
+  \usepackage{fontawesome5}
+  \usepackage[default]{sourcesanspro}
+  \usepackage{sourcecodepro}
+  \usepackage{microtype}
+  \usepackage{parskip}
+  \usepackage{longtable,booktabs,colortbl}
+  \usepackage{tabularx}
+  \usepackage[table]{xcolor}
+  \usepackage{markdown}
+  \usepackage[labelfont=bf]{caption}
+  \usepackage{pgf-pie}
+  \usepackage{pgfplots}
+  \usepackage{wrapfig}
+  \renewcommand*{\chapterpagestyle}{eisvogel-header-footer}
+  \addtokomafont{chapter}{\color{mk-dark}}
+  \addtokomafont{section}{\color{mk-green}}
+  \addtokomafont{subsection}{\color{mk-green}}
+  \addtokomafont{subsubsection}{\color{mk-grey}}
+  \RedeclareSectionCommand[tocbeforeskip=0.2em]{section}
+  \RedeclareSectionCommand[tocindent=0pt]{section}
+  \hyphenpenalty=5000
+  \tolerance=1000
+  \renewcommand{\arrayrulewidth}{1mm}
+  \renewcommand{\arraystretch}{1.1}
+  \renewcommand{\tabcolsep}{2mm}
+  \setkeys{Gin}{width=1\textwidth,keepaspectratio}
+  \pgfplotsset{compat=1.18}
+
+---

@@ -1,0 +1,176 @@
+---
+# Cloudient Brand Configuration
+# Colours and identity from Cloudient Brand Guidelines
+
+# Brand identity
+institute: Cloudient
+subject: Cloudient Document
+
+# ---------------------------------------------------------------
+# Brand colour definitions
+# All colours defined once here; auto-generated as \definecolor
+# in LaTeX by document-filters.lua
+# ---------------------------------------------------------------
+
+brand-colours:
+  # Primary brand palette (from brand guidelines)
+  cl-electric: "0046FF"
+  cl-sky: "69C2FF"
+  cl-cloud: "99E7FF"
+
+  # Derived tones
+  cl-dark: "002E99"
+  cl-navy: "1A2744"
+  cl-grey: "5A6473"
+  cl-pale: "E8F4FF"
+
+  # Semantic aliases (for komafont references)
+  DeepPurple: "002E99"
+  TealBlue: "0046FF"
+  DarkGray: "5A6473"
+
+  # Template utility colours
+  caption-color: "5A6473"
+  heading-color: "1A2744"
+  default-linkcolor: "0046FF"
+  default-urlcolor: "002E99"
+  default-citecolor: "002E99"
+
+# ---------------------------------------------------------------
+# Chart colours
+# ---------------------------------------------------------------
+
+chart-colours:
+  - cl-electric
+  - cl-sky
+  - cl-navy
+  - cl-cloud
+  - cl-grey
+
+# ---------------------------------------------------------------
+# Box colours
+# ---------------------------------------------------------------
+
+box-colours:
+  frame-info: cl-electric!80
+  bg-info: cl-pale!30
+  frame-accent: cl-dark!90
+  bg-accent: cl-pale!20
+  frame-highlight: cl-sky!90
+  bg-highlight: cl-pale!20
+  frame-contrast: cl-navy!90
+  bg-contrast: cl-pale!10
+
+# ---------------------------------------------------------------
+# Title page colours
+# ---------------------------------------------------------------
+
+#titlepage-color: cl-electric
+titlepage-text-color: cl-electric
+titlepage-rule-color: cl-sky
+titlepage-logo: /home/sjm/Nextcloud/SJM/Work shares/Companies/Cloudient/Graphics/Cloudient Logo Files RGB-01.png
+
+# Template and engine
+template: eisvogel-reorganized
+pdf-engine: xelatex
+from: markdown-smart
+
+# Backpage config
+backpage-publisher: "Cloudient Limited"
+backpage-website: "https://cloudient.net"
+
+backpage: true
+backpage-text: |
+  Tel: +44 (0) 3300 88 3308
+  Email: support@cloudient.net
+  Registered address: 27 Old Gloucester St, Holborn London WC1N 3AX
+
+# Document structure
+book: true
+documentclass: scrbook
+top-level-division: chapter
+minitoc: true
+minitoc-depth: 2
+
+numbersections: true
+secnumdepth: 2
+toc: true
+toc-depth: 2
+
+# Title page configuration
+titlepage: true
+
+# Typography
+mainfont: "Open Sans"
+fontsize: 11pt
+
+# Page layout
+classoption:
+  - oneside
+margin-left: 2cm
+margin-right: 5cm
+margin-top: 2cm
+margin-bottom: 1.5cm
+
+# Headers and footers
+header-center: ""
+header-left: ""
+header-right: ""
+footer-left: ""
+footer-center: ""
+
+# Styling
+colorlinks: true
+footnotes-pretty: true
+float-placement-figure: H
+listings: true
+
+# Endnotes configuration
+endnotes-heading: References
+footnotes-as-endnotes: true
+endnotes-custom-heading: true
+endnotes-symmetric-margins: true
+
+# Code highlighting
+pandoc-latex-environment:
+  noteblock: [note]
+  tipblock: [tip]
+  warningblock: [warning]
+  cautionblock: [caution]
+  importantblock: [important]
+  marginbox: [marginbox]
+  examplebox: [examplebox]
+  widebox: [widebox]
+  textbox: [textbox]
+
+# Structural LaTeX only (definecolor auto-generated from brand-colours)
+header-includes: |
+  \usepackage{fontawesome5}
+  \usepackage[default]{sourcesanspro}
+  \usepackage{sourcecodepro}
+  \usepackage{microtype}
+  \usepackage{parskip}
+  \usepackage{longtable,booktabs,colortbl}
+  \usepackage{tabularx}
+  \usepackage[table]{xcolor}
+  \usepackage{markdown}
+  \usepackage[labelfont=bf]{caption}
+  \usepackage{pgf-pie}
+  \usepackage{pgfplots}
+  \usepackage{wrapfig}
+  \renewcommand*{\chapterpagestyle}{eisvogel-header-footer}
+  \addtokomafont{chapter}{\color{cl-dark}}
+  \addtokomafont{section}{\color{cl-electric}}
+  \addtokomafont{subsection}{\color{cl-electric}}
+  \addtokomafont{subsubsection}{\color{cl-grey}}
+  \RedeclareSectionCommand[tocbeforeskip=0.2em]{section}
+  \RedeclareSectionCommand[tocindent=0pt]{section}
+  \hyphenpenalty=5000
+  \tolerance=1000
+  \renewcommand{\arrayrulewidth}{1mm}
+  \renewcommand{\arraystretch}{1.1}
+  \renewcommand{\tabcolsep}{2mm}
+  \setkeys{Gin}{width=1\textwidth,keepaspectratio}
+  \pgfplotsset{compat=1.18}
+
+---

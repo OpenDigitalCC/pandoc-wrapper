@@ -1,0 +1,203 @@
+---
+# Open Digital Consulting Brand Configuration
+# This file defines brand identity and styling for ODCC documents
+
+# Brand identity
+institute: Open Digital Consulting Co
+subject: ODCC Document
+
+# ---------------------------------------------------------------
+# Brand colour definitions
+# All colours defined once here; auto-generated as \definecolor
+# in LaTeX by document-filters.lua
+# ---------------------------------------------------------------
+
+brand-colours:
+  # Primary brand
+  odcc-purple: "3F264F"
+  odcc-teal: "32707E"
+  odcc-dgrey: "3C3C3B"
+  odcc-lgrey: "C6C6C5"
+
+  # Extended palette
+  odcc-lilac: "785A89"
+  odcc-cyan: "5A9EA0"
+  odcc-rust: "B35440"
+  odcc-ochre: "D1A75C"
+  odcc-forest: "43634A"
+  odcc-slate: "4E6A92"
+
+  # Semantic aliases (used by komafont, links, etc.)
+  DeepPurple: "3F264F"
+  TealBlue: "32707E"
+  DarkGray: "3C3C3B"
+  WarmGray: "C6C6C5"
+  MutedLilac: "785A89"
+  SoftCyan: "5A9EA0"
+  DeepRust: "B35440"
+  GoldenOchre: "D1A75C"
+  ForestGreen: "43634A"
+  SlateBlue: "4E6A92"
+
+  # Template utility colours
+  caption-color: "777777"
+  heading-color: "282828"
+  blockquote-border: "DDDDDD"
+  blockquote-text: "777777"
+  table-row-color: "F5F5F5"
+  table-rule-color: "999999"
+  listing-background: "F7F7F7"
+  listing-rule: "B3B2B3"
+  listing-numbers: "B3B2B3"
+  listing-text-color: "000000"
+  listing-keyword: "435489"
+  listing-keyword-2: "1284CA"
+  listing-keyword-3: "9137CB"
+  listing-identifier: "435489"
+  listing-string: "00999A"
+  listing-comment: "8E8E8E"
+
+  # Link colours
+  default-linkcolor: "32707E"
+  default-filecolor: "5A9EA0"
+  default-citecolor: "3F264F"
+  default-urlcolor: "3F264F"
+
+# ---------------------------------------------------------------
+# Chart colours
+# Ordered list of brand-colour names for chart segments
+# First entry used for largest segment
+# ---------------------------------------------------------------
+
+chart-colours:
+  - odcc-purple
+  - odcc-teal
+  - odcc-rust
+  - odcc-ochre
+  - odcc-forest
+
+# ---------------------------------------------------------------
+# Box colours
+# Semantic names mapped to LaTeX colour expressions
+# Supports mixing syntax (e.g. odcc-teal!90)
+# ---------------------------------------------------------------
+
+box-colours:
+  frame-info: odcc-teal!90
+  bg-info: odcc-lgrey!10
+  frame-accent: odcc-purple!90
+  bg-accent: odcc-lgrey!10
+  frame-highlight: odcc-teal!90
+  bg-highlight: odcc-lgrey!10
+  frame-contrast: odcc-rust!90
+  bg-contrast: odcc-lgrey!10
+
+# ---------------------------------------------------------------
+# Title page colours
+# Resolved from brand-colour names by document-filters.lua
+# ---------------------------------------------------------------
+
+#titlepage-color: odcc-purple
+titlepage-text-color: odcc-purple
+titlepage-rule-color: odcc-teal
+
+# Template and engine
+template: eisvogel-reorganized
+pdf-engine: xelatex
+from: markdown-smart
+
+# Backpage config
+backpage-publisher: "Open Digital Consulting Co"
+backpage-website: "https://opendigital.cc"
+
+# Document structure
+book: true
+documentclass: scrbook
+top-level-division: chapter
+minitoc: true
+minitoc-depth: 2
+
+numbersections: true
+secnumdepth: 2
+toc: true
+toc-depth: 2
+
+# Title page configuration
+titlepage: true
+titlepage-background: /home/sjm/Nextcloud/SJM/Work shares/Companies/Open Digital/Graphics/pages/titlepage.pdf
+
+# Typography
+mainfont: "Open Sans"
+fontsize: 11pt
+
+# Page layout
+classoption:
+  - oneside
+margin-left: 2cm
+margin-right: 5cm
+margin-top: 2cm
+margin-bottom: 1.5cm
+
+# Headers and footers
+header-center: ""
+header-left: ""
+header-right: ""
+footer-left: CONFIDENTIAL
+footer-center: ""
+
+# Styling
+colorlinks: true
+footnotes-pretty: true
+float-placement-figure: H
+listings: true
+
+# Endnotes configuration
+endnotes-heading: References
+footnotes-as-endnotes: true
+endnotes-custom-heading: true
+endnotes-symmetric-margins: true
+
+# Code highlighting
+pandoc-latex-environment:
+  noteblock: [note]
+  tipblock: [tip]
+  warningblock: [warning]
+  cautionblock: [caution]
+  importantblock: [important]
+  marginbox: [marginbox]
+  examplebox: [examplebox]
+  widebox: [widebox]
+  textbox: [textbox]
+
+# Structural LaTeX only (definecolor auto-generated from brand-colours)
+header-includes: |
+  \usepackage{fontawesome5}
+  \usepackage{longtable}
+  \usepackage[default]{sourcesanspro}
+  \usepackage{sourcecodepro}
+  \usepackage{microtype}
+  \usepackage{parskip}
+  \usepackage{longtable,booktabs,colortbl}
+  \usepackage{tabularx}
+  \usepackage[table]{xcolor}
+  \usepackage{markdown}
+  \usepackage[labelfont=bf]{caption}
+  \usepackage{pgf-pie}
+  \usepackage{pgfplots}
+  \usepackage{wrapfig}
+  \renewcommand*{\chapterpagestyle}{eisvogel-header-footer}
+  \addtokomafont{chapter}{\color{DeepPurple}}
+  \addtokomafont{section}{\color{TealBlue}}
+  \addtokomafont{subsection}{\color{TealBlue}}
+  \addtokomafont{subsubsection}{\color{DarkGray}}
+  \RedeclareSectionCommand[tocbeforeskip=0.2em]{section}
+  \RedeclareSectionCommand[tocindent=0pt]{section}
+  \hyphenpenalty=5000
+  \tolerance=1000
+  \renewcommand{\arrayrulewidth}{1mm}
+  \renewcommand{\arraystretch}{1.1}
+  \renewcommand{\tabcolsep}{2mm}
+  \setkeys{Gin}{width=1\textwidth,keepaspectratio}
+  \pgfplotsset{compat=1.18}
+
+---

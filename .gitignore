@@ -1,0 +1,22 @@
+# Scratch / one-off diagnostics
+/tmp/
+
+# Generated test/experiment output (regenerated from the .md sources)
+pandoc/experiments/*.pdf
+
+# Pandoc / LaTeX build by-products
+*-compiled.md
+pandoc.log
+pandoc.log.json
+*.aux
+*.toc
+*.out
+*.log
+!**/build*.sh
+
+# macOS metadata cruft
+._*
+.DS_Store
+
+# Stray empty artefact
+pandoc/documentation/.pdf

@@ -1,0 +1,166 @@
+---
+# Plain Brand Configuration
+# A clean, professional, unaffiliated style for documents
+# intended to be wrapped or rebranded by others
+
+# Brand identity
+institute: ""
+subject: ""
+
+# ---------------------------------------------------------------
+# Brand colour definitions
+# Neutral professional palette - no organisational association
+# ---------------------------------------------------------------
+
+brand-colours:
+  # Primary palette - warm neutrals with a single quiet accent
+  plain-charcoal: "2C3E50"
+  plain-steel: "5D6D7E"
+  plain-slate: "85929E"
+  plain-silver: "AEB6BF"
+  plain-accent: "2980B9"
+
+  # Light tones
+  plain-light: "F2F4F5"
+  plain-warm: "FAFAF8"
+  plain-accent-light: "D6EAF5"
+
+  # Text
+  plain-text: "2C3E50"
+  plain-text-mid: "5D6D7E"
+  plain-text-light: "FFFFFF"
+
+  # Template utility colours
+  caption-color: "85929E"
+  heading-color: "2C3E50"
+  default-linkcolor: "2980B9"
+  default-urlcolor: "2980B9"
+  default-citecolor: "2C3E50"
+
+# ---------------------------------------------------------------
+# Chart colours
+# ---------------------------------------------------------------
+
+chart-colours:
+  - plain-charcoal
+  - plain-accent
+  - plain-steel
+  - plain-slate
+  - plain-silver
+
+# ---------------------------------------------------------------
+# Box colours
+# ---------------------------------------------------------------
+
+box-colours:
+  frame-info: plain-steel!80
+  bg-info: plain-light!50
+  frame-accent: plain-accent!80
+  bg-accent: plain-accent-light!20
+  frame-highlight: plain-charcoal!80
+  bg-highlight: plain-light!40
+  frame-contrast: plain-slate!80
+  bg-contrast: plain-light!30
+
+# ---------------------------------------------------------------
+# Title page colours
+# ---------------------------------------------------------------
+
+titlepage-color: plain-charcoal
+titlepage-text-color: white
+titlepage-rule-color: plain-steel
+
+# Template and engine
+template: eisvogel-reorganized
+pdf-engine: xelatex
+from: markdown-smart
+
+# Document structure
+book: true
+documentclass: scrbook
+top-level-division: chapter
+minitoc: true
+minitoc-depth: 2
+
+numbersections: true
+secnumdepth: 2
+toc: true
+toc-depth: 2
+
+# Title page configuration
+titlepage: true
+
+# Typography
+mainfont: "Open Sans"
+fontsize: 11pt
+
+# Page layout
+classoption:
+  - oneside
+margin-left: 2cm
+margin-right: 5cm
+margin-top: 2cm
+margin-bottom: 1.5cm
+
+# Headers and footers
+header-center: ""
+header-left: ""
+header-right: ""
+footer-left: ""
+footer-center: ""
+
+# Styling
+colorlinks: true
+footnotes-pretty: true
+float-placement-figure: H
+listings: true
+
+# Endnotes configuration
+endnotes-heading: References
+footnotes-as-endnotes: true
+endnotes-custom-heading: true
+endnotes-symmetric-margins: true
+
+# Code highlighting
+pandoc-latex-environment:
+  noteblock: [note]
+  tipblock: [tip]
+  warningblock: [warning]
+  cautionblock: [caution]
+  importantblock: [important]
+  marginbox: [marginbox]
+  examplebox: [examplebox]
+  widebox: [widebox]
+  textbox: [textbox]
+
+# Structural LaTeX only (definecolor auto-generated from brand-colours)
+header-includes: |
+  \usepackage{fontawesome5}
+  \usepackage[default]{sourcesanspro}
+  \usepackage{sourcecodepro}
+  \usepackage{microtype}
+  \usepackage{parskip}
+  \usepackage{longtable,booktabs,colortbl}
+  \usepackage{tabularx}
+  \usepackage[table]{xcolor}
+  \usepackage{markdown}
+  \usepackage[labelfont=bf]{caption}
+  \usepackage{pgf-pie}
+  \usepackage{pgfplots}
+  \usepackage{wrapfig}
+  \renewcommand*{\chapterpagestyle}{eisvogel-header-footer}
+  \addtokomafont{chapter}{\color{plain-charcoal}}
+  \addtokomafont{section}{\color{plain-charcoal}}
+  \addtokomafont{subsection}{\color{plain-steel}}
+  \addtokomafont{subsubsection}{\color{plain-slate}}
+  \RedeclareSectionCommand[tocbeforeskip=0.2em]{section}
+  \RedeclareSectionCommand[tocindent=0pt]{section}
+  \hyphenpenalty=5000
+  \tolerance=1000
+  \renewcommand{\arrayrulewidth}{1mm}
+  \renewcommand{\arraystretch}{1.1}
+  \renewcommand{\tabcolsep}{2mm}
+  \setkeys{Gin}{width=1\textwidth,keepaspectratio}
+  \pgfplotsset{compat=1.18}
+
+---
