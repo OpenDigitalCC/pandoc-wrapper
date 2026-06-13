@@ -36,11 +36,23 @@ overrides. The repo is the source of truth.
 
 Three layers: a swappable **base template** (look only); the portable
 **`pipeline-preamble.tex`** shim (every package the Lua filter's output
-needs - tables, boxes, charts); and **brand** YAML (colours/identity
-only). `mvp.latex` is the minimal reference template;
+needs - tables, boxes, charts); and **brand** YAML (now slimmed to
+colours, fonts, and heading colours only - the ~20 boilerplate
+header-includes lines moved into the preamble/wrapper).
+
+Active templates (`template:` selects by name):
+
+- `eisvogel-wrapper.latex` - the default for all brands. Pristine Eisvogel
+  3.4.0 (`vendor/eisvogel-3.4.0.latex`) plus two marked inserts: an
+  `\input{pipeline-preamble}` and the shared Eisvogel-look overrides.
+  Upgrade Eisvogel by re-vendoring and re-applying the two inserts.
+- `mvp.latex` - standalone minimal template (pandoc default + the preamble).
+- `eisvogel.beamer` - slides (not yet wired into the pipeline preamble).
+
 `conformance-test.md` is the fixture a template must render to be
-compatible. The driver puts the templates dir on `TEXINPUTS` so
-templates can `\input{pipeline-preamble}`.
+compatible. The driver puts the templates dir on `TEXINPUTS` so templates
+can `\input{pipeline-preamble}`. Superseded forks live under
+`templates/Archive/superseded-2026-06/`.
 
 ## How a build flows
 

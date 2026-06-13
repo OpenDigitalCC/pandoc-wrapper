@@ -72,6 +72,15 @@ pie and bar charts, a citation - with a colour-only brand and zero Eisvogel
 coupling. See `TEMPLATE-CONTRACT.md` for the formal contract and the conformance
 procedure.
 
+::: examplebox
+**Status: implemented.** The three layers now exist in the repository. Pristine
+Eisvogel 3.4.0 is vendored under `templates/vendor/`; `eisvogel-wrapper.latex` is
+that file plus two marked inserts; all nine brands were slimmed (about 20
+header-includes lines each removed) and now select `eisvogel-wrapper`. The
+superseded forks are archived. Remaining brand build failures in this environment
+are missing logo assets and one missing system font, not structural.
+:::
+
 ## On Eisvogel: vendor it, don't fork it
 
 The repository currently carries three ~1000-1500 line Eisvogel forks

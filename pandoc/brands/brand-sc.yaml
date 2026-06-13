@@ -69,7 +69,7 @@ titlepage-text-color: white
 titlepage-rule-color: sci-terracotta
 
 # Template and engine
-template: eisvogel-reorganized
+template: eisvogel-wrapper
 pdf-engine: xelatex
 from: markdown-smart
 
@@ -134,32 +134,14 @@ pandoc-latex-environment:
 
 # Structural LaTeX only (definecolor auto-generated from brand-colours)
 header-includes: |
-  \usepackage{fontawesome5}
   \usepackage[default]{sourcesanspro}
   \usepackage{sourceserifpro}
   \usepackage{sourcecodepro}
-  \usepackage{microtype}
-  \usepackage{parskip}
-  \usepackage{longtable,booktabs,colortbl}
-  \usepackage{tabularx}
-  \usepackage[table]{xcolor}
-  \usepackage[labelfont=bf]{caption}
-  \usepackage{pgf-pie}
-  \usepackage{pgfplots}
-  \usepackage{wrapfig}
-  \renewcommand*{\chapterpagestyle}{eisvogel-header-footer}
   \addtokomafont{chapter}{\rmfamily\color{sci-slate}}
   \addtokomafont{section}{\rmfamily\color{sci-slate}}
   \addtokomafont{subsection}{\sffamily\color{sci-mid}}
   \addtokomafont{subsubsection}{\sffamily\color{sci-light}}
-  \RedeclareSectionCommand[tocbeforeskip=0.2em]{section}
-  \RedeclareSectionCommand[tocindent=0pt]{section}
-  \hyphenpenalty=5000
-  \tolerance=1000
   \renewcommand{\arrayrulewidth}{0.4pt}
   \renewcommand{\arraystretch}{1.2}
-  \renewcommand{\tabcolsep}{2mm}
-  \setkeys{Gin}{width=1\textwidth,keepaspectratio}
-  \pgfplotsset{compat=1.18}
 
 ---

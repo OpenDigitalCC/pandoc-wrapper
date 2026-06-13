@@ -8,7 +8,12 @@
 %% by header-includes injection) can render the full feature set.
 %%
 %% This is the "shim" layer: the common ground between a stock base template
-%% (e.g. Eisvogel or the MVP) and the brand layer. Load it once.
+%% (e.g. Eisvogel or the MVP) and the brand layer.
+%%
+%% Idempotent: safe to \input more than once (a wrapper template and the MVP may
+%% both pull it in). The second load stops here.
+\ifdefined\pipelinePreambleLoaded\endinput\fi
+\def\pipelinePreambleLoaded{}
 
 % xcolor must see the table option before anything else loads it (hyperref etc).
 \PassOptionsToPackage{table}{xcolor}
@@ -32,11 +37,14 @@
 \usepackage{pgf-pie}
 \pgfplotsset{compat=1.18}
 
-% --- Generic typography / layout the pipeline assumes ---
+% --- Generic typography / layout the pipeline assumes (brands may override) ---
 \usepackage{microtype}
-\usepackage[labelfont=bf]{caption}
+\usepackage{parskip}
+\usepackage{caption}
+\captionsetup{labelfont=bf}  % brands override with \captionsetup, never a re-\usepackage
 \setkeys{Gin}{width=1\textwidth,keepaspectratio}
 \renewcommand{\tabcolsep}{2mm}
 \renewcommand{\arraystretch}{1.1}
+\renewcommand{\arrayrulewidth}{1mm}
 \hyphenpenalty=5000
 \tolerance=1000

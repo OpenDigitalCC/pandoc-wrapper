@@ -102,7 +102,7 @@ titlepage-text-color: odcc-purple
 titlepage-rule-color: odcc-teal
 
 # Template and engine
-template: eisvogel-reorganized
+template: eisvogel-wrapper
 pdf-engine: xelatex
 from: markdown-smart
 
@@ -171,32 +171,11 @@ pandoc-latex-environment:
 
 # Structural LaTeX only (definecolor auto-generated from brand-colours)
 header-includes: |
-  \usepackage{fontawesome5}
-  \usepackage{longtable}
   \usepackage[default]{sourcesanspro}
   \usepackage{sourcecodepro}
-  \usepackage{microtype}
-  \usepackage{parskip}
-  \usepackage{longtable,booktabs,colortbl}
-  \usepackage{tabularx}
-  \usepackage[table]{xcolor}
-  \usepackage[labelfont=bf]{caption}
-  \usepackage{pgf-pie}
-  \usepackage{pgfplots}
-  \usepackage{wrapfig}
-  \renewcommand*{\chapterpagestyle}{eisvogel-header-footer}
   \addtokomafont{chapter}{\color{DeepPurple}}
   \addtokomafont{section}{\color{TealBlue}}
   \addtokomafont{subsection}{\color{TealBlue}}
   \addtokomafont{subsubsection}{\color{DarkGray}}
-  \RedeclareSectionCommand[tocbeforeskip=0.2em]{section}
-  \RedeclareSectionCommand[tocindent=0pt]{section}
-  \hyphenpenalty=5000
-  \tolerance=1000
-  \renewcommand{\arrayrulewidth}{1mm}
-  \renewcommand{\arraystretch}{1.1}
-  \renewcommand{\tabcolsep}{2mm}
-  \setkeys{Gin}{width=1\textwidth,keepaspectratio}
-  \pgfplotsset{compat=1.18}
 
 ---

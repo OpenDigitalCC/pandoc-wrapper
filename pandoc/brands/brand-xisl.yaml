@@ -69,7 +69,7 @@ titlepage-text-color: xi-primary
 titlepage-rule-color: xi-navy
 
 # Template and engine
-template: eisvogel-reorganized
+template: eisvogel-wrapper
 pdf-engine: xelatex
 from: markdown-smart
 
@@ -138,31 +138,12 @@ pandoc-latex-environment:
 
 # Structural LaTeX only (definecolor auto-generated from brand-colours)
 header-includes: |
-  \usepackage{fontawesome5}
   \usepackage[default]{sourcesanspro}
   \usepackage{sourcecodepro}
-  \usepackage{microtype}
-  \usepackage{parskip}
-  \usepackage{longtable,booktabs,colortbl}
-  \usepackage{tabularx}
-  \usepackage[table]{xcolor}
-  \usepackage[labelfont=bf]{caption}
-  \usepackage{pgf-pie}
-  \usepackage{pgfplots}
-  \usepackage{wrapfig}
-  \renewcommand*{\chapterpagestyle}{eisvogel-header-footer}
   \addtokomafont{chapter}{\color{xi-navy}}
   \addtokomafont{section}{\color{xi-primary}}
   \addtokomafont{subsection}{\color{xi-primary}}
   \addtokomafont{subsubsection}{\color{xi-slate}}
-  \RedeclareSectionCommand[tocbeforeskip=0.2em]{section}
-  \RedeclareSectionCommand[tocindent=0pt]{section}
-  \hyphenpenalty=5000
-  \tolerance=1000
-  \renewcommand{\arrayrulewidth}{1mm}
   \renewcommand{\arraystretch}{2}
-  \renewcommand{\tabcolsep}{2mm}
-  \setkeys{Gin}{width=1\textwidth,keepaspectratio}
-  \pgfplotsset{compat=1.18}
 
 ---

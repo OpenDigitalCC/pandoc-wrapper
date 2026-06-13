@@ -71,7 +71,7 @@ titlepage-rule-color: cl-sky
 titlepage-logo: /home/sjm/Nextcloud/SJM/Work shares/Companies/Cloudient/Graphics/Cloudient Logo Files RGB-01.png
 
 # Template and engine
-template: eisvogel-reorganized
+template: eisvogel-wrapper
 pdf-engine: xelatex
 from: markdown-smart
 
@@ -145,31 +145,11 @@ pandoc-latex-environment:
 
 # Structural LaTeX only (definecolor auto-generated from brand-colours)
 header-includes: |
-  \usepackage{fontawesome5}
   \usepackage[default]{sourcesanspro}
   \usepackage{sourcecodepro}
-  \usepackage{microtype}
-  \usepackage{parskip}
-  \usepackage{longtable,booktabs,colortbl}
-  \usepackage{tabularx}
-  \usepackage[table]{xcolor}
-  \usepackage[labelfont=bf]{caption}
-  \usepackage{pgf-pie}
-  \usepackage{pgfplots}
-  \usepackage{wrapfig}
-  \renewcommand*{\chapterpagestyle}{eisvogel-header-footer}
   \addtokomafont{chapter}{\color{cl-dark}}
   \addtokomafont{section}{\color{cl-electric}}
   \addtokomafont{subsection}{\color{cl-electric}}
   \addtokomafont{subsubsection}{\color{cl-grey}}
-  \RedeclareSectionCommand[tocbeforeskip=0.2em]{section}
-  \RedeclareSectionCommand[tocindent=0pt]{section}
-  \hyphenpenalty=5000
-  \tolerance=1000
-  \renewcommand{\arrayrulewidth}{1mm}
-  \renewcommand{\arraystretch}{1.1}
-  \renewcommand{\tabcolsep}{2mm}
-  \setkeys{Gin}{width=1\textwidth,keepaspectratio}
-  \pgfplotsset{compat=1.18}
 
 ---

@@ -13,8 +13,11 @@ vary independently:
 
 base template
 : Page geometry, title page, headers/footers, table of contents, sectioning.
-  Owns *look*, not *features*. Examples: `eisvogel-reorganized.latex`,
-  `mvp.latex`. Swappable.
+  Owns *look*, not *features*. Examples: `eisvogel-wrapper.latex` (pristine
+  Eisvogel 3.4.0 from `vendor/` plus an `\input{pipeline-preamble}` and the
+  shared Eisvogel-look overrides) and the standalone `mvp.latex`. Swappable via
+  the brand's or document's `template:` field. A beamer/slides template can be
+  added the same way.
 
 pipeline preamble (`pipeline-preamble.tex`)
 : The portable "shim". Loads every LaTeX package the Lua filter's output relies
@@ -88,5 +91,16 @@ TEXINPUTS="$(pwd):" pandoc \
 ```
 
 A non-zero exit, or a missing element in the PDF, means the template does not yet
-meet the contract. `mvp.latex` is the minimal reference that passes; build new
-templates from it (or from Eisvogel) rather than from scratch.
+meet the contract. `mvp.latex` is the minimal reference that passes;
+`eisvogel-wrapper.latex` is the full-featured reference. Build new templates from
+either rather than from scratch.
+
+## Upgrading the vendored Eisvogel
+
+`eisvogel-wrapper.latex` is pristine upstream Eisvogel plus exactly two inserts,
+each fenced with `%% >>> pandoc-wrapper` / `%% <<< pandoc-wrapper`: an
+`\input{pipeline-preamble}` at the header-includes point, and the shared
+Eisvogel-look overrides just before `\begin{document}`. To upgrade: drop the new
+release into `vendor/`, copy it to `eisvogel-wrapper.latex`, and re-apply those
+two inserts. Keeping the local delta to two clearly-marked blocks is the whole
+point of not forking.
