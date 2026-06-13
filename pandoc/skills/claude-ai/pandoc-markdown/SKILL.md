@@ -18,6 +18,24 @@ template into a styled, branded PDF. You do not run the build; you deliver a
 clean `.md` file that follows these rules exactly. The complete reference, with
 every box and option, is in `REFERENCE.md` bundled with this skill.
 
+## Use the pipeline's constructs, not plain-Markdown equivalents
+
+The whole point of this pipeline is a Lua filter that turns extra fenced blocks
+into branded, styled LaTeX. **Reach for these first** - plain-Markdown fallbacks
+look unstyled and waste the pipeline:
+
+| Need | Use this | Not this |
+|------|----------|----------|
+| Any table | a `datatable` block | a pipe table |
+| A chart, proportion, breakdown | a `piechart` / `barchart` block | numbers in prose |
+| Callout, recommendation, example, key statement | a `:::` box | a bold paragraph or blockquote |
+| Term + explanation pairs | a definition list | `**bold label**: text` |
+| A citation or source | a `^[...]` footnote | an inline parenthetical |
+
+Each construct is detailed below. When a piece of content fits one of these,
+always use it - including for the first table in a document, not just "fancy"
+ones.
+
 ## Always start with YAML front matter
 
 Every document opens with a front-matter block. `title`, `subtitle`, and `brand`
@@ -30,6 +48,12 @@ subtitle: "Document Subtitle"
 brand: plain
 ---
 ```
+
+Optional page-layout field: brands default to a **wide outer margin** that hosts
+margin notes (`marginbox`). For a document that uses no margin notes, add
+`standard-margins: true` to get a centred page with normal symmetric margins.
+Omit it (the default) whenever the document uses `marginbox` or other margin
+content.
 
 The `brand` value selects a visual identity (colours, fonts, layout). Use exactly
 the brand the user specifies; otherwise `plain`.
@@ -71,11 +95,16 @@ Establish a formal reserves policy targeting six months of operating expenses.
 :::
 ```
 
-## Tables
+## Tables - always use `datatable`
 
-Simple data: standard pipe tables. Styled tables (coloured header, row shading,
-column widths, row spans): a fenced `datatable` block. Options precede `---`;
-pipe-delimited rows follow.
+**Default to a `datatable` block for every table**, even a simple two-column one.
+It gives the branded look - coloured header, row shading, controlled column
+widths, row spans - that a plain pipe table cannot. Only fall back to a pipe
+table if the user explicitly asks for plain Markdown; if in doubt, use
+`datatable`.
+
+A `datatable` is a fenced code block: options precede `---`, pipe-delimited rows
+follow.
 
 ```datatable
 columns: Phase | Actions | Deliverable
@@ -88,9 +117,18 @@ Design | Maintain architecture diagram. | Architecture diagram.
 ```
 
 Options: `columns`, `widths` (`X` flexible / `Ncm` fixed), `bold` (1-based column
-list), `tone` (`grey|light|medium|strong` or a number), `caption`. A blank
-leading cell continues the cell above as a row span. `**bold**` and LaTeX special
-characters in cells are handled automatically by the pipeline.
+list), `text` (1-based prose columns - they claim a larger share of the flexible
+width; `text: 2` weights column 2 x2, `text: 2*3` x3), `tone`
+(`grey|light|medium|strong` or a number), `caption`. A blank leading cell
+continues the cell above as a row span. `**bold**` and LaTeX special characters
+in cells are handled automatically by the pipeline.
+
+**Sizing columns.** By default every column shares the width equally, so a
+prose-heavy column wraps after almost every word next to short label columns.
+Always size a table that has one long-text column, by either: giving the short
+columns fixed widths and the prose column `X` (`widths: 3cm | X | 2cm`), or
+flagging the prose column with `text:` to weight it wider (`text: 2`). Reserve
+`X` and `text` for the column(s) that carry full sentences.
 
 ## Charts
 
@@ -121,5 +159,7 @@ stick to the constructs above so the document compiles cleanly.
 - [ ] En-dashes for ranges, space-hyphen-space for asides, no em-dashes
 - [ ] Blank line before every block element; no stray `---` in body
 - [ ] Lists use `-`; code blocks name their language
+- [ ] Every table is a `datatable` block, not a pipe table
+- [ ] Charts/proportions use `piechart`/`barchart`, not prose
 - [ ] Citations use `^[...]`; British English throughout
 - [ ] Boxes used sparingly with blank lines around them

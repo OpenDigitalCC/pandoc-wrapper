@@ -368,11 +368,18 @@ columns
 
 widths
 : Pipe-separated column widths. `X` for flexible (remaining space divided
-  equally among X columns), or a fixed width as `Ncm` (e.g. `3.5cm`). If
-  omitted, all columns default to `X`.
+  among X columns by weight), or a fixed width as `Ncm` (e.g. `3.5cm`). If
+  omitted, all columns default to `X` and share equally - so a prose column
+  next to short label columns wraps every word. Size such tables with fixed
+  widths on the labels (`3cm | X | 2cm`) or with `text:` below.
 
 bold
 : Comma-separated column numbers (1-based) to auto-bold. Optional.
+
+text
+: Comma-separated prose column numbers (1-based) that should take a heavier
+  share of the flexible width. `text: 2` weights column 2 at x2 relative to the
+  other `X` columns; `text: 2*3` at x3. Only affects `X` columns. Optional.
 
 tone
 : Colour intensity for the header row and alternating row shading. Named

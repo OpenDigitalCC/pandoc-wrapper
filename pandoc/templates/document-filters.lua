@@ -1072,6 +1072,17 @@ local function make_datatable(opts, rows)
     end
   end
 
+  -- Parse text (prose) columns. A flexible (X) column listed here is weighted
+  -- more heavily when the leftover width is shared out, so a prose-heavy column
+  -- gets the room it needs instead of an equal slice that wraps every word.
+  -- `text: 2` weights column 2 at x2; `text: 2*3` weights it x3.
+  local text_weight = {}
+  if opts["text"] then
+    for col, mult in (opts["text"] .. ","):gmatch("%s*(%d+)%s*%*?(%d*)%s*,") do
+      text_weight[tonumber(col)] = (mult ~= "" and tonumber(mult)) or 2
+    end
+  end
+
   -- Resolve tone
   local header_colour, row_colour, accent_hex = resolve_tone(opts["tone"])
 
@@ -1082,9 +1093,11 @@ local function make_datatable(opts, rows)
   -- X columns get: (\textwidth - fixed_total - (num_cols-1)*gap) / x_count
   local fixed_total = 0
   local x_count = 0
-  for _, w in ipairs(widths) do
+  local x_weight_total = 0
+  for i, w in ipairs(widths) do
     if w == "X" then
       x_count = x_count + 1
+      x_weight_total = x_weight_total + (text_weight[i] or 1)
     else
       local cm = w:match("p{([%d%.]+)cm}")
       if cm then fixed_total = fixed_total + tonumber(cm) end
@@ -1107,9 +1120,12 @@ local function make_datatable(opts, rows)
       -- num_cols * 0.4cm is a safe estimate for 2mm tabcolsep.
       local padding_cm = num_cols * 0.4
       local subtract = fixed_total + padding_cm
+      -- Share the leftover width by weight: equal slices by default, but a
+      -- column flagged via `text:` claims a proportionally larger slice.
+      local weight = text_weight[i] or 1
       col_spec_parts[i] = prefix .. string.format(
-        "p{\\dimexpr(\\textwidth - %.1fcm) / %s\\relax}",
-        subtract, x_count
+        "p{\\dimexpr(\\textwidth - %.1fcm) * %d / %d\\relax}",
+        subtract, weight, x_weight_total
       )
     else
       col_spec_parts[i] = prefix .. w

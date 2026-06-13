@@ -103,6 +103,11 @@ $if(geometry)$
 $else$
 \usepackage[margin=2.5cm,includehead=true,includefoot=true,centering,$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
 $endif$
+$if(standard-margins)$
+% Document opted out of the wide margin-note gutter: reset to a centred page
+% with symmetric margins, overriding any brand margin-left/right/top/bottom.
+\geometry{reset,margin=2.5cm,includehead=true,includefoot=true,centering}
+$endif$
 \usepackage{amsmath,amssymb}
 $if(cancel)$
 \usepackage{cancel}
@@ -554,10 +559,13 @@ $endif$
 $if(verbatim-in-note)$
 \VerbatimFootnotes % allow verbatim text in footnotes
 $endif$
-\definecolor{default-linkcolor}{HTML}{A50000}
-\definecolor{default-filecolor}{HTML}{A50000}
-\definecolor{default-citecolor}{HTML}{4077C0}
-\definecolor{default-urlcolor}{HTML}{4077C0}
+% Fallbacks only: a brand that sets default-linkcolor/urlcolor/citecolor in its
+% brand-colours wins, because the filter injects those \definecolor lines into
+% header-includes above and \providecolor leaves an existing definition intact.
+\providecolor{default-linkcolor}{HTML}{A50000}
+\providecolor{default-filecolor}{HTML}{A50000}
+\providecolor{default-citecolor}{HTML}{4077C0}
+\providecolor{default-urlcolor}{HTML}{4077C0}
 
 \hypersetup{
 $if(title-meta)$
@@ -939,6 +947,37 @@ $endif$
 \renewcommand*{\chapterpagestyle}{eisvogel-header-footer}
 \RedeclareSectionCommand[tocbeforeskip=0.2em]{section}
 \RedeclareSectionCommand[tocindent=0pt]{section}
+%% <<< pandoc-wrapper
+
+%% >>> pandoc-wrapper: endnotes activation (endnotes package loaded in preamble)
+$if(endnotes-heading)$
+\renewcommand{\notesname}{$endnotes-heading$}
+$endif$
+$if(footnotes-as-endnotes)$
+% Redirect footnotes into the endnotes stream, then emit them at end of document.
+\let\footnote=\endnote
+$if(endnotes-custom-heading)$
+\makeatletter
+\renewcommand\enoteheading{%
+  \clearpage
+  $if(endnotes-symmetric-margins)$
+  % Drop Eisvogel's binding-asymmetric margins for the notes section.
+  \newgeometry{margin=2.5cm,includehead=true,includefoot=true,centering}%
+  $endif$
+  \section*{\notesname}%
+  \markboth{\notesname}{\notesname}%
+  \addcontentsline{toc}{$if(book)$chapter$else$section$endif$}{\notesname}%
+  \mbox{}\par\vskip-\baselineskip%
+}
+\makeatother
+$endif$
+\AtEndDocument{%
+  \ifnum\value{endnote}>0\relax
+    \theendnotes
+    $if(endnotes-symmetric-margins)$\restoregeometry$endif$
+  \fi
+}
+$endif$
 %% <<< pandoc-wrapper
 
 \begin{document}

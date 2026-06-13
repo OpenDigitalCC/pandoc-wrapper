@@ -37,6 +37,18 @@
 \usepackage{pgf-pie}
 \pgfplotsset{compat=1.18}
 
+% --- Endnotes (footnote citations collected into an end-matter section) ---
+% The package and its look live here (template-independent); a base template
+% activates it per-brand via footnotes-as-endnotes / endnotes-* variables.
+\usepackage{endnotes}
+\makeatletter
+\renewcommand\enoteformat{%
+  \raggedright\leftskip=1.8em\parindent=-1.8em%
+  \leavevmode\llap{\makeenmark}%
+}
+\renewcommand\enotesize{\small}
+\makeatother
+
 % --- Generic typography / layout the pipeline assumes (brands may override) ---
 \usepackage{microtype}
 \usepackage{parskip}

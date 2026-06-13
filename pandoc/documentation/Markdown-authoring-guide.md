@@ -52,6 +52,20 @@ Other settings can be added to the front matter when needed - for example,
 whether to show a table of contents, page numbering depth, or print settings.
 These will be specified for you when relevant.
 
+## Page margins and margin notes
+
+Brands default to a **wide outer margin** so that margin notes (the `marginbox`,
+see below) have somewhere to sit. If your document does not use margin notes, a
+standard centred page with even margins often reads better. Switch to it with a
+single front-matter line:
+
+```yaml
+standard-margins: true
+```
+
+Leave it out (the default) whenever the document uses `marginbox` or other
+margin content - those need the wide margin to display.
+
 # Heading structure
 
 Use `#` for top-level headings, `##` for the next level down, and so on.
@@ -285,7 +299,8 @@ development, achieving €15 million in successful procurement outcomes.
 
 Placed in the wide outer margin of the page, alongside the main text. Good for
 quotes, attributions, or brief highlights that complement the prose without
-interrupting it. Requires a document layout with a wide outer margin.
+interrupting it. Requires the wide outer margin, which brands provide by default
+- so do **not** set `standard-margins: true` in a document that uses `marginbox`.
 
 Write this:
 
@@ -458,11 +473,22 @@ The options available are:
 : Pipe-separated column widths. Use `X` for a flexible column that shares the
   remaining space equally with other `X` columns. Use a fixed measurement like
   `3.5cm` for columns with known content width. If you omit this option,
-  all columns share space equally.
+  all columns share space equally - which makes a prose-heavy column wrap after
+  almost every word when it sits next to short label columns. Whenever one
+  column holds full sentences, size the table: give the short columns fixed
+  widths and the prose column `X` (`widths: 3cm | X | 2cm`), or use `text:`
+  below.
 
 `bold`
 : A comma-separated list of column numbers (starting from 1) whose content
   should be bold. For example, `bold: 1, 2` bolds the first two columns.
+
+`text`
+: A comma-separated list of prose column numbers that should claim a larger
+  share of the flexible width instead of an equal slice. `text: 2` weights
+  column 2 at twice the width of the other flexible columns; `text: 2*3` weights
+  it three times. Only flexible (`X`) columns are affected. This is the quick
+  alternative to working out fixed `widths` by hand.
 
 `tone`
 : Controls how strongly the brand colour is applied to the header and alternating

@@ -20,6 +20,24 @@ exhaustive reference (every box, every option, rendered examples) read
 `REFERENCE.md` in this skill folder, or the project guides under
 `pandoc/documentation/`.
 
+## Use the pipeline's constructs, not plain-Markdown equivalents
+
+The whole point of this pipeline is a Lua filter that turns extra fenced blocks
+into branded, styled LaTeX. **Reach for these first** - plain-Markdown fallbacks
+look unstyled and waste the pipeline:
+
+| Need | Use this | Not this |
+|------|----------|----------|
+| Any table | a `datatable` block | a pipe table |
+| A chart, proportion, breakdown | a `piechart` / `barchart` block | numbers in prose |
+| Callout, recommendation, example, key statement | a `:::` box | a bold paragraph or blockquote |
+| Term + explanation pairs | a definition list | `**bold label**: text` |
+| A citation or source | a `^[...]` footnote | an inline parenthetical |
+
+Each construct is detailed below. When a piece of content fits one of these,
+always use it - including for the first table in a document, not just "fancy"
+ones.
+
 ## Always start with YAML front matter
 
 Every document opens with a front-matter block. `title`, `subtitle`, and `brand`
@@ -33,8 +51,16 @@ brand: plain
 ---
 ```
 
-Available brands live in `pandoc/brands/` (`brand-<name>.yaml`): plain, oca,
-odcc, cloudient, dhcf, mg, sc, tprf, xisl. The `brand:` value is the `<name>`.
+Optional page-layout field: brands default to a **wide outer margin** that hosts
+margin notes (`marginbox`). For a document that uses no margin notes, add
+`standard-margins: true` to get a centred page with normal symmetric margins.
+Omit it (the default) whenever the document uses `marginbox` or other margin
+content.
+
+`plain` is the bundled default brand; use it unless the user names another.
+Organisation brands live in the user's external brands folder (one
+`<name>/template.yaml` per brand) and are selected by the same `brand:` field.
+If unsure which brands exist, use `plain` and let the user substitute theirs.
 
 ## Core formatting rules
 
@@ -73,11 +99,16 @@ Establish a formal reserves policy targeting six months of operating expenses.
 :::
 ```
 
-## Tables
+## Tables - always use `datatable`
 
-Simple data: standard pipe tables. Styled tables (coloured header, row shading,
-column widths, row spans): a fenced `datatable` block. Options precede `---`;
-pipe-delimited rows follow.
+**Default to a `datatable` block for every table**, even a simple two-column one.
+It gives the branded look - coloured header, row shading, controlled column
+widths, row spans - that a plain pipe table cannot. Only fall back to a pipe
+table if the user explicitly asks for plain Markdown; if in doubt, use
+`datatable`.
+
+A `datatable` is a fenced code block: options precede `---`, pipe-delimited rows
+follow.
 
 ```datatable
 columns: Phase | Actions | Deliverable
@@ -90,9 +121,18 @@ Design | Maintain architecture diagram. | Architecture diagram.
 ```
 
 Options: `columns`, `widths` (`X` flexible / `Ncm` fixed), `bold` (1-based column
-list), `tone` (`grey|light|medium|strong` or a number), `caption`. A blank
-leading cell continues the cell above as a row span. `**bold**` and LaTeX special
-characters in cells are handled automatically.
+list), `text` (1-based prose columns - they claim a larger share of the flexible
+width; `text: 2` weights column 2 x2, `text: 2*3` x3), `tone`
+(`grey|light|medium|strong` or a number), `caption`. A blank leading cell
+continues the cell above as a row span. `**bold**` and LaTeX special characters
+in cells are handled automatically.
+
+**Sizing columns.** By default every column shares the width equally, so a
+prose-heavy column wraps after almost every word next to short label columns.
+Always size a table that has one long-text column, by either: giving the short
+columns fixed widths and the prose column `X` (`widths: 3cm | X | 2cm`), or
+flagging the prose column with `text:` to weight it wider (`text: 2`). Reserve
+`X` and `text` for the column(s) that carry full sentences.
 
 ## Charts
 
@@ -108,17 +148,21 @@ Inline footnotes; they are collected into a References chapter on render.
 ...causes market degradation^[Akerlof, G.A. (1970). "The Market for Lemons", QJE 84(3), 488-500].
 ```
 
-## Building the PDF
+## Handover: deliver the Markdown, do not build it
 
-After writing or editing a document, render it with the driver script:
+Your job is to produce correct, ready-to-build Markdown - **not** to render it.
+Do not run `md-to-pdf.sh` (or `pandoc`) yourself. Write or edit the `.md` file
+and hand it back; the user runs the build. Tell them the command:
 
 ```bash
-./md-to-pdf.sh path/to/document.md
+md-to-pdf path/to/document.md          # installed tool
+./md-to-pdf.sh path/to/document.md     # from a repo checkout
 ```
 
-Useful flags: `--no-viewer` (don't auto-open the PDF), `--order-alpha` (sort
-multiple inputs), `--debug`. The script reads brands and templates from
-`~/.pandoc/`, so that deployment must be in place.
+Useful flags to mention: `--no-viewer` (don't auto-open the PDF),
+`--order-alpha` (sort multiple inputs), `--debug`. The only time you should run
+the build yourself is when the user explicitly asks you to test a render in the
+current session.
 
 ## If a build fails with "\multirow" (exit code 43)
 
@@ -136,5 +180,7 @@ log for the real cause of any build failure.
 - [ ] En-dashes for ranges, space-hyphen-space for asides, no em-dashes
 - [ ] Blank line before every block element; no stray `---` in body
 - [ ] Lists use `-`; code blocks name their language
+- [ ] Every table is a `datatable` block, not a pipe table
+- [ ] Charts/proportions use `piechart`/`barchart`, not prose
 - [ ] Citations use `^[...]`; British English throughout
 - [ ] Boxes used sparingly with blank lines around them
