@@ -5,8 +5,8 @@ deeper lookup for less-common front-matter and layout options. The fully worked,
 rendered-example versions live in the project guides:
 
 - `pandoc/documentation/Markdown-authoring-guide.md` — narrated guide with source + rendered output for every element
-- `pandoc/documentation/claude-markdown-formatting-instructions.md` — the condensed rule set
-- `pandoc/documentation/REF-brand-yaml.md`, `REF-template-yaml.md` — brand and template field references
+- `pandoc/documentation/TEMPLATE-CONTRACT.md` — what a template must provide (for template authors)
+- `pandoc/brands/plain/template.yaml` — the commented default brand, the reference for brand fields
 
 ## Front-matter options beyond title/subtitle/brand
 

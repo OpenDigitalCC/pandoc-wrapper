@@ -1,0 +1,150 @@
+# pandoc-wrapper
+
+Turn Markdown into polished, **branded** PDFs. You write Markdown with a small
+YAML header; the pipeline merges in a brand (colours, fonts, logo, cover),
+renders it through Pandoc and XeLaTeX with a Lua filter and an Eisvogel-based
+LaTeX template, and produces a professional document - title page, table of
+contents, styled tables, charts, callout boxes, endnote references and all.
+
+No LaTeX knowledge required to author. One command to build:
+
+```bash
+md-to-pdf report.md
+```
+
+## Why it exists
+
+The pipeline grew out of a single shell script, `compile.sh` (2018), written to
+assemble and version a multi-part report - "An Open Digital Approach for the
+NHS" - from Markdown fragments for OpenUK. That script proved the idea: authors
+write Markdown, the machine handles layout, versioning and branding.
+
+It then generalised. `md-to-pdf.sh` added a brand system so the same content
+could be produced under different visual identities, a Lua filter for richer
+constructs (styled datatables, charts, callout boxes), and a professional LaTeX
+template. In mid-2026 it was hardened into a real tool: robust YAML parsing, a
+three-layer template architecture over a vendored upstream Eisvogel, brands as
+self-contained external folders, an installer and a Debian package, and Claude
+"skills" so an assistant can draft documents that build first time.
+
+The goal is a pipeline that has matured past a personal wrapper - usable and
+shareable by others, with brands managed independently.
+
+## Use cases
+
+- Reports, briefings, and policy documents that need to look professional.
+- The same content rendered under several organisations' brands.
+- Print-ready output (crop marks, binding-aware layout) as well as digital.
+- AI-assisted drafting: an assistant with the skill writes house-format,
+  ready-to-build Markdown.
+
+## How it works
+
+Three layers keep content, features, and identity independent:
+
+- **Base template** (look): page geometry, title page, headers/footers, TOC.
+  `eisvogel-wrapper.latex` (pristine Eisvogel 3.4.0 + two small inserts) is the
+  default; `mvp.latex` is a minimal standalone alternative. Selectable per brand
+  or per document with `template:`.
+- **Pipeline preamble** (`pipeline-preamble.tex`): the portable shim that loads
+  every LaTeX package the filter's output needs (tables, boxes, charts). Any
+  template that pulls it in supports the full feature set - see
+  `pandoc/documentation/TEMPLATE-CONTRACT.md`.
+- **Brand** (identity): colours, fonts, heading colours, title-page logo/cover.
+  Each brand is a folder `<name>/template.yaml` plus its assets.
+
+A build flows: gather Markdown → parse front matter → merge the brand → run the
+Lua filter (boxes, datatables, charts → LaTeX) → render to PDF with XeLaTeX.
+
+## Install
+
+From the Debian package (pulls Pandoc and the required TeX Live sets):
+
+```bash
+sudo apt install ./pandoc-wrapper_1.0.0_all.deb
+```
+
+Or from a checkout, per-user or system-wide:
+
+```bash
+./scripts/install.sh            # ~/.local
+./scripts/install.sh --system   # /usr/local
+```
+
+Rebuild the package any time with `./scripts/build-deb.sh`.
+
+## Writing documents
+
+Every document starts with YAML front matter:
+
+```yaml
+---
+title: "Document Title"
+subtitle: "Document Subtitle"
+brand: plain
+---
+```
+
+Then write Markdown. The house conventions - definition lists over bold labels,
+the `:::` callout boxes, `datatable` and chart blocks, footnote citations,
+British English - are documented with rendered examples in
+**`pandoc/documentation/Markdown-authoring-guide.md`**.
+
+### Drafting with Claude (skills)
+
+`pandoc/skills/` packages the house format as a **skill** for Claude Code and for
+claude.ai. With it installed, Claude writes Markdown that already follows the
+conventions and builds without fixing up - useful for anyone producing documents
+for this pipeline. Install/upload instructions are in `pandoc/skills/README.md`.
+
+## Brands
+
+`plain` is the bundled default and the brand to copy when making a new one. Your
+organisation brands live **outside** this repo, in a base folder you manage
+(its own repo or a synced folder), pointed to by a config file:
+
+```ini
+# ~/.config/pandoc-wrapper/config
+brands_dir = /path/to/your/brands
+```
+
+Resolution is: `MD_TO_PDF_BRANDS` → `brands_dir` in the config → the bundled
+default. Run `md-to-pdf --help` or `man md-to-pdf` for the full mechanism. To
+start a new brand:
+
+```bash
+cp -r /usr/share/pandoc-wrapper/brands/plain  ~/your-brands/acme
+# edit acme/template.yaml; drop acme/logo.png and acme/cover.pdf in
+```
+
+See `pandoc/brands/plain/README.md` for the brand folder layout.
+
+## Repository layout
+
+```
+md-to-pdf.sh                     the driver (Bash)
+man/md-to-pdf.1                  man page
+scripts/                         extract-frontmatter.pl, install.sh, build-deb.sh
+pandoc/
+├── templates/                   eisvogel-wrapper, mvp, pipeline-preamble,
+│   │                            document-filters.lua, conformance-test.md
+│   └── vendor/                  pristine upstream Eisvogel (provenance)
+├── brands/plain/                the bundled default brand (copy-me reference)
+├── skills/                      the pandoc-markdown skill (claude.ai + Claude Code)
+└── documentation/
+    ├── Markdown-authoring-guide.md   how to write documents
+    ├── TEMPLATE-CONTRACT.md          how to write a compatible template
+    └── document-filters-README.md    the Lua filter internals
+```
+
+## Status and roadmap
+
+The pipeline is stable and packaged. Outstanding/forward-looking work (document
+versioning, a slides template, automated tests, driver hardening) is tracked in
+`RECOMMENDATIONS.md`.
+
+## Licence
+
+BSD-3-Clause. The bundled `eisvogel-wrapper.latex` derives from the Eisvogel
+template (© Pascal Wagler, John MacFarlane), also BSD-3-Clause; see
+`pandoc/templates/vendor/`.

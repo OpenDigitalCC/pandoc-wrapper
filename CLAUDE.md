@@ -10,22 +10,26 @@ produce a styled PDF.
 ## Layout
 
 ```
+README.md                        repo front door (genesis, use cases, map)
+RECOMMENDATIONS.md               outstanding/forward-looking work
 md-to-pdf.sh                     driver script (Bash)
+man/md-to-pdf.1                  man page
 scripts/
 ├── extract-frontmatter.pl       YAML::XS front-matter reader
-└── install.sh                   user/system installer
+├── install.sh                   user/system installer
+└── build-deb.sh                 builds the .deb (dpkg-deb, no root)
 pandoc/
 ├── templates/
 │   ├── document-filters.lua     boxes, datatables, charts -> raw LaTeX
 │   ├── eisvogel-wrapper.latex   default template (pristine Eisvogel + inserts)
 │   ├── mvp.latex                standalone minimal template
 │   ├── pipeline-preamble.tex    portable shim (filter's package deps)
-│   ├── vendor/                  pristine upstream Eisvogel (provenance)
-│   └── Archive/                 superseded forks
-├── brands/plain/               the only bundled brand (default + copy-me ref)
-│                               (org brands live in a separate repo - see below)
-├── documentation/              authoring guides + REF-* + contract/maturation
-└── experiments/                ad-hoc test documents (PDF outputs gitignored)
+│   ├── conformance-test.md      fixture a template must render
+│   └── vendor/                  pristine upstream Eisvogel (provenance)
+├── brands/plain/                the only bundled brand (default + copy-me ref)
+│                                (org brands live in a separate repo - see below)
+├── skills/                      the pandoc-markdown skill (claude.ai + Claude Code)
+└── documentation/               authoring guide, template contract, filter README
 ```
 
 ## Deployment model
@@ -51,7 +55,7 @@ brand's folder is added to `--resource-path` and `TEXINPUTS`, so assets
 resolve by bare filename. The installer ships the bundled defaults and
 writes the config pointing `brands_dir` at the external base.
 
-## Template layering (see TEMPLATE-CONTRACT.md, MATURATION.md)
+## Template layering (see documentation/TEMPLATE-CONTRACT.md)
 
 Three layers: a swappable **base template** (look only); the portable
 **`pipeline-preamble.tex`** shim (every package the Lua filter's output
@@ -83,10 +87,11 @@ can `\input{pipeline-preamble}`. Superseded forks live under
 
 ## Toolchain dependencies (LaTeX)
 
-Beyond pandoc + xelatex, the `plain` brand needs these TeX Live packages:
-`texlive-fonts-extra` (fontawesome5, sourcesanspro, sourcecodepro),
-KOMA-Script (scrbook), pgfplots, pgf-pie, markdown.sty. Flag missing
-ones to the user - no sudo here.
+Beyond pandoc + xelatex: `texlive-fonts-extra` (fontawesome5, source
+fonts), `texlive-latex-recommended` (KOMA-Script), `texlive-latex-extra`
+(tcolorbox, multirow, pgf-pie), `texlive-pictures` (pgf/pgfplots), and
+`libyaml-libyaml-perl`. The full set is encoded in the `.deb` Depends
+(see `scripts/build-deb.sh`). Flag missing ones - no sudo here.
 
 ## Gotchas
 
@@ -94,4 +99,4 @@ ones to the user - no sudo here.
   `\usepackage{multirow}` into `header-includes` so this no longer
   fails with "Undefined control sequence \multirow" (exit code 43).
 - `LC_ALL=C` is set globally in the script; mind locale-sensitive sorts.
-- Generated PDFs under `experiments/` are gitignored.
+- Build artifacts go to `dist/` (gitignored); scratch to `tmp/`.

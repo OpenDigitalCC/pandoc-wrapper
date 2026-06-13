@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Script version marker
-SCRIPT_VERSION="2024-12-12-v7-alpha-sort"
+SCRIPT_VERSION="1.0.0"
 
 # Global variables
 MDSRC=()
