@@ -52,8 +52,12 @@ brands_dir = /path/to/your/brands
 ```
 
 Resolution order: `MD_TO_PDF_BRANDS` env var, then `brands_dir` from the
-config, then the installed default. So you can keep brands in a synced or
-shared location and manage them independently of the pipeline.
+config, then the bundled defaults shipped with the tool. So you can keep
+brands in a synced or shared location and manage them independently.
+
+`plain` and this `_example` scaffold are the only brands bundled with the
+tool (the always-available fallback). Organisation brands live in their
+own base/repo - on this host, `/srv/projects/pandoc-brands/`.
 
 ## What belongs in a brand (and what does not)
 

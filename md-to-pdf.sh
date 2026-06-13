@@ -69,6 +69,11 @@ if [[ -z "$BRANDDIR" ]]; then
     BRANDDIR="${BRANDDIR:-$_xdg_brands}"
 fi
 
+# Bundled default brands ship with the tool (plain, _example). They are the
+# fallback when a brand is not in the user's external brands base, so `plain`
+# stays available no matter where brands_dir points.
+BUNDLED_BRANDDIR="${_ASSET_BASE:+$_ASSET_BASE/brands}"
+
 PDF_VIEWER="${MD_TO_PDF_VIEWER:-/usr/bin/evince}"
 P_ENGINE=xelatex
 
@@ -369,17 +374,29 @@ process_source_files() {
 load_brand_config() {
     local brand="$1"
 
-    # New layout: <brands-base>/<brand>/template.yaml (folder also holds assets).
-    # Legacy fallback: <brands-base>/brand-<brand>.yaml (flat).
-    local brand_dir="${BRANDDIR}/${brand}"
-    local brand_file="${brand_dir}/template.yaml"
-    if [[ ! -f "$brand_file" ]]; then
+    # Resolve a brand by name, in order:
+    #   1. external base, folder layout:  <BRANDDIR>/<brand>/template.yaml
+    #   2. bundled defaults, folder layout: <BUNDLED>/<brand>/template.yaml
+    #   3. legacy flat file:               <BRANDDIR>/brand-<brand>.yaml
+    local brand_dir="" brand_file=""
+    local cand
+    for cand in \
+        "${BRANDDIR}/${brand}" \
+        "${BUNDLED_BRANDDIR:+$BUNDLED_BRANDDIR/$brand}"; do
+        [[ -n "$cand" ]] || continue
+        if [[ -f "$cand/template.yaml" ]]; then
+            brand_dir="$cand"
+            brand_file="$cand/template.yaml"
+            break
+        fi
+    done
+    if [[ -z "$brand_file" ]]; then
         local legacy="${BRANDDIR}/brand-${brand}.yaml"
         if [[ -f "$legacy" ]]; then
             brand_file="$legacy"
             brand_dir="$BRANDDIR"
         else
-            echo "Warning: Brand '$brand' not found (looked for $brand_file and $legacy)" >&2
+            echo "Warning: Brand '$brand' not found in $BRANDDIR or bundled defaults" >&2
             return 1
         fi
     fi

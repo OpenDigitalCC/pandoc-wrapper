@@ -22,8 +22,10 @@ pandoc/
 │   ├── pipeline-preamble.tex    portable shim (filter's package deps)
 │   ├── vendor/                  pristine upstream Eisvogel (provenance)
 │   └── Archive/                 superseded forks
-├── brands/<name>/template.yaml   per-brand config + assets (folder per brand)
-│   └── _example/                scaffold brand to copy
+├── brands/                     bundled DEFAULT brands only
+│   ├── plain/template.yaml      the default brand
+│   └── _example/               scaffold brand to copy
+│                               (org brands live in a separate repo - see below)
 ├── documentation/              authoring guides + REF-* + contract/maturation
 └── experiments/                ad-hoc test documents (PDF outputs gitignored)
 ```
@@ -36,16 +38,20 @@ pandoc/
 `share/pandoc-wrapper/templates`. The driver locates templates relative to
 itself (`../share/pandoc-wrapper`), falling back to legacy `~/.pandoc`.
 
-**Brands are user data, kept OUTSIDE the tool.** Each brand is a folder
-`<brands-base>/<name>/template.yaml` plus its assets (logos, cover PDFs).
-The brands base is resolved: `MD_TO_PDF_BRANDS` env → `brands_dir` in
-`~/.config/pandoc-wrapper/config` → a co-located/XDG default. The installer
-seeds the base from the bundled defaults (without overwriting edits) and
-writes the config. `load_brand_config` adds the brand folder to
-`--resource-path` and `TEXINPUTS` so folder-local assets resolve by bare
-filename. The repo's `pandoc/brands/<name>/` are the bundled defaults;
-`pandoc/brands/_example/` is the scaffold for new brands. Legacy flat
-`brand-<name>.yaml` is still accepted as a fallback.
+**Brands.** Each brand is a folder `<base>/<name>/template.yaml` plus its
+assets (logos, cover PDFs). Only `plain` (default) and `_example`
+(scaffold) ship in this repo, as bundled defaults. Organisation brands
+live OUTSIDE the repo, managed separately - on this host at
+`/srv/projects/pandoc-brands/` (its own git repo).
+
+Resolution (`load_brand_config`): external base first, then bundled
+defaults, then legacy flat `brand-<name>.yaml`. The external base is
+`MD_TO_PDF_BRANDS` env → `brands_dir` in `~/.config/pandoc-wrapper/config`
+→ a co-located/XDG default. Because bundled defaults are the fallback,
+`plain` always resolves no matter where `brands_dir` points. The selected
+brand's folder is added to `--resource-path` and `TEXINPUTS`, so assets
+resolve by bare filename. The installer ships the bundled defaults and
+writes the config pointing `brands_dir` at the external base.
 
 ## Template layering (see TEMPLATE-CONTRACT.md, MATURATION.md)
 

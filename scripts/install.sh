@@ -11,12 +11,14 @@
 #   user   (default): prefix = ~/.local
 #   system          : prefix = /usr/local   (override with --prefix DIR)
 #
-# BRANDS are user data and live OUTSIDE the tool, in a base folder of brand
-# subfolders (<name>/template.yaml + assets). The installer seeds it from the
-# bundled defaults (without overwriting your edits) and points the config at it:
+# BRANDS. 'plain' and the '_example' scaffold ship WITH the tool as bundled
+# defaults (<prefix>/share/pandoc-wrapper/brands) and are the always-available
+# fallback. Your organisation brands live OUTSIDE the tool, in an external base
+# of brand subfolders (<name>/template.yaml + assets) that you manage separately
+# (e.g. its own repo). The installer creates that base and points the config at
+# it; you populate it with your brands.
 #   brands base : ~/.local/share/pandoc-wrapper/brands  (user)  -- or --brands-dir
 #   config      : ~/.config/pandoc-wrapper/config  (brands_dir = ...)
-# Manage brands there, or in your own folder/repo, independent of the tool.
 #
 # Usage:
 #   scripts/install.sh                 # user install into ~/.local
@@ -71,7 +73,7 @@ fi
 
 echo "Installing pandoc-wrapper into $PREFIX"
 
-install -d "$BINDIR" "$LIBDIR" "$SHAREDIR/templates"
+install -d "$BINDIR" "$LIBDIR" "$SHAREDIR/templates" "$SHAREDIR/brands"
 
 # Driver
 install -m 0755 "$REPO_ROOT/md-to-pdf.sh" "$BINDIR/md-to-pdf"
@@ -84,27 +86,23 @@ install -m 0644 "$REPO_ROOT"/pandoc/templates/*.latex "$SHAREDIR/templates/" 2>/
 install -m 0644 "$REPO_ROOT"/pandoc/templates/*.tex   "$SHAREDIR/templates/" 2>/dev/null || true
 install -m 0644 "$REPO_ROOT"/pandoc/templates/*.lua   "$SHAREDIR/templates/" 2>/dev/null || true
 
-# Brands: seed the external brands base from the bundled default set, WITHOUT
-# overwriting any brand the user has already customised. Each brand is a folder.
-install -d "$BRANDS_DIR"
-seeded=0
+# Bundled default brands (plain + the _example scaffold) ship WITH the tool as
+# the always-available fallback. Organisation brands are NOT bundled - they live
+# in the external brands base, managed separately.
 for bdir in "$REPO_ROOT"/pandoc/brands/*/; do
     [[ -d "$bdir" ]] || continue
-    name="$(basename "$bdir")"
-    if [[ -e "$BRANDS_DIR/$name" ]]; then
-        echo "  brand '$name' exists - left as is"
-    else
-        cp -r "$bdir" "$BRANDS_DIR/$name"
-        seeded=$((seeded + 1))
-    fi
+    cp -r "$bdir" "$SHAREDIR/brands/$(basename "$bdir")"
 done
 
-# Write a config pointing at the brands base, if one does not already exist.
+# Ensure the external brands base exists (the user fills it with their brands,
+# e.g. by cloning their brands repo) and point the config at it.
+install -d "$BRANDS_DIR"
 if [[ ! -f "$CONFIG_FILE" ]]; then
     install -d "$CONFIG_DIR"
     {
         echo "# pandoc-wrapper configuration"
-        echo "# Base folder holding brand subfolders (<name>/template.yaml + assets)."
+        echo "# Base folder holding your brand subfolders (<name>/template.yaml + assets)."
+        echo "# 'plain' and '_example' ship with the tool; add your own brands here."
         echo "brands_dir = $BRANDS_DIR"
     } > "$CONFIG_FILE"
     echo "  wrote config: $CONFIG_FILE"
@@ -113,10 +111,11 @@ else
 fi
 
 echo "Installed:"
-echo "  driver : $BINDIR/md-to-pdf"
-echo "  helper : $LIBDIR/extract-frontmatter.pl"
+echo "  driver   : $BINDIR/md-to-pdf"
+echo "  helper   : $LIBDIR/extract-frontmatter.pl"
 echo "  templates: $SHAREDIR/templates"
-echo "  brands : $BRANDS_DIR (seeded $seeded new)"
+echo "  defaults : $SHAREDIR/brands (plain, _example)"
+echo "  brands   : $BRANDS_DIR (your brands - add them here)"
 
 # PATH hint for user installs
 case ":$PATH:" in

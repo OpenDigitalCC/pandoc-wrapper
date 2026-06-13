@@ -160,14 +160,15 @@ installs should prefer the XDG path.
 
 Brands are user data, not tool data, so they live outside the tool in a
 configurable base. Each brand is now a folder - `<base>/<name>/template.yaml`
-plus its own assets (logos, cover PDFs) - rather than a flat
-`brand-<name>.yaml`. The base is resolved from `MD_TO_PDF_BRANDS`, then
-`brands_dir` in `~/.config/pandoc-wrapper/config`, then a default; the installer
-seeds it and writes the config. The build adds the selected brand's folder to
-`--resource-path` and `TEXINPUTS`, so a brand references its logo or cover by
-bare filename and stays portable - it can be kept in its own repo, a synced
-folder, or a package. `pandoc/brands/_example/` is the scaffold to copy;
-legacy flat brand files still load as a fallback.
+plus its own assets (logos, cover PDFs) - rather than a flat `brand-<name>.yaml`.
+Only `plain` (the default) and the `_example` scaffold ship with the tool as
+bundled defaults; organisation brands live in their own external base/repo (on
+this host, `/srv/projects/pandoc-brands/`). Resolution is external
+`brands_dir` (from `MD_TO_PDF_BRANDS` or the config file) first, then the bundled
+defaults - so `plain` always resolves wherever `brands_dir` points. The build
+adds the selected brand's folder to `--resource-path` and `TEXINPUTS`, so a brand
+references its logo or cover by bare filename and stays portable. The installer
+ships the bundled defaults and writes the config pointing at your external base.
 
 # Packaging
 
