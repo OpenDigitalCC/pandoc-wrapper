@@ -31,20 +31,12 @@ writing to the source Markdown (which may be non-local):
 
 ## 4. Slides
 
-The beamer format (`template: beamer`) is done (stock beamer + brand-colour
-wiring + beamer writer). Two slide items remain:
+Both PDF slide formats are now done: the beamer format (`template: beamer`,
+stock beamer + brand-colour wiring + beamer writer) and the modern full-bleed
+format (`template: slides`, article + eso-pic single-pass backgrounds, role
+colours, auto-boxed images, slide-splitting via `slides.lua`). One slide item
+remains:
 
-- **Modern (non-beamer) slide format** (`template: slides`): a flat, contemporary
-  look built in pure xelatex + eso-pic/tikz - full-bleed brand-colour
-  backgrounds, bold type, a title/section slide model, and auto-boxed images
-  (white rounded card so an image never clashes with a coloured slide). Proof of
-  concept in `tmp/modern-slides-mockup.tex`. Slide breaks on `#` (one H1 = one
-  slide), per-slide colour overridable via heading attributes, per-image boxing
-  via image attributes (`{.box}` / `{.plain}` / `{.bleed}`). Implemented as a
-  thin template + a slides-mode Lua filter; stays on the `pdf` writer (no driver
-  change). IMPORTANT: avoid TikZ `remember picture`/`overlay`/`current page` -
-  they need two compile passes; use absolute `eso-pic` backgrounds for
-  single-pass reliability.
 - **`pandoc-wrapper-js-renderer` (optional add-on package)**: an optional
   component bundling a telemetry-free Chromium so Pandoc's HTML slide writers
   (reveal.js, and others) can be rendered to PDF/served. Kept out of the core
