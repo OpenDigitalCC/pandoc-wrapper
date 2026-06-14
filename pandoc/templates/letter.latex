@@ -228,12 +228,16 @@ $endif$
 % Letter geometry: symmetric A4 margins that suit a DL window envelope.
 % Deliberately ignores the brand's margin-*/geometry (those target reports).
 % Override per document with letter-margin / letter-top / letter-bottom.
+% No includehead/includefoot: the page style is empty (no running head/foot is
+% ever drawn - the letterhead footer is placed absolutely via eso-pic), so the
+% text block must start exactly at `top`. With includehead the head height would
+% be reserved below `top`, pushing the address ~20mm past the window position
+% that address-top measures from the paper edge.
 \usepackage[a4paper,
   top=$if(letter-top)$$letter-top$$else$25mm$endif$,
   bottom=$if(letter-bottom)$$letter-bottom$$else$25mm$endif$,
   left=$if(letter-margin)$$letter-margin$$else$25mm$endif$,
-  right=$if(letter-margin)$$letter-margin$$else$25mm$endif$,
-  includehead=true,includefoot=true]{geometry}
+  right=$if(letter-margin)$$letter-margin$$else$25mm$endif$]{geometry}
 $if(beamer)$
 \newif\ifbibliography
 $endif$
@@ -543,7 +547,7 @@ $if(linestretch)$\setstretch{$linestretch$}$endif$
 % --- Letter header: window-envelope address (left), date + references (right) ---
 % \vspace* brings the recipient address to the window position measured from the
 % paper top, regardless of the top margin; page 2+ is unaffected.
-\vspace*{\dimexpr $if(address-top)$$address-top$$else$45mm$endif$ - $if(letter-top)$$letter-top$$else$25mm$endif$\relax}
+\vspace*{\dimexpr $if(address-top)$$address-top$$else$40mm$endif$ - $if(letter-top)$$letter-top$$else$25mm$endif$\relax}
 
 \noindent
 \begin{minipage}[t]{0.56\textwidth}\raggedright
