@@ -229,13 +229,10 @@ $if(verbatim-in-note)$
 \usepackage{fancyvrb}
 $endif$
 \usepackage{xcolor}
-$if(geometry)$
-$if(beamer)$
-\geometry{$for(geometry)$$geometry$$sep$,$endfor$}
-$else$
-\usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
-$endif$
-$endif$
+% NOTE: a report brand sets margin-left/right/top/bottom (a Pandoc `geometry`),
+% which beamer must NOT apply - it would shrink the slide's text block and push
+% it off-centre. Beamer manages its own slide geometry (aspectratio), so the
+% brand geometry is deliberately ignored here.
 $if(beamer)$
 \newif\ifbibliography
 $endif$
@@ -547,26 +544,18 @@ $for(include-before)$
 $include-before$
 
 $endfor$
-$if(toc)$
+$-- A report brand sets toc:true; that must NOT inject a (blank) agenda slide.
+$-- A deck opts in with slide-toc:true, and the agenda fills from # sections.
+$if(slide-toc)$
 $if(toc-title)$
 \renewcommand*\contentsname{$toc-title$}
 $endif$
-$if(beamer)$
 \begin{frame}[allowframebreaks]
 $if(toc-title)$
   \frametitle{$toc-title$}
 $endif$
   \tableofcontents[hideallsubsections]
 \end{frame}
-$else$
-{
-$if(colorlinks)$
-\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$$endif$}
-$endif$
-\setcounter{tocdepth}{$toc-depth$}
-\tableofcontents
-}
-$endif$
 $endif$
 $if(lof)$
 \listoffigures
