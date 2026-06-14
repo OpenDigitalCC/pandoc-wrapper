@@ -29,11 +29,27 @@ writing to the source Markdown (which may be non-local):
 - Inject the resolved version as `--metadata revision=...`, consumed by the template - never back into the source.
 - Implement as `scripts/version.pl` called by the driver. Offer an opt-in sidecar mode for git-tracked local docs.
 
-## 4. Slides / presentation template
+## 4. Slides
 
-Add a beamer template that meets `TEMPLATE-CONTRACT.md`, selectable with
-`template: <name>`. Charts and boxes render differently in beamer, so build it
-fresh against the conformance fixture rather than reusing the old Eisvogel beamer.
+The beamer format (`template: beamer`) is done (stock beamer + brand-colour
+wiring + beamer writer). Two slide items remain:
+
+- **Modern (non-beamer) slide format** (`template: slides`): a flat, contemporary
+  look built in pure xelatex + eso-pic/tikz - full-bleed brand-colour
+  backgrounds, bold type, a title/section slide model, and auto-boxed images
+  (white rounded card so an image never clashes with a coloured slide). Proof of
+  concept in `tmp/modern-slides-mockup.tex`. Slide breaks on `#` (one H1 = one
+  slide), per-slide colour overridable via heading attributes, per-image boxing
+  via image attributes (`{.box}` / `{.plain}` / `{.bleed}`). Implemented as a
+  thin template + a slides-mode Lua filter; stays on the `pdf` writer (no driver
+  change). IMPORTANT: avoid TikZ `remember picture`/`overlay`/`current page` -
+  they need two compile passes; use absolute `eso-pic` backgrounds for
+  single-pass reliability.
+- **`pandoc-wrapper-js-renderer` (optional add-on package)**: an optional
+  component bundling a telemetry-free Chromium so Pandoc's HTML slide writers
+  (reveal.js, and others) can be rendered to PDF/served. Kept out of the core
+  `.deb` (no browser dependency in the base tool); installed only when a user
+  wants web-native decks. Brand colours would map to CSS variables.
 
 ## 5. Automated tests
 
@@ -48,3 +64,26 @@ become true: the metadata model outgrows a handful of scalars; you need to both
 read and emit YAML; a second output format is added; you want unit tests around
 the merge/filename logic. Perl then buys real data structures, robust YAML, and
 list-form `system()` that removes the quoting hazards above.
+
+## 7. Cross-platform support and GUI/headless feedback
+
+Linux is the first-class target; make the rest degrade cleanly. Every invocation
+should always report *something* - start, completion, or a reason for failure.
+
+- **Platforms**: confirm operation on Windows (WSL is the likely path) and macOS;
+  keep non-Linux paths simple. Wayland should work but is unverified - check it
+  (not urgent, no Wayland in use yet).
+- **GUI detection**: detect whether a graphical session is present (e.g.
+  `$DISPLAY`/`$WAYLAND_DISPLAY`, `loginctl`, OS checks). If headless, force
+  `--no-viewer` automatically.
+- **Progress/notification (GUI)**: on start/progress/completion use a desktop
+  notification (`notify-send`) and/or a busy indicator; when a viewer is
+  suppressed but a GUI exists, still surface a "completed" notice so the user
+  knows it finished.
+- **Error surfacing**: pandoc failures are already caught - also catch and show
+  *pre-pandoc* errors (missing inputs, brand/template resolution, asset/font
+  problems). In a GUI, fall back through `zenity`/`gmessage`/`xmessage`/
+  `notify-send`; on a terminal, print clearly. Some of this may already exist -
+  audit `run_pandoc` and the viewer/notify paths first.
+- **Non-Linux**: simplify - skip the Linux notifier chain, rely on the platform's
+  own viewer/echo.
