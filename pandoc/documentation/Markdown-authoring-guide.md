@@ -840,6 +840,67 @@ The address position can be tuned with `address-top` (distance of the address
 from the top of the page, default `45mm`) and the page margins with
 `letter-margin`, `letter-top` and `letter-bottom`.
 
+# Slides
+
+For a presentation, set `template: beamer`. The output is a beamer slide deck
+(PDF). Headings define the structure: a level-1 heading (`#`) begins a section,
+and a level-2 heading (`##`) begins a slide. The content beneath a `##` is that
+slide's body. An empty `##` produces a slide with no title.
+
+```yaml
+---
+template: beamer
+brand: plain
+title: "London Perl Workshop"
+subtitle: "The Perl and Raku Foundation"
+author: "Stuart J Mackintosh"
+institute: "The Perl and Raku Foundation"
+date: "24 October 2024"
+theme: Madrid              # any beamer theme
+colortheme: whale          # any beamer colour theme
+fonttheme: professionalfonts
+---
+
+# A section
+
+## A slide
+
+- A point
+- Another point
+```
+
+Two columns on a slide use beamer's native column divs:
+
+```markdown
+::: columns
+:::: column
+
+## Activities
+
+- Governance
+- Support
+
+::::
+:::: column
+
+## Priorities
+
+1. Funding
+2. Conference
+
+::::
+:::
+```
+
+The brand's palette is wired into the beamer colours automatically (via the
+brand's `beamer-structure` and `beamer-accent` settings), so a deck matches the
+house style by default. You keep full control of the look: any `theme`,
+`colortheme` or `\setbeamercolor{...}` you add in `header-includes` overrides the
+brand. Images work as `![](picture.png)`.
+
+The datatable, chart and `:::` callout-box constructs are report features and do
+not apply on slides; use columns, lists and images instead.
+
 # Troubleshooting
 
 ## "Undefined control sequence ... \multirow" (exit code 43)

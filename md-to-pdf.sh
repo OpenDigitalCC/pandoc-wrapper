@@ -85,6 +85,9 @@ BUNDLED_BRANDDIR="${_ASSET_BASE:+$_ASSET_BASE/brands}"
 
 PDF_VIEWER="${MD_TO_PDF_VIEWER:-/usr/bin/evince}"
 P_ENGINE=xelatex
+# Pandoc output writer. Normally "pdf" (LaTeX article -> PDF); slides switch it
+# to "beamer" so Pandoc applies the beamer themes and frame structure.
+P_WRITER=pdf
 
 # Per-brand asset directory (logos, cover PDFs); set when a brand loads.
 BRAND_ASSET_DIR=""
@@ -548,26 +551,35 @@ generate_filename() {
 
 setup_pandoc_options() {
     # Set template if specified
+    local tmpl=""
     if [[ -n $DOC_P_TEMPLATE ]]; then
-        P_TEMPLATE=" --template=$INCDIR/$(echo "$DOC_P_TEMPLATE" | xargs).latex "
+        tmpl=$(echo "$DOC_P_TEMPLATE" | xargs)
+        P_TEMPLATE=" --template=$INCDIR/$tmpl.latex "
     fi
-    
+
     # Set engine if specified
     if [[ -n $DOC_P_ENGINE ]]; then
         P_ENGINE=$(echo "$DOC_P_ENGINE" | xargs)
     fi
-    
+
     # Set top-level division if specified
     if [[ -n $DOC_P_TLD ]]; then
         P_TLD="--top-level-division=$(echo "$DOC_P_TLD" | xargs)"
     fi
-    
-    # Set type if specified
+
+    # Output writer. A `type:` field selects it explicitly; the beamer template
+    # implies the beamer writer so Pandoc applies the themes and frame structure
+    # (and we drop chapter division, which the beamer class does not provide).
     if [[ -n $DOC_TYPE ]]; then
-        echo " - Type: $DOC_TYPE"
-        P_TYPE=" -t $DOC_TYPE "
+        P_WRITER=$(echo "$DOC_TYPE" | xargs)
+        echo " - Output type: $P_WRITER"
     fi
-    
+    if [[ "$tmpl" == "beamer" ]]; then
+        P_WRITER=beamer
+        P_TLD=""
+        echo " - Slides: beamer output"
+    fi
+
     # Show print-ready status
     if [[ "$DOC_PRINTREADY" == "true" ]]; then
         echo " - Print-ready mode: crop marks will be added"
@@ -647,7 +659,7 @@ run_pandoc() {
     fi
 
     # Build the complete pandoc command
-    local pandoc_cmd="pandoc $pandoc_debug $(load_filters) $lua_filters --resource-path=\"$resource_path\" --pdf-engine=\"$P_ENGINE\" ${P_TEMPLATE} $P_TLD --metadata=date:\"$DOC_DATE\" -f markdown+inline_notes \"$contentfile\" -t pdf -o \"$dstfile\""
+    local pandoc_cmd="pandoc $pandoc_debug $(load_filters) $lua_filters --resource-path=\"$resource_path\" --pdf-engine=\"$P_ENGINE\" ${P_TEMPLATE} $P_TLD --metadata=date:\"$DOC_DATE\" -f markdown+inline_notes \"$contentfile\" -t $P_WRITER -o \"$dstfile\""
 
     # Run pandoc
     if pandoc $pandoc_debug \
@@ -659,7 +671,7 @@ run_pandoc() {
         --metadata=date:"$DOC_DATE" \
         -f markdown+inline_notes \
         "$contentfile" \
-        -t pdf \
+        -t "$P_WRITER" \
         $(load_filters) \
         -o "$dstfile" > "$outfile" 2>&1; then
         

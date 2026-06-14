@@ -197,6 +197,55 @@ Asset files (logo, artwork) resolve by bare filename from the brand folder, the
 same as brand logos. Layout can be nudged with `address-top` (default 45mm),
 `letter-margin`, `letter-top`, `letter-bottom`.
 
+## Slides (beamer)
+
+For a slide deck, set `template: beamer`. Output is a beamer PDF. Structure:
+a level-1 heading (`#`) starts a section; a level-2 heading (`##`) starts a new
+slide; content under it is the slide body. An empty `##` gives an untitled slide.
+
+```yaml
+---
+template: beamer
+brand: plain
+title: "London Perl Workshop"
+subtitle: "The Perl and Raku Foundation"
+author: "Stuart J Mackintosh"
+institute: "The Perl and Raku Foundation"
+date: "24 October 2024"
+theme: Madrid           # any beamer theme
+colortheme: whale       # any beamer colour theme
+fonttheme: professionalfonts
+---
+```
+
+Two-column slides use beamer's native column divs:
+
+```markdown
+::: columns
+:::: column
+
+## Left
+
+- point
+
+::::
+:::: column
+
+## Right
+
+- point
+
+::::
+:::
+```
+
+Brand colours are wired into the beamer palette automatically (the brand sets
+`beamer-structure`/`beamer-accent`); the document keeps full control of the
+`theme`, `colortheme` and any `\setbeamercolor` it puts in `header-includes` -
+those override the brand. Images use `![](logo.png)` as usual. The datatable,
+chart and `:::` box constructs are report features and are not available on
+slides; use beamer columns, lists and images instead.
+
 ## Handover: deliver the Markdown, do not build it
 
 Your job is to produce correct, ready-to-build Markdown - **not** to render it.

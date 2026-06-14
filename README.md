@@ -45,7 +45,8 @@ Three layers keep content, features, and identity independent:
 - **Base template** (look): page geometry, title page, headers/footers, TOC.
   `eisvogel-wrapper.latex` (pristine Eisvogel 3.4.0 + two small inserts) is the
   default; `mvp.latex` is a minimal standalone alternative; `letter.latex` is a
-  window-envelope letter format (address block, date/refs, optional letterhead).
+  window-envelope letter format (address block, date/refs, optional letterhead);
+  `beamer.latex` produces slides (stock beamer themes plus brand-colour wiring).
   Selectable per brand or per document with `template:`.
 - **Pipeline preamble** (`pipeline-preamble.tex`): the portable shim that loads
   every LaTeX package the filter's output needs (tables, boxes, charts). Any

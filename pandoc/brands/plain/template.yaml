@@ -78,6 +78,12 @@ titlepage-rule-color: plain-steel
 # Template and engine
 template: eisvogel-wrapper
 pdf-engine: xelatex
+
+# Beamer (slides): applied only when a document selects template: beamer.
+# Names refer to brand-colours above; the document keeps full control of the
+# beamer theme/colortheme and can override these in its own header-includes.
+beamer-structure: plain-charcoal
+beamer-accent: plain-accent
 from: markdown-smart
 
 # Document structure
