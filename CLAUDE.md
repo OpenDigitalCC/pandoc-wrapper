@@ -25,10 +25,12 @@ scripts/bump-version.sh          bump VERSION + stamp SCRIPT_VERSION/man page
 pandoc/
 ├── templates/
 │   ├── document-filters.lua     boxes, datatables, charts -> raw LaTeX
+│   ├── slides.lua               slide splitter for the modern slides format
 │   ├── eisvogel-wrapper.latex   default template (pristine Eisvogel + inserts)
 │   ├── mvp.latex                standalone minimal template
 │   ├── letter.latex             letter format (window envelope, refs, letterhead)
 │   ├── beamer.latex             slides (stock beamer + brand-colour wiring)
+│   ├── slides.latex             modern slides (full-bleed xelatex + eso-pic)
 │   ├── pipeline-preamble.tex    portable shim (filter's package deps)
 │   ├── conformance-test.md      fixture a template must render
 │   └── vendor/                  pristine upstream Eisvogel (provenance)
@@ -95,12 +97,25 @@ Active templates (`template:` selects by name):
   beamer theme/colortheme/header-includes (these override the brand mapping).
   Selecting `template: beamer` switches the driver to the **beamer writer**
   (`-t beamer`) and drops chapter division.
+- `slides.latex` - the modern (non-beamer) slides format. An `article`-based
+  full-bleed deck in pure xelatex: eso-pic single-pass backgrounds (no TikZ
+  `remember picture`/`overlay`, which need two passes), bold sans type, a
+  title/section/content slide model, per-slide colour roles, and auto-boxed
+  images (white rounded card). Ground colours default from the brand's
+  `beamer-structure`/`beamer-accent` (override per deck with `slide-title-bg`/
+  `slide-accent`). It reads `brand-colours` straight from metadata, so it does
+  **not** use `document-filters.lua`; selecting `template: slides` swaps the
+  content filter to **`slides.lua`** (the slide splitter: H1→`\SectionSlide`,
+  H2→`\BeginSlide[role]`, columns→minipages, standalone images→`\slidecard`).
+  Stays on the **pdf writer** (it is article-based, not beamer) but drops
+  chapter division.
 
 A document's `template:` overrides the brand default, so the letter, slides (and
 any alternative format) are selectable per document. The driver saves the
 document's `template`/`engine` across the brand merge for this
-(`load_brand_config` then re-extract in `main`), and `template: beamer` also sets
-`P_WRITER=beamer`.
+(`load_brand_config` then re-extract in `main`). `template: beamer` also sets
+`P_WRITER=beamer`; `template: slides` sets `P_LUA_FILTER=slides.lua` (writer
+stays `pdf`).
 
 `conformance-test.md` is the fixture a template must render to be
 compatible. The driver puts the templates dir on `TEXINPUTS` so templates

@@ -23,6 +23,8 @@ my-brand/
 ├── template.yaml     the brand config (required)
 ├── logo.png          title-page logo            (optional)
 ├── cover.pdf         full-page cover/title page (optional)
+├── letter-logo.png   letterhead logo            (optional, letters)
+├── letterhead.pdf    full-page letterhead art   (optional, letters)
 ├── filter.lua        brand-specific Lua filter  (optional)
 └── ... any other assets referenced by template.yaml
 ```
@@ -40,6 +42,53 @@ you add any image. Once you drop files in:
 - Logo on the generated title page: add `logo.png`, uncomment `titlepage-logo`.
 - Full-page PDF/image cover: add `cover.pdf`, uncomment `titlepage-background`
   (this replaces the generated layout with your artwork).
+
+## Letters and slides
+
+The same brand styles all three output formats (report, letter, slides). Most
+brand settings - colours, fonts, heading colours - apply everywhere. Two formats
+have a few extra, optional brand keys.
+
+### Slides (`template: beamer` or `template: slides`)
+
+Wire the brand palette into the slide colours by naming two of your
+`brand-colours` (the plain brand does this):
+
+```yaml
+beamer-structure: plain-charcoal   # structure, palette, title, frametitle
+beamer-accent: plain-accent        # block titles, head/foot subsection
+```
+
+These two keys drive **both** slide formats:
+
+- **Beamer** (`template: beamer`): they map onto the beamer palette. A deck still
+  controls its own beamer `theme` / `colortheme`, and anything it sets in
+  `header-includes` overrides the brand. Leave both out and slides fall back to
+  the chosen beamer theme.
+- **Modern** (`template: slides`): `beamer-structure` is the title/dark
+  full-bleed ground and `beamer-accent` the rule/accent ground. A deck can
+  override per-document with `slide-title-bg` / `slide-accent`.
+
+### Letters (`template: letter`)
+
+Letters inherit the brand fonts and colours automatically. A brand can also
+supply letterhead defaults so every letter is on-brand without per-document
+settings - drop the assets into the brand folder and add:
+
+```yaml
+# Built letterhead (logo top-right + ruled contact footer):
+letterhead-logo: letter-logo.png
+letterhead-company: "Your Organisation Ltd"
+letterhead-contact:
+  - "1 High Street, Town AB1 2CD"
+  - "hello@example.org"
+letterhead-rule-colour: plain-accent   # a brand-colour name
+# ...or a single full-page artwork instead:
+# letterhead: letterhead.pdf
+```
+
+A document can still override or add any of these. See the authoring guide's
+**Letters** and **Slides** sections for the full field lists.
 
 ## Where brands live
 

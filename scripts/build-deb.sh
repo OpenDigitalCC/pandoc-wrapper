@@ -46,7 +46,7 @@ install -m 0755 "$REPO_ROOT/md-to-pdf.sh"                  "$BUILD/usr/bin/md-to
 install -m 0755 "$REPO_ROOT/scripts/extract-frontmatter.pl" "$BUILD/usr/lib/md-to-pdf/extract-frontmatter.pl"
 
 # Templates the pipeline actually uses (not the vendored provenance copy).
-for f in eisvogel-wrapper.latex mvp.latex letter.latex beamer.latex pipeline-preamble.tex document-filters.lua conformance-test.md; do
+for f in eisvogel-wrapper.latex mvp.latex letter.latex beamer.latex slides.latex pipeline-preamble.tex document-filters.lua slides.lua conformance-test.md; do
     install -m 0644 "$REPO_ROOT/pandoc/templates/$f" "$BUILD/usr/share/pandoc-wrapper/templates/$f"
 done
 

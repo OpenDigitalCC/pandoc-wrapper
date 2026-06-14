@@ -1,0 +1,72 @@
+% slides.latex - modern full-bleed PDF slides (xelatex, not beamer).
+% Paired with slides.lua, which splits the body into \SectionSlide/\BeginSlide.
+% Single-pass: backgrounds are painted via eso-pic (no TikZ remember-picture).
+% Brand identity = colours (reuses beamer-structure/beamer-accent) + a clean
+% sans; report-oriented brand header-includes are deliberately not pulled in.
+\documentclass[11pt]{article}
+\usepackage[paperwidth=25.6cm,paperheight=14.4cm,top=1.4cm,bottom=1.1cm,left=1.7cm,right=1.7cm]{geometry}
+\usepackage[default]{sourcesanspro}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{eso-pic}
+\usepackage{tikz}
+\usetikzlibrary{shadows.blur}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setcounter{secnumdepth}{-\maxdimen}
+\newlength{\slideh}\setlength{\slideh}{\paperheight}
+
+% --- Brand palette (defined straight from metadata; no filter injection) ---
+$for(brand-colours/pairs)$
+\definecolor{$brand-colours.key$}{HTML}{$brand-colours.value$}
+$endfor$
+
+% --- Slide colour roles. Default from the brand's beamer-structure/accent so a
+%     deck matches house style; override with slide-title-bg / slide-accent. ---
+\colorlet{stitlebg}{$if(slide-title-bg)$$slide-title-bg$$else$$if(beamer-structure)$$beamer-structure$$else$black$endif$$endif$}
+\colorlet{saccent}{$if(slide-accent)$$slide-accent$$else$$if(beamer-accent)$$beamer-accent$$else$gray$endif$$endif$}
+\colorlet{scontentbg}{stitlebg!7!white}
+\colorlet{scontentfg}{stitlebg}
+
+% Full-bleed background + thin top accent rule for the current page only.
+\newcommand{\paintslide}[1]{\AddToShipoutPictureBG*{\put(0,0){%
+  \begin{tikzpicture}
+    \useasboundingbox (0,0) rectangle (\paperwidth,\paperheight);
+    \fill[#1] (0,0) rectangle (\paperwidth,\paperheight);
+    \fill[saccent] (0,\paperheight-3mm) rectangle (\paperwidth,\paperheight);
+  \end{tikzpicture}}}}
+
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\expandafter\def\csname slrolelight\endcsname{\def\curbg{scontentbg}\def\curfg{scontentfg}}
+\expandafter\def\csname slroledark\endcsname{\def\curbg{stitlebg}\def\curfg{white}}
+\expandafter\def\csname slroleaccent\endcsname{\def\curbg{saccent}\def\curfg{white}}
+\newcommand{\slideroles}[1]{\csname slrole#1\endcsname}
+
+% First-slide guard: do not ship a blank page 1 before the first slide.
+\newif\ifslidestarted \slidestartedfalse
+\newcommand{\slidebreak}{\ifslidestarted\clearpage\else\global\slidestartedtrue\fi}
+
+\newcommand{\BeginSlide}[2][light]{%
+  \slidebreak \slideroles{#1}\paintslide{\curbg}\color{\curfg}%
+  {\bfseries\fontsize{23}{27}\selectfont #2\par}%
+  \vspace{1.5mm}{\color{saccent}\rule{0.30\linewidth}{2pt}}\par\vspace{5mm}%
+  \bfseries\large}
+\newcommand{\EndSlide}{}
+\newcommand{\SectionSlide}[1]{%
+  \slidebreak \paintslide{stitlebg}\color{white}%
+  \vfill {\bfseries\fontsize{38}{44}\selectfont #1\par}%
+  \vspace{2mm}{\color{saccent}\rule{0.30\linewidth}{3pt}}\vfill}
+\newcommand{\slidecard}[1]{\tikz\node[fill=white,rounded corners=5pt,inner sep=8pt,blur shadow={shadow blur steps=6}]{#1};}
+
+\begin{document}
+$if(title)$
+\paintslide{stitlebg}\color{white}
+\vspace*{3.2cm}
+{\bfseries\fontsize{40}{46}\selectfont $title$\par}
+$if(subtitle)$\vspace{8mm}{\color{saccent!45!white}\fontsize{22}{26}\selectfont $subtitle$\par}$endif$
+\vfill
+{\fontsize{13}{16}\selectfont\color{white!75}$for(author)$$author$$sep$, $endfor$$if(date)$\quad\textbullet\quad $date$$endif$\par}
+\global\slidestartedtrue
+$endif$
+$body$
+\end{document}

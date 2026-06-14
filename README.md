@@ -46,7 +46,8 @@ Three layers keep content, features, and identity independent:
   `eisvogel-wrapper.latex` (pristine Eisvogel 3.4.0 + two small inserts) is the
   default; `mvp.latex` is a minimal standalone alternative; `letter.latex` is a
   window-envelope letter format (address block, date/refs, optional letterhead);
-  `beamer.latex` produces slides (stock beamer themes plus brand-colour wiring).
+  `beamer.latex` produces classic beamer slides, and `slides.latex` a modern
+  full-bleed slide deck - both wired to the brand palette.
   Selectable per brand or per document with `template:`.
 - **Pipeline preamble** (`pipeline-preamble.tex`): the portable shim that loads
   every LaTeX package the filter's output needs (tables, boxes, charts). Any
@@ -106,6 +107,22 @@ Then write Markdown. The house conventions - definition lists over bold labels,
 the `:::` callout boxes, `datatable` and chart blocks, footnote citations,
 British English - are documented with rendered examples in
 **`pandoc/documentation/Markdown-authoring-guide.md`**.
+
+### Output formats
+
+The same pipeline produces four kinds of document. A document chooses its format
+with the `template:` field in its front matter (a brand sets the default):
+
+| Format | `template:` | What it is |
+|--------|-------------|------------|
+| **Report** (default) | `eisvogel-wrapper` (or `mvp`) | Title page, TOC, styled body - briefings, policy docs, reports. |
+| **Letter** | `letter` | No title page; recipient address positioned for a DL window envelope, date and `our-ref`/`your-ref`, optional letterhead (full-page artwork or a built logo + contact footer). |
+| **Slides** (beamer) | `beamer` | A beamer slide deck; standard beamer `theme`/`colortheme` with the brand palette wired in. |
+| **Slides** (modern) | `slides` | A flat, full-bleed slide deck (pure xelatex): solid brand-colour grounds, bold type, per-slide colour roles, auto-boxed images. |
+
+All four share the brand system (colours, fonts, identity). Each format's fields
+and examples are in `pandoc/documentation/Markdown-authoring-guide.md` (see the
+**Letters** and **Slides** sections); `man md-to-pdf` lists them too.
 
 ### Drafting with Claude (skills)
 

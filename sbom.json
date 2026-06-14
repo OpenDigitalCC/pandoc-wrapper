@@ -5,7 +5,7 @@
       "hashes" : [
         {
           "alg" : "SHA-256",
-          "content" : "ce704d4bb288c2e0354d1bd82d8ecc40469b5f98c2030a5f4f1f0481743149cf"
+          "content" : "b0dbf6c92838d1ecf416cd0765973b2e7b52668e01fa73131f508c0ca442d9bc"
         }
       ],
       "licenses" : [
@@ -104,7 +104,7 @@
       "hashes" : [
         {
           "alg" : "SHA-256",
-          "content" : "ebc5ea1a8dc590c644ac49c972adb3f0e583c0667649e54a1d8088ccd43ffef1"
+          "content" : "f74a40952b82ea91bafbe1e134fc640dc98043f247b88c47a69e9657401020f6"
         }
       ],
       "licenses" : [
@@ -196,6 +196,43 @@
         }
       ],
       "purl" : "pkg:generic/opendigital/pandoc/templates/document-filters.lua@1.0.2",
+      "type" : "file",
+      "version" : "1.0.2"
+    },
+    {
+      "hashes" : [
+        {
+          "alg" : "SHA-256",
+          "content" : "3e6aa4533f4e1c2a9c4fc2acf06152e16e30786b2febb06754a58077243b41bd"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "BSD-3-Clause"
+          }
+        }
+      ],
+      "name" : "slides.lua",
+      "properties" : [
+        {
+          "name" : "pandoc-wrapper:bucket",
+          "value" : "template"
+        },
+        {
+          "name" : "pandoc-wrapper:category",
+          "value" : "source"
+        },
+        {
+          "name" : "pandoc-wrapper:note",
+          "value" : "modern slides splitter (original)"
+        },
+        {
+          "name" : "pandoc-wrapper:path",
+          "value" : "pandoc/templates/slides.lua"
+        }
+      ],
+      "purl" : "pkg:generic/opendigital/pandoc/templates/slides.lua@1.0.2",
       "type" : "file",
       "version" : "1.0.2"
     },
@@ -310,6 +347,117 @@
       "hashes" : [
         {
           "alg" : "SHA-256",
+          "content" : "a298e1ef1b1a77bdcbc26f647c0ba16a97e7cb0b656124b838648b5cb6b1902a"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "BSD-3-Clause"
+          }
+        }
+      ],
+      "name" : "letter.latex",
+      "properties" : [
+        {
+          "name" : "pandoc-wrapper:bucket",
+          "value" : "template"
+        },
+        {
+          "name" : "pandoc-wrapper:category",
+          "value" : "source"
+        },
+        {
+          "name" : "pandoc-wrapper:note",
+          "value" : "letter format; derived from the pandoc default template (dual GPL-2+/BSD-3, used under BSD-3)"
+        },
+        {
+          "name" : "pandoc-wrapper:path",
+          "value" : "pandoc/templates/letter.latex"
+        }
+      ],
+      "purl" : "pkg:generic/opendigital/pandoc/templates/letter.latex@1.0.2",
+      "type" : "file",
+      "version" : "1.0.2"
+    },
+    {
+      "hashes" : [
+        {
+          "alg" : "SHA-256",
+          "content" : "1f3722f4f9472d6f61b8ff6fc1d965064c88806ccd7fcebd99e27775f243ba6b"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "BSD-3-Clause"
+          }
+        }
+      ],
+      "name" : "beamer.latex",
+      "properties" : [
+        {
+          "name" : "pandoc-wrapper:bucket",
+          "value" : "template"
+        },
+        {
+          "name" : "pandoc-wrapper:category",
+          "value" : "source"
+        },
+        {
+          "name" : "pandoc-wrapper:note",
+          "value" : "slides format; derived from the pandoc default beamer template (dual GPL-2+/BSD-3, used under BSD-3)"
+        },
+        {
+          "name" : "pandoc-wrapper:path",
+          "value" : "pandoc/templates/beamer.latex"
+        }
+      ],
+      "purl" : "pkg:generic/opendigital/pandoc/templates/beamer.latex@1.0.2",
+      "type" : "file",
+      "version" : "1.0.2"
+    },
+    {
+      "hashes" : [
+        {
+          "alg" : "SHA-256",
+          "content" : "2cc7e50cd64634dfc7430cb45b816abd58485186ce84a08ebeea29f5af2477e1"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "BSD-3-Clause"
+          }
+        }
+      ],
+      "name" : "slides.latex",
+      "properties" : [
+        {
+          "name" : "pandoc-wrapper:bucket",
+          "value" : "template"
+        },
+        {
+          "name" : "pandoc-wrapper:category",
+          "value" : "source"
+        },
+        {
+          "name" : "pandoc-wrapper:note",
+          "value" : "modern slides format (original; article + eso-pic)"
+        },
+        {
+          "name" : "pandoc-wrapper:path",
+          "value" : "pandoc/templates/slides.latex"
+        }
+      ],
+      "purl" : "pkg:generic/opendigital/pandoc/templates/slides.latex@1.0.2",
+      "type" : "file",
+      "version" : "1.0.2"
+    },
+    {
+      "hashes" : [
+        {
+          "alg" : "SHA-256",
           "content" : "d45037864e4771b4b3c525526906248e8133af2dfa3344770afdb921b247cf0a"
         }
       ],
@@ -343,7 +491,7 @@
       "hashes" : [
         {
           "alg" : "SHA-256",
-          "content" : "98b8e4c2a58af6ef511ea41f5cf458936633da24104f8079c08f26ed9ea07d90"
+          "content" : "2101d40f65fa09415068cbcb39d344b6fe75935d9c5e8aa8dc1ce8918f64561b"
         }
       ],
       "licenses" : [
@@ -376,7 +524,7 @@
       "hashes" : [
         {
           "alg" : "SHA-256",
-          "content" : "c7eaaf90842f6242630039dcebb3f1ed42411313dc74319537e83aa7468b3f26"
+          "content" : "77a11911b623a9ad09ee32951f7d32bfb39c02b447ac8067d825ac6cab37b85b"
         }
       ],
       "licenses" : [
@@ -715,7 +863,7 @@
       "type" : "application",
       "version" : "1.0.2"
     },
-    "timestamp" : "2026-06-13T19:16:37Z",
+    "timestamp" : "2026-06-14T18:53:08Z",
     "tools" : [
       {
         "name" : "make-sbom.pl",
@@ -723,7 +871,7 @@
       }
     ]
   },
-  "serialNumber" : "urn:uuid:f79b79e5-eb8e-4037-bd85-d271e9a14c02",
+  "serialNumber" : "urn:uuid:083bb491-5416-4e33-9332-1f84dfd64421",
   "specVersion" : "1.6",
   "version" : 1
 }

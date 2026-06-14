@@ -17,6 +17,55 @@ Multiple input files are concatenated in order; a directory is searched for
 and
 .I .yaml
 files; an http(s) URL is downloaded first.
+.SH FORMATS
+A document selects its output format with the
+.B template:
+field in its front matter; a brand provides the default. All formats share
+the brand system (colours, fonts, identity).
+.TP
+.B report
+The default (\fBeisvogel-wrapper\fR, or the minimal \fBmvp\fR): title page, table
+of contents and styled body \- reports, briefings and policy documents.
+.TP
+.B letter
+.RB "(" "template: letter" ")."
+No title page; the recipient address
+.RB "(" to: ", a list of lines)"
+is positioned for a DL window envelope, with the date and optional
+.BR our-ref / your-ref
+on the right, an optional bold
+.B subject
+and optional
+.BR opening / closing / signature .
+A letterhead is either a full-page
+.B letterhead:
+artwork, or built from
+.BR letterhead-logo ", " letterhead-company " and " letterhead-contact
+(a ruled logo-and-contact footer).
+.TP
+.B slides (beamer)
+.RB "(" "template: beamer" ")."
+A beamer slide deck. Standard beamer
+.BR theme ", " colortheme " and " fonttheme
+are honoured, and the brand palette is wired into the beamer colours via the
+brand's
+.BR beamer-structure / beamer-accent .
+Selecting it switches the output to Pandoc's beamer writer.
+.TP
+.B slides (modern)
+.RB "(" "template: slides" ")."
+A flat, full-bleed slide deck rendered in pure XeLaTeX (not beamer): solid
+brand-colour grounds, bold type, and auto-boxed images. A level-1 heading is a
+section/divider slide, a level-2 heading a content slide; the per-slide colour
+role is set with an
+.RB "{." light / dark / accent "}"
+heading attribute. Grounds default from the brand's
+.BR beamer-structure / beamer-accent
+and are overridable per deck with
+.BR slide-title-bg / slide-accent .
+.PP
+Full field lists and worked examples are in the authoring guide (see
+.BR FILES ).
 .SH OPTIONS
 .TP
 .B \-\-order\-alpha

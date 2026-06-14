@@ -193,11 +193,20 @@ Asset files (logo, artwork) resolve by bare filename from the brand folder, the
 same as brand logos. Layout can be nudged with `address-top` (default 45mm),
 `letter-margin`, `letter-top`, `letter-bottom`.
 
-## Slides (beamer)
+## Slides
 
-For a slide deck, set `template: beamer`. Output is a beamer PDF. Structure:
-a level-1 heading (`#`) starts a section; a level-2 heading (`##`) starts a new
-slide; content under it is the slide body. An empty `##` gives an untitled slide.
+Two slide formats, same heading model (`#` = section/divider slide, `##` =
+content slide), both auto-styled from the brand's `beamer-structure`/
+`beamer-accent` colours:
+
+- `template: beamer` - classic beamer deck (full beamer theming).
+- `template: slides` - modern, flat, full-bleed brand-colour deck (xelatex).
+
+### Beamer (`template: beamer`)
+
+Output is a beamer PDF. Structure: a level-1 heading (`#`) starts a section; a
+level-2 heading (`##`) starts a new slide; content under it is the slide body.
+An empty `##` gives an untitled slide.
 
 ```yaml
 ---
@@ -238,9 +247,36 @@ Two-column slides use beamer's native column divs:
 Brand colours are wired into the beamer palette automatically (the brand sets
 `beamer-structure`/`beamer-accent`); the document keeps full control of the
 `theme`, `colortheme` and any `\setbeamercolor` it puts in `header-includes` -
-those override the brand. Images use `![](logo.png)` as usual. The datatable,
-chart and `:::` box constructs are report features and are not available on
-slides; use beamer columns, lists and images instead.
+those override the brand. Images use `![](logo.png)` as usual.
+
+### Modern (`template: slides`)
+
+A flat, full-bleed deck in pure xelatex. Each slide fills the page in the brand
+colour, bold type, accent rule. Same heading model: `#` = big section/divider
+slide, `##` = content slide. The front-matter `title`/`subtitle`/`author`/`date`
+draw the title slide automatically.
+
+```yaml
+---
+template: slides
+brand: plain
+title: "London Perl Workshop"
+subtitle: "The Perl and Raku Foundation"
+author: "Stuart J Mackintosh"
+date: "24 October 2024"
+---
+```
+
+- **Per-slide colour role** via an H2 attribute: `{.light}` (default), `{.dark}`
+  (solid brand ground, white text), `{.accent}` (accent ground, white text).
+- **Images** are auto-boxed in a white card; add `{.plain}` to drop the card.
+  Width honoured: `![](chart.png){width=60%}`.
+- **Columns** use the same `::: columns` / `:::: column` divs as beamer.
+- **Override grounds** per deck with `slide-title-bg:` / `slide-accent:` in the
+  front matter (any brand colour name).
+
+The datatable, chart and `:::` box constructs are report features and are not
+available on either slide format; use columns, lists and images instead.
 
 ## Avoid the common build failure
 

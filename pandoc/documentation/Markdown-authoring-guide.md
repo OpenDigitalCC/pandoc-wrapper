@@ -842,9 +842,23 @@ from the top of the page, default `45mm`) and the page margins with
 
 # Slides
 
-For a presentation, set `template: beamer`. The output is a beamer slide deck
-(PDF). Headings define the structure: a level-1 heading (`#`) begins a section,
-and a level-2 heading (`##`) begins a slide. The content beneath a `##` is that
+There are two slide formats. Both share the same heading model — a level-1
+heading (`#`) begins a section/divider slide, and a level-2 heading (`##`)
+begins a content slide — and both pick up the brand's palette automatically via
+its `beamer-structure` and `beamer-accent` colours.
+
+| `template:` | Look | Renderer |
+|---|---|---|
+| `beamer`    | Classic beamer deck; full beamer theme control | beamer |
+| `slides`    | Modern, flat, full-bleed brand-colour deck     | xelatex |
+
+Pick `beamer` when you want beamer's theming, navigation and structure; pick
+`slides` for a contemporary, full-bleed look (solid brand-colour grounds, bold
+type, auto-boxed images).
+
+## Beamer slides (`template: beamer`)
+
+The output is a beamer slide deck (PDF). The content beneath a `##` is that
 slide's body. An empty `##` produces a slide with no title.
 
 ```yaml
@@ -898,8 +912,69 @@ house style by default. You keep full control of the look: any `theme`,
 `colortheme` or `\setbeamercolor{...}` you add in `header-includes` overrides the
 brand. Images work as `![](picture.png)`.
 
+## Modern slides (`template: slides`)
+
+A flat, full-bleed deck rendered in pure XeLaTeX (no beamer). Each slide is the
+full page, painted in the brand's colour, with bold type and a thin accent rule.
+Images are automatically wrapped in a white rounded card so they never clash with
+the coloured ground.
+
+```yaml
+---
+template: slides
+brand: plain
+title: "London Perl Workshop"
+subtitle: "The Perl and Raku Foundation"
+author: "Stuart J Mackintosh"
+date: "24 October 2024"
+---
+
+# The Foundation
+
+## About the Foundation
+
+- A volunteer board and community project
+- Doing business as "The Perl and Raku Foundation"
+
+## The board
+
+![](board.png){width=46%}
+```
+
+- **`#` (H1)** → a big centred **section/divider** slide on the brand ground.
+- **`##` (H2)** → a **content** slide: coloured title, accent rule, then the
+  blocks beneath it.
+- The front-matter `title`/`subtitle`/`author`/`date` draw the opening **title
+  slide** automatically.
+
+**Per-slide colour role.** Add an attribute to an H2 to change that slide's
+ground: `{.light}` (default — pale tint), `{.dark}` (the solid brand ground,
+white text), or `{.accent}` (the accent colour, white text).
+
+```markdown
+## A bold statement {.dark}
+
+The whole slide inverts to the brand colour.
+```
+
+**Images.** A standalone image is boxed in a white card by default; add
+`{.plain}` to drop the card (e.g. for a logo or a screenshot that already has its
+own frame). Width is honoured: `![](chart.png){width=60%}`.
+
+```markdown
+![](logo.png){.plain width=30%}
+```
+
+**Columns** use the same `::: columns` / `:::: column` divs as beamer and become
+side-by-side blocks.
+
+**Overrides.** The ground colours default to the brand's `beamer-structure`
+(title/dark ground) and `beamer-accent` (rule/accent ground). Override per deck
+in the front matter with `slide-title-bg:` and `slide-accent:` (any defined
+brand colour name or an `HTML` value via a `\definecolor`).
+
 The datatable, chart and `:::` callout-box constructs are report features and do
-not apply on slides; use columns, lists and images instead.
+not apply on either slide format; use columns, lists and images instead.
 
 # Troubleshooting
 

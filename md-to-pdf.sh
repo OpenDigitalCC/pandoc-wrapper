@@ -89,6 +89,11 @@ P_ENGINE=xelatex
 # to "beamer" so Pandoc applies the beamer themes and frame structure.
 P_WRITER=pdf
 
+# Primary content Lua filter. Normally document-filters.lua (boxes, datatables,
+# charts, brand-colour injection). The modern `slides` template swaps in
+# slides.lua, which regroups the body into full-bleed slides instead.
+P_LUA_FILTER=document-filters.lua
+
 # Per-brand asset directory (logos, cover PDFs); set when a brand loads.
 BRAND_ASSET_DIR=""
 
@@ -579,6 +584,14 @@ setup_pandoc_options() {
         P_TLD=""
         echo " - Slides: beamer output"
     fi
+    # The modern slides format stays on the pdf writer (it is an article-based
+    # full-bleed template) but swaps the content filter for the slide splitter
+    # and drops chapter division (the slides template has no chapters).
+    if [[ "$tmpl" == "slides" ]]; then
+        P_LUA_FILTER=slides.lua
+        P_TLD=""
+        echo " - Slides: modern (xelatex) output"
+    fi
 
     # Show print-ready status
     if [[ "$DOC_PRINTREADY" == "true" ]]; then
@@ -642,7 +655,7 @@ run_pandoc() {
     fi
     
     # Setup Lua filters
-    local lua_filters=" --lua-filter=\"$INCDIR/document-filters.lua\" "
+    local lua_filters=" --lua-filter=\"$INCDIR/$P_LUA_FILTER\" "
     if [[ -n "$BRAND_LUA" ]]; then
         lua_filters="$lua_filters --lua-filter=\"$BRAND_LUA\""
         debug_log "Including brand Lua filter: $BRAND_LUA"
