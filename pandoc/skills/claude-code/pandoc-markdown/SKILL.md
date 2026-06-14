@@ -148,6 +148,55 @@ Inline footnotes; they are collected into a References chapter on render.
 ...causes market degradation^[Akerlof, G.A. (1970). "The Market for Lemons", QJE 84(3), 488-500].
 ```
 
+## Letters
+
+For a letter rather than a report, select the letter format in the document's
+front matter with `template: letter`. It has no title page; the recipient
+address is positioned for a DL window envelope, with the date and references on
+the right. The address is a YAML list of lines (one line per entry).
+
+```yaml
+---
+template: letter
+brand: plain
+to:
+  - "Ms Jane Smith"
+  - "Acme Corporation"
+  - "1 High Street"
+  - "London SW1A 1AA"
+from:                      # optional sender block (top right)
+  - "Open Digital Ltd"
+  - "10 Tech Park, Manchester M1 2AB"
+our-ref: "OD/2026/014"     # optional
+your-ref: "ACME-99"        # optional
+date: "14 June 2026"       # optional; defaults to today
+subject: "Renewal of support agreement"   # optional, bold above the body
+opening: "Dear Ms Smith,"  # optional
+closing: "Yours sincerely,"  # optional
+signature: "S. J. Mackintosh"   # optional
+signature-title: "Director"     # optional
+---
+
+Body of the letter as ordinary Markdown. Boxes, datatables and charts all
+still work if needed.
+```
+
+Everything except `to` is optional. The body is plain Markdown between the
+opening and the closing.
+
+**Letterhead** - two mutually exclusive ways to brand the page:
+
+- Full-page artwork: `letterhead: letterhead.pdf` overlays a background PDF/image
+  (which supplies the logo, rule, contact details, etc.).
+- Built from front matter: `letterhead-logo: logo.png` (top-right, first page),
+  plus a ruled footer from `letterhead-company:` and `letterhead-contact:` (a
+  list of contact lines). Optional: `letterhead-logo-height` (default 16mm),
+  `letterhead-rule-colour`, `letterhead-text-colour` (brand-colour names work).
+
+Asset files (logo, artwork) resolve by bare filename from the brand folder, the
+same as brand logos. Layout can be nudged with `address-top` (default 45mm),
+`letter-margin`, `letter-top`, `letter-bottom`.
+
 ## Handover: deliver the Markdown, do not build it
 
 Your job is to produce correct, ready-to-build Markdown - **not** to render it.

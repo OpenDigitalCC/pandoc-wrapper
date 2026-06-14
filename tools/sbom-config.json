@@ -15,6 +15,7 @@
     { "path": "pandoc/templates/pipeline-preamble.tex","bucket": "template","license": "BSD-3-Clause" },
     { "path": "pandoc/templates/eisvogel-wrapper.latex","bucket": "template","license": "BSD-3-Clause", "note": "derived from Eisvogel 3.4.0" },
     { "path": "pandoc/templates/mvp.latex",           "bucket": "template", "license": "BSD-3-Clause", "note": "derived from the pandoc default template (dual GPL-2+/BSD-3, used under BSD-3)" },
+    { "path": "pandoc/templates/letter.latex",        "bucket": "template", "license": "BSD-3-Clause", "note": "letter format; derived from the pandoc default template (dual GPL-2+/BSD-3, used under BSD-3)" },
     { "path": "pandoc/templates/conformance-test.md", "bucket": "template", "license": "BSD-3-Clause" },
     { "path": "pandoc/brands/plain/template.yaml",    "bucket": "brand",    "license": "BSD-3-Clause" },
     { "path": "man/md-to-pdf.1",                      "bucket": "doc",      "license": "BSD-3-Clause" }

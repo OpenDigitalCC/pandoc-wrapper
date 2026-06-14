@@ -768,6 +768,78 @@ Setting a field to an empty string `""` suppresses the default content for that
 position. Leaving the field out entirely keeps the brand default. The defaults
 are: title top-left, date top-right, author bottom-left, page number bottom-right.
 
+# Letters
+
+For correspondence rather than a report, select the letter format with
+`template: letter` in the document's front matter. The letter has no title page;
+the recipient address sits where a DL window envelope shows it, and the date and
+reference lines sit on the right.
+
+The recipient address (`to`) is written as a list, one line per entry, so the
+line breaks are preserved:
+
+```yaml
+---
+template: letter
+brand: plain
+to:
+  - "Ms Jane Smith"
+  - "Acme Corporation"
+  - "1 High Street"
+  - "London SW1A 1AA"
+from:                       # optional sender block, top right
+  - "Open Digital Ltd"
+  - "10 Tech Park, Manchester M1 2AB"
+our-ref: "OD/2026/014"      # optional
+your-ref: "ACME-99"         # optional
+date: "14 June 2026"        # optional; today's date if omitted
+subject: "Renewal of support agreement"   # optional, shown bold above the body
+opening: "Dear Ms Smith,"   # optional
+closing: "Yours sincerely," # optional
+signature: "S. J. Mackintosh"  # optional
+signature-title: "Director"    # optional
+---
+
+The body of the letter follows as ordinary Markdown.
+```
+
+Only `to` is required; every other field is optional. The body - everything
+after the front matter - is ordinary Markdown and may use the boxes, datatables
+and charts described above.
+
+## Letterhead
+
+A letter can carry a letterhead in one of two ways.
+
+Full-page artwork - a single PDF (or image) placed behind the whole page,
+designed with the logo, rules and contact details already on it:
+
+```yaml
+letterhead: letterhead.pdf
+```
+
+Or built from the front matter - a logo at the top right of the first page and a
+ruled contact footer at the foot of every page:
+
+```yaml
+letterhead-logo: logo.png
+letterhead-logo-height: 16mm        # optional
+letterhead-company: "Open Digital Ltd"
+letterhead-contact:
+  - "10 Tech Park, Manchester M1 2AB"
+  - "hello@opendigital.cc"
+  - "+44 161 000 0000"
+letterhead-rule-colour: plain-accent   # optional; a brand-colour name or hex
+```
+
+Use one route or the other, not both - the full-page artwork is assumed to
+supply everything. Asset files (the logo or artwork) live in the brand folder
+and are referenced by bare filename, exactly like brand logos.
+
+The address position can be tuned with `address-top` (distance of the address
+from the top of the page, default `45mm`) and the page margins with
+`letter-margin`, `letter-top` and `letter-bottom`.
+
 # Troubleshooting
 
 ## "Undefined control sequence ... \multirow" (exit code 43)

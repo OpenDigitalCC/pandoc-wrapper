@@ -27,6 +27,7 @@ pandoc/
 │   ├── document-filters.lua     boxes, datatables, charts -> raw LaTeX
 │   ├── eisvogel-wrapper.latex   default template (pristine Eisvogel + inserts)
 │   ├── mvp.latex                standalone minimal template
+│   ├── letter.latex             letter format (window envelope, refs, letterhead)
 │   ├── pipeline-preamble.tex    portable shim (filter's package deps)
 │   ├── conformance-test.md      fixture a template must render
 │   └── vendor/                  pristine upstream Eisvogel (provenance)
@@ -79,7 +80,19 @@ Active templates (`template:` selects by name):
   `\input{pipeline-preamble}` and the shared Eisvogel-look overrides.
   Upgrade Eisvogel by re-vendoring and re-applying the two inserts.
 - `mvp.latex` - standalone minimal template (pandoc default + the preamble).
+- `letter.latex` - letter format (pandoc default + preamble, forced to
+  `scrartcl`). No title page; recipient address positioned for a DL window
+  envelope; date + `our-ref`/`your-ref` on the right; optional `subject`,
+  `opening`, `closing`, `signature`. Letterhead via a full-page `letterhead:`
+  background, or built from `letterhead-logo`/`letterhead-company`/
+  `letterhead-contact`. It neutralises chapter/frontmatter so a report-oriented
+  brand (scrbook, chapter division) still renders without error.
 - `eisvogel.beamer` - slides (not yet wired into the pipeline preamble).
+
+A document's `template:` overrides the brand default, so the letter (and any
+alternative format) is selectable per document. The driver saves the document's
+`template`/`engine` across the brand merge for this (`load_brand_config` then
+re-extract in `main`).
 
 `conformance-test.md` is the fixture a template must render to be
 compatible. The driver puts the templates dir on `TEXINPUTS` so templates

@@ -731,6 +731,7 @@ main() {
         local saved_type="$DOC_TYPE"
         local saved_date="$DOC_DATE"
         local saved_printready="$DOC_PRINTREADY"
+        local saved_template="$DOC_P_TEMPLATE"
         
         load_brand_config "$DOC_BRAND"
         
@@ -743,6 +744,9 @@ main() {
         [[ -n "$saved_type" ]] && DOC_TYPE="$saved_type"
         [[ -n "$saved_date" ]] && DOC_DATE="$saved_date"
         [[ -n "$saved_printready" ]] && DOC_PRINTREADY="$saved_printready"
+        # Document's template/engine choice overrides the brand default, so a
+        # document can opt into an alternative format (e.g. template: letter).
+        [[ -n "$saved_template" ]] && DOC_P_TEMPLATE="$saved_template"
         
         debug_log "After brand merge - DOC_TITLE: '$DOC_TITLE'"
         debug_log "After brand merge - DOC_SUBTITLE: '$DOC_SUBTITLE'"
