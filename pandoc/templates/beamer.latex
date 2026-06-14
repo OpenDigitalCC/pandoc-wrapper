@@ -22,6 +22,8 @@ $if(handout)$
 $endif$
 $if(aspectratio)$
   aspectratio=$aspectratio$,
+$else$
+  aspectratio=169,
 $endif$
 $endif$
 $for(classoption)$
@@ -400,6 +402,7 @@ $endif$
 \providecommand{\addtokomafont}[2]{}
 \providecommand{\setkomafont}[2]{}
 \providecommand{\newkomafont}[2]{}
+\providecommand{\captionsetup}[2][]{}% caption pkg not loaded in beamer
 \providecommand{\frontmatter}{}\providecommand{\mainmatter}{}\providecommand{\backmatter}{}
 \let\chapter\section
 %% --- pandoc-wrapper: brand colour integration (overridable by header-includes) ---
@@ -409,13 +412,15 @@ $for(brand-colours/pairs)$
 \definecolor{$brand-colours.key$}{HTML}{$brand-colours.value$}
 $endfor$
 $if(beamer-structure)$
+% Drive the theme's structure + palette bars from the brand colour, keeping the
+% theme's own (white) text on those bars so titles stay legible across themes.
 \setbeamercolor{structure}{fg=$beamer-structure$}
 \setbeamercolor{palette primary}{bg=$beamer-structure$,fg=white}
 \setbeamercolor{palette secondary}{bg=$beamer-structure$,fg=white}
 \setbeamercolor{palette tertiary}{bg=$beamer-structure$,fg=white}
 \setbeamercolor{palette quaternary}{bg=$beamer-structure$,fg=white}
-\setbeamercolor{title}{fg=$beamer-structure$}
-\setbeamercolor{frametitle}{fg=$beamer-structure$}
+\setbeamercolor{frametitle}{bg=$beamer-structure$,fg=white}
+\setbeamercolor{title}{bg=$beamer-structure$,fg=white}
 $endif$
 $if(beamer-accent)$
 \setbeamercolor{subsection in head/foot}{bg=$beamer-accent$,fg=white}
