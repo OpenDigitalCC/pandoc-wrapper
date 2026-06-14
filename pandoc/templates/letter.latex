@@ -432,16 +432,20 @@ $if(letterhead-logo)$
       \includegraphics[height=$if(letterhead-logo-height)$$letterhead-logo-height$$else$16mm$endif$]{$letterhead-logo$}%
     \end{minipage}}\fi}
 $endif$
-$if(letterhead-contact)$
-% Footer: a rule, company name and contact line, in the bottom margin of every page.
+% Footer: a rule plus the company name and/or a contact line, in the bottom
+% margin of every page. Shown when either letterhead-company or letterhead-contact
+% is set, so a brand that supplies only a company name still gets a ruled footer.
+$if(letterhead-company)$\def\lhfooterwanted{}$endif$
+$if(letterhead-contact)$\def\lhfooterwanted{}$endif$
+\ifdefined\lhfooterwanted
 \AddToShipoutPictureFG{%
   \put(\LenToUnit{\lhmargin},\LenToUnit{$if(letterhead-footer-bottom)$$letterhead-footer-bottom$$else$14mm$endif$}){%
     \begin{minipage}{\lhwidth}\footnotesize
       {\color{$if(letterhead-rule-colour)$$letterhead-rule-colour$$else$black!35$endif$}\rule{\linewidth}{0.4pt}}\\[3pt]
       {\color{$if(letterhead-text-colour)$$letterhead-text-colour$$else$black!60$endif$}%
-       $if(letterhead-company)$\textbf{$letterhead-company$}\quad$endif$$for(letterhead-contact)$$letterhead-contact$$sep$ \enspace\textbullet\enspace $endfor$}%
+       $if(letterhead-company)$\textbf{$letterhead-company$}$if(letterhead-contact)$\quad{}$endif$$endif$$for(letterhead-contact)$$letterhead-contact$$sep$ \enspace\textbullet\enspace $endfor$}%
     \end{minipage}}}
-$endif$
+\fi
 $endif$
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
