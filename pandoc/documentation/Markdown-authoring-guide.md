@@ -792,6 +792,51 @@ Setting a field to an empty string `""` suppresses the default content for that
 position. Leaving the field out entirely keeps the brand default. The defaults
 are: title top-left, date top-right, author bottom-left, page number bottom-right.
 
+# Featured cover (graphical report)
+
+For a client-facing report or proposal with a designed front page, select the
+featured format with `template: featured`. It produces a graphical cover page -
+a colour band, the brand logo, title/subtitle, a metadata block, a "Document
+overview" panel, an optional classification chip, an optional circular cover
+image, and decorative accent circles - followed by a section-based body with
+brand-coloured headings and a page X-of-Y footer. All cover colours come from
+the brand (it reuses the title-page colour and the brand accent), so a featured
+document is on-brand with no styling in the document.
+
+```yaml
+---
+template: featured
+brand: plain
+title: "Reserves & Sustainability Review"
+subtitle: "A board briefing"          # optional
+author: [S. J. Mackintosh, A. Director]
+date: "15 June 2026"
+clientname: "Acme Charitable Trust"   # optional, shown above the title
+classification: "Confidential"        # optional chip, top right; also in the header
+fao: "The Board"                      # optional ("for the attention of")
+docver: "v1.0"                        # optional document version
+overview:                             # optional bulleted panel, top right
+  - Current reserves position
+  - Income concentration risk
+  - Recommendations
+cover-image: cover.png                # optional; clipped into the cover circle
+toc: true
+---
+
+# Summary
+
+The body is ordinary Markdown and uses all the boxes, datatables and charts
+described above. Blockquotes pick up an accent rule and tint.
+```
+
+Everything except `title` is optional - omit `cover-image` and the circle is a
+solid accent disc; omit `overview` or `classification` and those elements simply
+do not appear. The cover colours can be overridden per document with
+`cover-color`, `cover-text-color` and `cover-accent` (a brand-colour name or
+hex), and a line of contact/publisher text can be placed in the colour band with
+`cover-footer`. The featured format always uses sections (not chapters), so it
+is best for briefings, proposals and board papers rather than long books.
+
 # Letters
 
 For correspondence rather than a report, select the letter format with

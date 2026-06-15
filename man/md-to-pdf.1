@@ -1,4 +1,4 @@
-.TH MD-TO-PDF 1 "June 2026" "pandoc-wrapper 1.0.8" "User Commands"
+.TH MD-TO-PDF 1 "June 2026" "pandoc-wrapper 1.0.9" "User Commands"
 .SH NAME
 md-to-pdf \- convert Markdown to a branded PDF via Pandoc and XeLaTeX
 .SH SYNOPSIS
@@ -33,6 +33,20 @@ adds a full-page back cover. With
 the output is duplex-aware: even page count, the back cover on a verso, and
 .B :::marginbox
 notes on the outer edge.
+.TP
+.B featured
+.RB "(" "template: featured" ")."
+A report with a designed graphical cover: a brand-coloured band, logo,
+title/subtitle, a metadata block
+.RB "(" fao ", " date ", author, " docver ")," a
+.B "Document overview"
+panel
+.RB "(" overview ", a list), an optional " classification " chip, an optional"
+circular
+.B cover-image
+and decorative accents \- then a section-based body with brand-coloured
+headings and a page X-of-Y footer. Cover colours come from the brand
+.RB "(" cover-color ", " cover-text-color ", " cover-accent " override)."
 .TP
 .B letter
 .RB "(" "template: letter" ")."

@@ -201,6 +201,29 @@ Asset files (logo, artwork) resolve by bare filename from the brand folder, the
 same as brand logos. Layout can be nudged with `address-top` (default 40mm),
 `letter-margin`, `letter-top`, `letter-bottom`.
 
+## Featured cover (`template: featured`)
+
+A client-facing report/proposal with a designed graphical cover: a brand-colour
+band, logo, title/subtitle, a metadata block, a "Document overview" panel, an
+optional classification chip, an optional circular `cover-image`, and decorative
+accent circles - then a section-based body with brand-coloured headings and a
+page X-of-Y footer. Cover colours come from the brand (title-page colour +
+accent); override with `cover-color` / `cover-text-color` / `cover-accent`.
+
+```yaml
+template: featured
+title: "Reserves Review"
+clientname: "Acme Trust"      # optional, above the title
+classification: "Confidential" # optional chip + header
+fao: "The Board"              # optional
+docver: "v1.0"                # optional
+overview: [Reserves, Risk, Recommendations]   # optional panel
+cover-image: cover.png        # optional; clipped into the cover circle
+```
+
+Everything except `title` is optional. Uses sections (not chapters) - best for
+briefings, proposals and board papers.
+
 ## Slides
 
 Two slide formats, same heading model (`#` = section/divider slide, `##` =

@@ -28,7 +28,7 @@ export MD_TO_PDF_BRANDS="${MD_TO_PDF_BRANDS:-$REPO_ROOT/pandoc/brands}"
 # Templates to exercise. eisvogel-wrapper selects its class from book:/chapter
 # (it ignores documentclass), so it needs those set the way a report brand does;
 # mvp and letter render the fixture's scrartcl front matter as-is.
-TEMPLATES=(eisvogel-wrapper mvp letter)
+TEMPLATES=(eisvogel-wrapper mvp letter featured)
 
 # Per-template front-matter injected after the opening '---' (newline-separated).
 prep_for() {

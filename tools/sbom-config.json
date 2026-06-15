@@ -19,6 +19,7 @@
     { "path": "pandoc/templates/letter.latex",        "bucket": "template", "license": "BSD-3-Clause", "note": "letter format; derived from the pandoc default template (dual GPL-2+/BSD-3, used under BSD-3)" },
     { "path": "pandoc/templates/beamer.latex",        "bucket": "template", "license": "BSD-3-Clause", "note": "slides format; derived from the pandoc default beamer template (dual GPL-2+/BSD-3, used under BSD-3)" },
     { "path": "pandoc/templates/slides.latex",        "bucket": "template", "license": "BSD-3-Clause", "note": "modern slides format (original; article + eso-pic)" },
+    { "path": "pandoc/templates/featured.latex",      "bucket": "template", "license": "BSD-3-Clause", "note": "featured graphical-cover report; pandoc default template + original TikZ cover" },
     { "path": "pandoc/templates/conformance-test.md", "bucket": "template", "license": "BSD-3-Clause" },
     { "path": "pandoc/brands/plain/template.yaml",    "bucket": "brand",    "license": "BSD-3-Clause" },
     { "path": "man/md-to-pdf.1",                      "bucket": "doc",      "license": "BSD-3-Clause" }

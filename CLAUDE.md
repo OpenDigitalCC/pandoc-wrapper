@@ -31,6 +31,7 @@ pandoc/
 │   ├── letter.latex             letter format (window envelope, refs, letterhead)
 │   ├── beamer.latex             slides (stock beamer + brand-colour wiring)
 │   ├── slides.latex             modern slides (full-bleed xelatex + eso-pic)
+│   ├── featured.latex           report with a designed graphical cover (TikZ)
 │   ├── pipeline-preamble.tex    portable shim (filter's package deps)
 │   ├── conformance-test.md      fixture a template must render
 │   └── vendor/                  pristine upstream Eisvogel (provenance)
@@ -118,6 +119,20 @@ Active templates (`template:` selects by name):
   H2→`\BeginSlide[role]`, columns→minipages, standalone images→`\slidecard`).
   Stays on the **pdf writer** (it is article-based, not beamer) but drops
   chapter division.
+
+- `featured.latex` - a report with a designed graphical cover. Pandoc default +
+  `pipeline-preamble` (so the full body feature set works) + an original TikZ
+  cover (a brand-colour band, logo, title/subtitle, a metadata block, a
+  "Document overview" panel, an optional `classification` chip, an optional
+  circular `cover-image`, decorative accent circles), brand-coloured ragged-right
+  headings, a styled blockquote, and a page X-of-Y footer. All cover colours come
+  from the brand (`titlepage-color`/`-text-color`/`-rule-color` resolved to hex +
+  `beamer-accent` as a name); override with `cover-color`/`cover-text-color`/
+  `cover-accent`. Forced to **scrartcl** (sections, not chapters; chapter is
+  mapped onto section like the letter template), so it stays on the pdf writer
+  with `document-filters.lua` and needs **no driver change**. Ported from a
+  hand-crafted PSTricks template (the cover is re-implemented in TikZ; no PSTricks
+  dependency). Best for proposals/briefings, not long books.
 
 A document's `template:` overrides the brand default, so the letter, slides (and
 any alternative format) are selectable per document. The driver saves the

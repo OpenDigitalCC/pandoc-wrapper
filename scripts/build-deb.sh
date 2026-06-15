@@ -46,7 +46,7 @@ install -m 0755 "$REPO_ROOT/md-to-pdf.sh"                  "$BUILD/usr/bin/md-to
 install -m 0755 "$REPO_ROOT/scripts/extract-frontmatter.pl" "$BUILD/usr/lib/md-to-pdf/extract-frontmatter.pl"
 
 # Templates the pipeline actually uses (not the vendored provenance copy).
-for f in eisvogel-wrapper.latex mvp.latex letter.latex beamer.latex slides.latex pipeline-preamble.tex document-filters.lua slides.lua conformance-test.md; do
+for f in eisvogel-wrapper.latex mvp.latex letter.latex beamer.latex slides.latex featured.latex pipeline-preamble.tex document-filters.lua slides.lua conformance-test.md; do
     install -m 0644 "$REPO_ROOT/pandoc/templates/$f" "$BUILD/usr/share/pandoc-wrapper/templates/$f"
 done
 
@@ -119,10 +119,12 @@ License: BSD-3-Clause
 Files: usr/share/pandoc-wrapper/templates/mvp.latex
        usr/share/pandoc-wrapper/templates/letter.latex
        usr/share/pandoc-wrapper/templates/beamer.latex
+       usr/share/pandoc-wrapper/templates/featured.latex
 Copyright: 2014-2026 John MacFarlane
 License: BSD-3-Clause
  Derived from the pandoc default LaTeX/beamer templates (dual GPL-2+/BSD-3-Clause;
- used here under the BSD-3-Clause option).
+ used here under the BSD-3-Clause option). featured.latex adds an original
+ pandoc-wrapper TikZ cover.
 
 License: BSD-3-Clause
  Redistribution and use in source and binary forms, with or without

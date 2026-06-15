@@ -1,0 +1,360 @@
+% featured.latex - a report template with a designed graphical cover.
+%
+% Pandoc's default template structure (like mvp.latex) + the portable
+% pipeline-preamble (boxes, datatables, charts) + a brand-driven TikZ cover
+% page: a colour band, logo, title/subtitle, a metadata block, a "Document
+% overview" panel, an optional classification chip, an optional circular cover
+% image, an optional client name/logo, and decorative accent circles. All cover
+% colours come from the brand (titlepage-color / titlepage-text-color /
+% titlepage-rule-color / beamer-accent), overridable per document.
+%
+% Derived from the pandoc default LaTeX template; the cover is an original
+% pandoc-wrapper design (TikZ, no PSTricks).
+%
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode$for(hyperrefoptions)$,$hyperrefoptions$$endfor$}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+$if(colorlinks)$
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+$endif$
+%
+\documentclass[
+$if(fontsize)$
+  $fontsize$,
+$else$
+  11pt,
+$endif$
+$if(papersize)$
+  $papersize$paper,
+$else$
+  a4paper,
+$endif$
+$for(classoption)$
+  $classoption$$sep$,
+$endfor$
+]{scrartcl}
+% featured is always an article class (scrartcl): a cover-led report uses
+% sections, not chapters, so the running header/footer apply on every page.
+% Brands target reports/books; their fonts and colours still apply below.
+\usepackage{amsmath,amssymb}
+$if(linestretch)$
+\usepackage{setspace}
+$endif$
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[$if(fontenc)$$fontenc$$else$T1$endif$]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp}
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+$if(fontfamily)$
+$else$
+\usepackage{lmodern}
+$endif$
+$if(fontfamily)$
+\usepackage[$for(fontfamilyoptions)$$fontfamilyoptions$$sep$,$endfor$]{$fontfamily$}
+$endif$
+\ifPDFTeX\else
+$if(mainfont)$
+  \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
+$endif$
+$if(sansfont)$
+  \setsansfont[$for(sansfontoptions)$$sansfontoptions$$sep$,$endfor$]{$sansfont$}
+$endif$
+$if(monofont)$
+  \setmonofont[$for(monofontoptions)$$monofontoptions$$sep$,$endfor$]{$monofont$}
+$endif$
+$for(fontfamilies)$
+  \newfontfamily{$fontfamilies.name$}[$for(fontfamilies.options)$$fontfamilies.options$$sep$,$endfor$]{$fontfamilies.font$}
+$endfor$
+\fi
+% Use upquote for straight quotes in verbatim
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{%
+  \usepackage[$for(microtypeoptions)$$microtypeoptions$$sep$,$endfor$]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath}
+}{}
+$if(indent)$
+$else$
+\makeatletter
+\@ifundefined{KOMAClassName}{%
+  \IfFileExists{parskip.sty}{\usepackage{parskip}}{%
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{\KOMAoptions{parskip=half}}
+\makeatother
+$endif$
+\usepackage{xcolor}
+% Geometry: generous margins suited to a cover-led report. Override per brand
+% with letter-style geometry keys if needed.
+\usepackage[a4paper,top=2.2cm,bottom=2.2cm,left=2.5cm,right=2.5cm,headheight=15pt,headsep=10mm,footskip=14mm]{geometry}
+$if(listings)$
+\usepackage{listings}
+\newcommand{\passthrough}[1]{#1}
+\lstset{defaultdialect=[5.3]Lua}
+\lstset{defaultdialect=[x86masm]Assembler}
+$endif$
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+$if(tables)$
+\usepackage{longtable,booktabs,array}
+$if(multirow)$
+\usepackage{multirow}
+$endif$
+\usepackage{calc}
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+$endif$
+$if(graphics)$
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+$endif$
+$if(strikeout)$
+\ifLuaTeX
+  \usepackage{luacolor}
+  \usepackage[soul]{lua-ul}
+\else
+  \usepackage{soul}
+\fi
+$endif$
+\setlength{\emergencystretch}{3em}
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+$if(numbersections)$
+\setcounter{secnumdepth}{$if(secnumdepth)$$secnumdepth$$else$5$endif$}
+$else$
+\setcounter{secnumdepth}{-\maxdimen}
+$endif$
+$if(subfigure)$
+\usepackage{subcaption}
+$endif$
+%% --- featured: tolerate report-oriented brand settings in scrartcl ----------
+% A brand may target scrbook (book: true) with top-level-division=chapter; map
+% chapter onto section and provide a chapter komafont so a brand's
+% \addtokomafont{chapter} and any \frontmatter/\mainmatter degrade gracefully.
+\let\chapter\section
+\newkomafont{chapter}{}
+\providecommand{\frontmatter}{}\providecommand{\mainmatter}{}\providecommand{\backmatter}{}
+%% --- pandoc-wrapper pipeline layer (portable: tables, boxes, charts) ---
+\input{pipeline-preamble}
+$for(header-includes)$
+$header-includes$
+$endfor$
+\ifLuaTeX
+  \usepackage{selnolig}
+\fi
+
+%% >>> pandoc-wrapper: featured cover + house styling -------------------------
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{enumitem}
+\usepackage{mdframed}
+\usepackage{lastpage}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+% Cover colours, all from the brand (document-filters resolves titlepage-* to
+% hex and \definecolor's every brand-colour). Override per document with
+% cover-color / cover-text-color / cover-accent.
+\definecolor{cover-band}{HTML}{$if(cover-color)$$cover-color$$else$$if(titlepage-color)$$titlepage-color$$else$2C3E50$endif$$endif$}
+\definecolor{cover-text}{HTML}{$if(cover-text-color)$$cover-text-color$$else$$if(titlepage-text-color)$$titlepage-text-color$$else$FFFFFF$endif$$endif$}
+\colorlet{cover-accent}{$if(cover-accent)$$cover-accent$$else$$if(beamer-accent)$$beamer-accent$$else$cover-band$endif$$endif$}
+\definecolor{cover-rule}{HTML}{$if(titlepage-rule-color)$$titlepage-rule-color$$else$5D6D7E$endif$}
+
+% Headings: brand accent colour, sans, ragged right (no full-justified titles).
+\titleformat{\section}{\sffamily\bfseries\Large\color{cover-band}\raggedright}{\color{cover-accent}\thesection}{0.8em}{}
+\titleformat{\subsection}{\sffamily\bfseries\large\color{cover-band}\raggedright}{\color{cover-accent}\thesubsection}{0.8em}{}
+\titleformat{\subsubsection}{\sffamily\bfseries\color{cover-band}\raggedright}{\color{cover-accent}\thesubsubsection}{0.8em}{}
+
+% Running header/footer in the accent colour: page X of Y.
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{cover-rule}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrule}{\hbox to\headwidth{\color{cover-rule}\leaders\hrule height \footrulewidth\hfill}}
+\fancyhead[L]{\color{cover-rule}\sffamily\small $title$}
+$if(classification)$\fancyhead[R]{\color{cover-rule}\sffamily\small\MakeUppercase{$classification$}}$endif$
+\fancyfoot[L]{\color{cover-rule}\sffamily\small{}$for(author)$$author$$sep$, $endfor$}
+\fancyfoot[R]{\color{cover-rule}\sffamily\small\thepage\ of \pageref{LastPage}}
+
+% Styled blockquote: accent left rule on a tinted ground.
+\AtBeginEnvironment{quote}{%
+  \begin{mdframed}[linecolor=cover-accent,linewidth=1mm,topline=false,rightline=false,
+    bottomline=false,backgroundcolor=cover-band!6,innertopmargin=4mm,innerbottommargin=4mm,
+    leftmargin=4mm,rightmargin=4mm,skipabove=\baselineskip,skipbelow=\baselineskip]}
+\AtEndEnvironment{quote}{\end{mdframed}}
+
+% The cover page itself.
+\newcommand{\pwFeaturedCover}{%
+\begingroup
+\thispagestyle{empty}%
+\begin{tikzpicture}[remember picture,overlay]
+  % Lower colour band
+  \fill[cover-band] (current page.south west) rectangle ([yshift=112mm]current page.south east);
+  % Decorative accent circles within the band
+  \fill[cover-accent,opacity=0.55] ([shift={(34mm,46mm)}]current page.south west) circle (3.2mm);
+  \fill[cover-rule,opacity=0.5]    ([shift={(-28mm,64mm)}]current page.south east) circle (5mm);
+  \draw[cover-text,opacity=0.45,line width=0.4mm] ([shift={(-22mm,30mm)}]current page.south east) circle (2.4mm);
+  \fill[cover-text,opacity=0.25]   ([shift={(60mm,86mm)}]current page.south west) circle (1.6mm);
+  % Circular cover image (or an accent disc) centred on the band's upper edge
+  $if(cover-image)$
+  \begin{scope}
+    \clip ([yshift=112mm]current page.south) circle (30mm);
+    \node at ([yshift=112mm]current page.south) {\includegraphics[width=66mm]{$cover-image$}};
+  \end{scope}
+  \draw[cover-text,line width=0.6mm] ([yshift=112mm]current page.south) circle (30mm);
+  $else$
+  \fill[cover-accent] ([yshift=112mm]current page.south) circle (28mm);
+  $endif$
+  % Logo, top-left
+  $if(titlepage-logo)$
+  \node[anchor=north west] at ([shift={(22mm,-20mm)}]current page.north west)
+    {\includegraphics[height=16mm]{$titlepage-logo$}};
+  $endif$
+  % Classification chip, top-right
+  $if(classification)$
+  \node[anchor=north east,fill=cover-accent,text=cover-text,font=\sffamily\bfseries\small,
+        inner xsep=6pt,inner ysep=4pt]
+    at ([shift={(-22mm,-19mm)}]current page.north east) {\MakeUppercase{$classification$}};
+  $endif$
+  % Title / subtitle / metadata block, upper-left
+  \node[anchor=north west] at ([shift={(22mm,-52mm)}]current page.north west) {%
+    \begin{minipage}[t]{105mm}\raggedright\hyphenpenalty=10000
+      $if(clientname)${\sffamily\large\color{cover-accent}$clientname$\par\vspace{5pt}}$endif$
+      {\sffamily\bfseries\fontsize{30}{34}\selectfont\color{cover-band}$title$\par}
+      $if(subtitle)$\vspace{7pt}{\sffamily\Large\color{black}$subtitle$\par}$endif$
+      \vspace{16pt}
+      {\normalsize\color{black}
+        $if(fao)$\textbf{FAO:} $fao$\par$endif$
+        $if(date)$\textbf{Date:} $date$\par$endif$
+        $if(author)$\textbf{By:} $for(author)$$author$$sep$, $endfor$\par$endif$
+        $if(docver)$\textbf{Version:} $docver$\par$endif$
+      }
+    \end{minipage}};
+  % Document overview panel, upper-right
+  $if(overview)$
+  \node[anchor=north east] at ([shift={(-22mm,-52mm)}]current page.north east) {%
+    \begin{minipage}[t]{52mm}\raggedright
+      {\sffamily\large\color{cover-accent}Document overview\par}\vspace{5pt}
+      {\color{black}\setlength{\parskip}{2pt}
+      \begin{itemize}[leftmargin=1.2em,itemsep=2pt,topsep=2pt,label={\color{cover-accent}\textbullet}]
+        $for(overview)$\item $overview$
+        $endfor$
+      \end{itemize}}
+    \end{minipage}};
+  $endif$
+  % Optional footer line inside the band (e.g. publisher / contact)
+  $if(cover-footer)$
+  \node[anchor=south west,text=cover-text,font=\sffamily\small,align=left]
+    at ([shift={(22mm,16mm)}]current page.south west) {$cover-footer$};
+  $endif$
+\end{tikzpicture}%
+\clearpage
+\endgroup}
+%% <<< pandoc-wrapper
+
+$if(natbib)$
+\usepackage[$natbiboptions$]{natbib}
+\bibliographystyle{$if(biblio-style)$$biblio-style$$else$plainnat$endif$}
+$endif$
+$if(biblatex)$
+\usepackage[$if(biblio-style)$style=$biblio-style$,$endif$$for(biblatexoptions)$$biblatexoptions$$sep$,$endfor$]{biblatex}
+$for(bibliography)$
+\addbibresource{$bibliography$}
+$endfor$
+$endif$
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{}
+\urlstyle{$if(urlstyle)$$urlstyle$$else$same$endif$}
+\hypersetup{
+$if(title-meta)$
+  pdftitle={$title-meta$},
+$endif$
+$if(author-meta)$
+  pdfauthor={$author-meta$},
+$endif$
+$if(keywords)$
+  pdfkeywords={$for(keywords)$$keywords$$sep$, $endfor$},
+$endif$
+$if(colorlinks)$
+  colorlinks=true,
+  linkcolor={$if(linkcolor)$$linkcolor$$else$cover-accent$endif$},
+  urlcolor={$if(urlcolor)$$urlcolor$$else$cover-accent$endif$},
+  citecolor={$if(citecolor)$$citecolor$$else$cover-accent$endif$},
+$else$
+  hidelinks,
+$endif$
+  pdfcreator={LaTeX via pandoc}}
+
+\title{$title$}
+\author{$for(author)$$author$$sep$ \and $endfor$}
+\date{$date$}
+
+\begin{document}
+
+$if(title)$
+\pwFeaturedCover
+$endif$
+
+$for(include-before)$
+$include-before$
+
+$endfor$
+$if(toc)$
+$if(toc-title)$
+\renewcommand*\contentsname{$toc-title$}
+$endif$
+{
+$if(colorlinks)$
+\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$cover-band$endif$}
+$endif$
+\setcounter{tocdepth}{$if(toc-depth)$$toc-depth$$else$2$endif$}
+\tableofcontents
+\clearpage
+}
+$endif$
+$if(lof)$
+\listoffigures
+$endif$
+$if(lot)$
+\listoftables
+$endif$
+$if(linestretch)$
+\setstretch{$linestretch$}
+$endif$
+$body$
+
+$if(natbib)$
+$if(bibliography)$
+$if(biblio-title)$
+\renewcommand\refname{$biblio-title$}
+$endif$
+\bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
+
+$endif$
+$endif$
+$if(biblatex)$
+\printbibliography$if(biblio-title)$[title=$biblio-title$]$endif$
+
+$endif$
+$for(include-after)$
+$include-after$
+
+$endfor$
+\end{document}

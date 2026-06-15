@@ -116,6 +116,7 @@ with the `template:` field in its front matter (a brand sets the default):
 | Format | `template:` | What it is |
 |--------|-------------|------------|
 | **Report** (default) | `eisvogel-wrapper` (or `mvp`) | Title page, TOC, styled body - briefings, policy docs, reports. |
+| **Featured** | `featured` | A designed graphical cover (brand-colour band, logo, "Document overview" panel, classification chip, circular cover image, decorative accents) then a section-based body - proposals and client-facing reports. |
 | **Letter** | `letter` | No title page; recipient address positioned for a DL window envelope, date and `our-ref`/`your-ref`, optional letterhead (full-page artwork or a built logo + contact footer). |
 | **Slides** (beamer) | `beamer` | A beamer slide deck; standard beamer `theme`/`colortheme` with the brand palette wired in. |
 | **Slides** (modern) | `slides` | A flat, full-bleed slide deck (pure xelatex): solid brand-colour grounds, bold type, per-slide colour roles, auto-boxed images. |
