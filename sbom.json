@@ -5,7 +5,7 @@
       "hashes" : [
         {
           "alg" : "SHA-256",
-          "content" : "2411451598d6156c61d1421742a2895b6d9843884bf0705af2a5107a6e7d1af1"
+          "content" : "2be5a6153c4dbea68f421534e295669821dbdadf254f1c558bc0ccc6f4169adf"
         }
       ],
       "licenses" : [
@@ -30,9 +30,9 @@
           "value" : "md-to-pdf.sh"
         }
       ],
-      "purl" : "pkg:generic/opendigital/md-to-pdf.sh@1.0.10",
+      "purl" : "pkg:generic/opendigital/md-to-pdf.sh@1.0.11",
       "type" : "file",
-      "version" : "1.0.10"
+      "version" : "1.0.11"
     },
     {
       "hashes" : [
@@ -63,9 +63,9 @@
           "value" : "scripts/extract-frontmatter.pl"
         }
       ],
-      "purl" : "pkg:generic/opendigital/scripts/extract-frontmatter.pl@1.0.10",
+      "purl" : "pkg:generic/opendigital/scripts/extract-frontmatter.pl@1.0.11",
       "type" : "file",
-      "version" : "1.0.10"
+      "version" : "1.0.11"
     },
     {
       "hashes" : [
@@ -96,9 +96,9 @@
           "value" : "scripts/install.sh"
         }
       ],
-      "purl" : "pkg:generic/opendigital/scripts/install.sh@1.0.10",
+      "purl" : "pkg:generic/opendigital/scripts/install.sh@1.0.11",
       "type" : "file",
-      "version" : "1.0.10"
+      "version" : "1.0.11"
     },
     {
       "hashes" : [
@@ -129,9 +129,9 @@
           "value" : "scripts/build-deb.sh"
         }
       ],
-      "purl" : "pkg:generic/opendigital/scripts/build-deb.sh@1.0.10",
+      "purl" : "pkg:generic/opendigital/scripts/build-deb.sh@1.0.11",
       "type" : "file",
-      "version" : "1.0.10"
+      "version" : "1.0.11"
     },
     {
       "hashes" : [
@@ -162,9 +162,9 @@
           "value" : "tools/make-sbom.pl"
         }
       ],
-      "purl" : "pkg:generic/opendigital/tools/make-sbom.pl@1.0.10",
+      "purl" : "pkg:generic/opendigital/tools/make-sbom.pl@1.0.11",
       "type" : "file",
-      "version" : "1.0.10"
+      "version" : "1.0.11"
     },
     {
       "hashes" : [
@@ -195,9 +195,9 @@
           "value" : "pandoc/templates/document-filters.lua"
         }
       ],
-      "purl" : "pkg:generic/opendigital/pandoc/templates/document-filters.lua@1.0.10",
+      "purl" : "pkg:generic/opendigital/pandoc/templates/document-filters.lua@1.0.11",
       "type" : "file",
-      "version" : "1.0.10"
+      "version" : "1.0.11"
     },
     {
       "hashes" : [
@@ -232,9 +232,9 @@
           "value" : "pandoc/templates/slides.lua"
         }
       ],
-      "purl" : "pkg:generic/opendigital/pandoc/templates/slides.lua@1.0.10",
+      "purl" : "pkg:generic/opendigital/pandoc/templates/slides.lua@1.0.11",
       "type" : "file",
-      "version" : "1.0.10"
+      "version" : "1.0.11"
     },
     {
       "hashes" : [
@@ -265,9 +265,9 @@
           "value" : "pandoc/templates/pipeline-preamble.tex"
         }
       ],
-      "purl" : "pkg:generic/opendigital/pandoc/templates/pipeline-preamble.tex@1.0.10",
+      "purl" : "pkg:generic/opendigital/pandoc/templates/pipeline-preamble.tex@1.0.11",
       "type" : "file",
-      "version" : "1.0.10"
+      "version" : "1.0.11"
     },
     {
       "hashes" : [
@@ -302,9 +302,9 @@
           "value" : "pandoc/templates/eisvogel-wrapper.latex"
         }
       ],
-      "purl" : "pkg:generic/opendigital/pandoc/templates/eisvogel-wrapper.latex@1.0.10",
+      "purl" : "pkg:generic/opendigital/pandoc/templates/eisvogel-wrapper.latex@1.0.11",
       "type" : "file",
-      "version" : "1.0.10"
+      "version" : "1.0.11"
     },
     {
       "hashes" : [
@@ -339,9 +339,9 @@
           "value" : "pandoc/templates/mvp.latex"
         }
       ],
-      "purl" : "pkg:generic/opendigital/pandoc/templates/mvp.latex@1.0.10",
+      "purl" : "pkg:generic/opendigital/pandoc/templates/mvp.latex@1.0.11",
       "type" : "file",
-      "version" : "1.0.10"
+      "version" : "1.0.11"
     },
     {
       "hashes" : [
@@ -376,9 +376,9 @@
           "value" : "pandoc/templates/letter.latex"
         }
       ],
-      "purl" : "pkg:generic/opendigital/pandoc/templates/letter.latex@1.0.10",
+      "purl" : "pkg:generic/opendigital/pandoc/templates/letter.latex@1.0.11",
       "type" : "file",
-      "version" : "1.0.10"
+      "version" : "1.0.11"
     },
     {
       "hashes" : [
@@ -413,9 +413,9 @@
           "value" : "pandoc/templates/beamer.latex"
         }
       ],
-      "purl" : "pkg:generic/opendigital/pandoc/templates/beamer.latex@1.0.10",
+      "purl" : "pkg:generic/opendigital/pandoc/templates/beamer.latex@1.0.11",
       "type" : "file",
-      "version" : "1.0.10"
+      "version" : "1.0.11"
     },
     {
       "hashes" : [
@@ -450,9 +450,9 @@
           "value" : "pandoc/templates/slides.latex"
         }
       ],
-      "purl" : "pkg:generic/opendigital/pandoc/templates/slides.latex@1.0.10",
+      "purl" : "pkg:generic/opendigital/pandoc/templates/slides.latex@1.0.11",
       "type" : "file",
-      "version" : "1.0.10"
+      "version" : "1.0.11"
     },
     {
       "hashes" : [
@@ -487,9 +487,9 @@
           "value" : "pandoc/templates/featured.latex"
         }
       ],
-      "purl" : "pkg:generic/opendigital/pandoc/templates/featured.latex@1.0.10",
+      "purl" : "pkg:generic/opendigital/pandoc/templates/featured.latex@1.0.11",
       "type" : "file",
-      "version" : "1.0.10"
+      "version" : "1.0.11"
     },
     {
       "hashes" : [
@@ -520,9 +520,9 @@
           "value" : "pandoc/templates/conformance-test.md"
         }
       ],
-      "purl" : "pkg:generic/opendigital/pandoc/templates/conformance-test.md@1.0.10",
+      "purl" : "pkg:generic/opendigital/pandoc/templates/conformance-test.md@1.0.11",
       "type" : "file",
-      "version" : "1.0.10"
+      "version" : "1.0.11"
     },
     {
       "hashes" : [
@@ -553,15 +553,15 @@
           "value" : "pandoc/brands/plain/template.yaml"
         }
       ],
-      "purl" : "pkg:generic/opendigital/pandoc/brands/plain/template.yaml@1.0.10",
+      "purl" : "pkg:generic/opendigital/pandoc/brands/plain/template.yaml@1.0.11",
       "type" : "file",
-      "version" : "1.0.10"
+      "version" : "1.0.11"
     },
     {
       "hashes" : [
         {
           "alg" : "SHA-256",
-          "content" : "82f8e76dc6d92a7a6dd5500b1512f353893c5ab482b550a798f1f6d6e610ade1"
+          "content" : "fda68e69b4dc5eb6da5fc82b8ac66baa384451d9aa23cbd1b99f3854ed3361c8"
         }
       ],
       "licenses" : [
@@ -586,9 +586,9 @@
           "value" : "man/md-to-pdf.1"
         }
       ],
-      "purl" : "pkg:generic/opendigital/man/md-to-pdf.1@1.0.10",
+      "purl" : "pkg:generic/opendigital/man/md-to-pdf.1@1.0.11",
       "type" : "file",
-      "version" : "1.0.10"
+      "version" : "1.0.11"
     },
     {
       "bom-ref" : "pkg:github/Wandmalfarbe/pandoc-latex-template@v3.4.0",
@@ -898,17 +898,17 @@
       ],
       "name" : "pandoc-wrapper",
       "type" : "application",
-      "version" : "1.0.10"
+      "version" : "1.0.11"
     },
-    "timestamp" : "2026-06-15T09:41:39Z",
+    "timestamp" : "2026-06-15T11:22:41Z",
     "tools" : [
       {
         "name" : "make-sbom.pl",
-        "version" : "1.0.10"
+        "version" : "1.0.11"
       }
     ]
   },
-  "serialNumber" : "urn:uuid:45ba8a17-d59c-4dee-b817-e09be3ec89f5",
+  "serialNumber" : "urn:uuid:dd53e943-025e-47b8-902e-6ae57d744c58",
   "specVersion" : "1.6",
   "version" : 1
 }
