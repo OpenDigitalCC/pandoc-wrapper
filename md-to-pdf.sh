@@ -6,7 +6,7 @@
 # See the LICENSE file for full terms and third-party attributions.
 
 # Script version marker
-SCRIPT_VERSION="1.0.11"
+SCRIPT_VERSION="1.0.12"
 
 # Global variables
 MDSRC=()
