@@ -142,6 +142,25 @@ slides; also the default for featured/report accents).
 .TP
 .B beamer\-accent:
 Brand\-colour name driving the accent colour.
+.SS Code blocks (any document)
+Fenced code renders as a panel: a light fill with a brand\-coloured rule down
+the left edge (keywords pick up the same accent), the language drives syntax
+highlighting, and long lines wrap inside the panel.
+.TP
+.B code\-accent\-color:
+Colour of the left rule and the keyword tokens (a brand\-colour name or a hex
+triplet). Defaults to a neutral blue.
+.TP
+.B code\-background\-color:
+Fill colour of the code panel (a brand\-colour name or a hex triplet).
+Defaults to a light grey.
+.PP
+Line numbers are on by default. They are drawn in the margin by
+.IR fvextra ", "
+so they are never part of the copyable code. Opt a single block out with the
+.B .nonumber
+class, e.g.
+.RB \[char96]\[char96]\[char96]{.python\ .nonumber} .
 .SS Report (template: eisvogel\-wrapper | mvp)
 .TP
 .B titlepage:

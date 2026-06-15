@@ -393,6 +393,14 @@ BRAND COLOURS
   beamer-structure:      brand-colour name driving the primary/ground colour
   beamer-accent:         brand-colour name driving the accent colour
 
+CODE BLOCKS  (any document)
+  code-accent-color:     left rule + keyword colour of the code panel
+                         (brand-colour name or hex; default a neutral blue)
+  code-background-color: code panel fill (brand-colour name or hex; default
+                         a light grey)
+  Fenced code is numbered by default; opt a block out with ```{.nonumber}
+  (or ```{.lang .nonumber}). Numbers sit in the margin, outside the copy text.
+
 REPORT  (template: eisvogel-wrapper | mvp)
   titlepage:             true to render the title page
   titlepage-color:       title-page background (hex)

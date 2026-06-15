@@ -35,6 +35,20 @@ A paragraph of body text to confirm basic flow renders.
 Term
 : A definition list entry, to confirm definition lists work.
 
+## A code block
+
+Exercises the code panel (tcolorbox Shaded + fvextra): syntax highlighting,
+the default line numbers, the `.nonumber` opt-out, and long-line wrapping.
+
+```python
+def total(items):
+    return sum(i.price for i in items)   # a long-enough line to confirm it wraps inside the panel rather than overflowing the page margin
+```
+
+```{.text .nonumber}
+plain output, no line numbers
+```
+
 ## A datatable with a row span
 
 ```datatable

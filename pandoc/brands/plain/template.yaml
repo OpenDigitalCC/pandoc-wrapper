@@ -75,6 +75,16 @@ titlepage-color: plain-charcoal
 titlepage-text-color: white
 titlepage-rule-color: plain-steel
 
+# ---------------------------------------------------------------
+# Code block colours
+# ---------------------------------------------------------------
+# Fenced code renders as a panel: a light fill with a brand-coloured rule
+# down the left edge (keywords pick up the same accent). Either value may be
+# a brand-colour name (resolved to its hex) or a raw hex triplet. Omit both
+# to fall back to the neutral defaults baked into the pipeline.
+code-background-color: plain-light
+code-accent-color: plain-accent
+
 # Template and engine
 template: eisvogel-wrapper
 pdf-engine: xelatex

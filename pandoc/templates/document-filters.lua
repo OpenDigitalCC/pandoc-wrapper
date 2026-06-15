@@ -136,6 +136,8 @@ local function read_meta(meta)
     "page-background-color",
     "header-color",
     "footer-color",
+    "code-accent-color",
+    "code-background-color",
   }
 
   local convenience_colours = {
@@ -160,21 +162,44 @@ local function read_meta(meta)
   -- directly in LaTeX (\color{tprf-blue}, \colorbox{onion-3}, etc.)
   -- without manual \definecolor lines in the YAML.
   -- ---------------------------------------------------------------
+  -- Build LaTeX \definecolor block. Order: brand-colours first (sorted for
+  -- deterministic output), then the code-panel colour overrides.
+  local colour_defs = {}
+
   if next(brand_colours) then
-    -- Build sorted list for deterministic output order
     local sorted_names = {}
     for name, _ in pairs(brand_colours) do
       table.insert(sorted_names, name)
     end
     table.sort(sorted_names)
-
-    -- Build LaTeX \definecolor block
-    local colour_defs = {}
     for _, name in ipairs(sorted_names) do
       table.insert(colour_defs, string.format(
         "\\definecolor{%s}{HTML}{%s}", name, brand_colours[name]
       ))
     end
+  end
+
+  -- Code-block panel colours. pipeline-preamble.tex \providecolor's neutral
+  -- defaults; emitting \definecolor here overrides them when a brand or
+  -- document sets the field (resolved to hex above). Only emit a value that
+  -- already looks like a hex triplet so an unresolved colour name can never
+  -- reach LaTeX as a broken \definecolor.
+  local code_colour_targets = {
+    ["code-accent-color"]     = "code-accent",
+    ["code-background-color"] = "code-background",
+  }
+  for field, target in pairs(code_colour_targets) do
+    if meta[field] then
+      local hex = pandoc.utils.stringify(meta[field]):gsub("^#", "")
+      if hex:match("^%x%x%x%x%x%x$") or hex:match("^%x%x%x$") then
+        table.insert(colour_defs, string.format(
+          "\\definecolor{%s}{HTML}{%s}", target, hex
+        ))
+      end
+    end
+  end
+
+  if #colour_defs > 0 then
     local colour_block = table.concat(colour_defs, "\n")
 
     -- Inject into header-includes (prepend so colours are available
@@ -1244,13 +1269,36 @@ end
 -- Filter sequence
 -- ===============================================================
 
+-- Plain code blocks get left-margin line numbers by default. The numbers are
+-- drawn by fancyvrb in the margin (outside the copyable text). Opt out of a
+-- single block with a `.nonumber` class; an explicit `.numberLines` is left
+-- untouched. Charts/datatables are handled earlier and never reach here.
+local function default_line_numbers(el)
+  for _, c in ipairs(el.classes) do
+    if c == "numberLines" then
+      return el
+    end
+  end
+  for i, c in ipairs(el.classes) do
+    if c == "nonumber" then
+      el.classes:remove(i)   -- drop the marker; leave numbering off
+      return el
+    end
+  end
+  el.classes:insert("numberLines")
+  return el
+end
+
 -- Combined CodeBlock handler
 local function handle_codeblock(el)
   if el.classes[1] == "datatable" then
     return handle_datatable(el)
-  else
-    return handle_chart(el)
   end
+  local charted = handle_chart(el)
+  if charted ~= nil then
+    return charted
+  end
+  return default_line_numbers(el)
 end
 
 return {

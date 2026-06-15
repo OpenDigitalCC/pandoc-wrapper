@@ -50,6 +50,12 @@ These are set per-document only when needed; the brand supplies sensible default
 : Override running heads/feet. `""` suppresses a position; omitting the field
   keeps the brand default.
 
+`code-accent-color`, `code-background-color`
+: Style the code-block panel — the left rule/keyword colour and the fill. Hex or
+  a brand-colour name; the brand supplies defaults. Fenced code is line-numbered
+  by default (numbers sit in the margin, outside the copy text); opt a block out
+  with the `.nonumber` class, e.g. ` ```{.python .nonumber} `.
+
 ## Special boxes — full list
 
 | Box | Purpose | Auto-decoration |

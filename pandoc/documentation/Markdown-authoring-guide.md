@@ -699,6 +699,33 @@ def calculate_total(items):
 Always specify the language - it enables syntax highlighting in the output.
 Common identifiers: `python`, `bash`, `javascript`, `yaml`, `markdown`, `sql`.
 
+### How code blocks are styled
+
+Fenced code renders as a panel that reads as a distinct object: a light fill,
+a brand-coloured rule down the left edge, a gently rounded corner, and keyword
+tokens picked out in the brand accent. Long lines wrap inside the panel rather
+than overflowing the page.
+
+Two brand fields tune the panel (set them in the brand `template.yaml`, or per
+document in the front matter). Each takes a brand-colour name or a raw hex
+triplet:
+
+```yaml
+code-background-color: plain-light    # the panel fill
+code-accent-color:     plain-accent   # the left rule and keywords
+```
+
+Line numbers are on by default. They are drawn in the margin, so they are
+never part of the copyable code. Opt a single block out with the `.nonumber`
+class - use the attribute form of the fence:
+
+````markdown
+```{.text .nonumber}
+$ md-to-pdf report.md
+PDF created: report.pdf
+```
+````
+
 # Document layout options
 
 ## Covers and title pages

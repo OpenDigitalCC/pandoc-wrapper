@@ -79,3 +79,87 @@
 \renewcommand{\arrayrulewidth}{1mm}
 \hyphenpenalty=5000
 \tolerance=1000
+
+% ===================================================================
+% Code blocks (skylighting / default highlighting path)
+% -------------------------------------------------------------------
+% Present fenced code as a panel: a light fill, a brand-coloured rule down
+% the left edge and a gently rounded corner, so code reads as a distinct
+% object rather than indented prose. Brands tune two colours:
+%
+%   code-background-color : the panel fill          -> colour "code-background"
+%   code-accent-color     : left rule + keywords    -> colour "code-accent"
+%
+% document-filters.lua resolves a brand-colour NAME in either field to a hex
+% value and emits the matching \definecolor; the \providecolor lines below are
+% the neutral fallback used when a brand sets neither.
+%
+% Line numbers are on by default (the filter adds .numberLines to every plain
+% code block; opt a single block out with the .nonumber class). fancyvrb draws
+% them in the margin, so they are never part of the copyable text.
+% ===================================================================
+% fvextra provides line wrapping (breaklines) for highlighted blocks. The
+% eisvogel template loads it; the other base templates use bare fancyvrb, where
+% a long line would overflow the panel. Loading it here (it pulls in fancyvrb,
+% and a second load under eisvogel is a harmless no-op) makes wrapping uniform.
+\usepackage{fvextra}
+\providecolor{code-background}{HTML}{F7F7F7}
+\providecolor{code-accent}{HTML}{435489}
+\providecolor{code-linenum}{HTML}{B0B0B0}
+\providecolor{code-string}{HTML}{00999A}
+\providecolor{code-comment}{HTML}{8E8E8E}
+\providecolor{code-function}{HTML}{8250DF}
+
+% The panel: a breakable tcolorbox so long listings span pages. Registered at
+% begin-document so it overrides pandoc's own (empty) Shaded environment from
+% $highlighting-macros$, whatever order the base template loads things in.
+% (tcolorbox + the breakable/skins libraries are already loaded, [most], above.)
+\AtBeginDocument{%
+  \ifcsname Shaded\endcsname
+    \renewenvironment{Shaded}{%
+      \begin{tcolorbox}[
+        breakable, enhanced,
+        colback=code-background, colframe=code-accent,
+        boxrule=0pt, leftrule=2.2pt, arc=2pt, outer arc=2pt,
+        boxsep=0pt, left=24pt, right=7pt, top=6pt, bottom=6pt,
+        enlarge top by=2pt, enlarge bottom by=3pt,
+        before skip=8pt, after skip=10pt
+      ]%
+    }{%
+      \end{tcolorbox}%
+    }%
+  \fi
+}
+
+% Line-number look: small, muted, set a little away from the code. Also turn on
+% line wrapping for every highlighted block: the eisvogel template sets
+% breaklines on its own Highlighting env, but the stock one the other templates
+% use does not, so a long line would overflow the panel. Setting it as a global
+% fancyvrb default fixes that uniformly without touching each template's
+% font-size handling.
+\AtBeginDocument{%
+  \ifdefined\theFancyVerbLine
+    \renewcommand{\theFancyVerbLine}{%
+      \color{code-linenum}\scriptsize\sffamily\arabic{FancyVerbLine}}%
+    \fvset{numbersep=13pt,breaklines=true}%
+  \fi
+}
+
+% Token colours: keep skylighting's defaults for most tokens, but pull the
+% keyword family onto the brand accent and settle strings/comments/functions
+% onto a calm, legible palette. Applied here directly (not in a begin-document
+% hook, which mangles the #1 parameter): every base template that \input's this
+% file does so AFTER pandoc's $highlighting-macros$, so the \...Tok commands
+% already exist. Guarded so a document with no code is untouched.
+\ifdefined\KeywordTok
+  \renewcommand{\KeywordTok}[1]{\textcolor{code-accent}{\textbf{#1}}}
+  \renewcommand{\ControlFlowTok}[1]{\textcolor{code-accent}{\textbf{#1}}}
+  \renewcommand{\StringTok}[1]{\textcolor{code-string}{#1}}
+  \renewcommand{\CharTok}[1]{\textcolor{code-string}{#1}}
+  \renewcommand{\SpecialStringTok}[1]{\textcolor{code-string}{#1}}
+  \renewcommand{\VerbatimStringTok}[1]{\textcolor{code-string}{#1}}
+  \renewcommand{\CommentTok}[1]{\textcolor{code-comment}{\textit{#1}}}
+  \renewcommand{\CommentVarTok}[1]{\textcolor{code-comment}{\textit{#1}}}
+  \renewcommand{\DocumentationTok}[1]{\textcolor{code-comment}{\textit{#1}}}
+  \renewcommand{\FunctionTok}[1]{\textcolor{code-function}{#1}}
+\fi
