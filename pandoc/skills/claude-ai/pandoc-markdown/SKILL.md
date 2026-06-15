@@ -171,6 +171,9 @@ opening: "Dear Ms Smith,"  # optional
 closing: "Yours sincerely,"  # optional
 signature: "S. J. Mackintosh"   # optional
 signature-title: "Director"     # optional
+signature-image:                # optional scanned signature(s), above the name
+  - signature.png               #   one or more (co-signatories, side by side)
+window-position: left           # optional; left (default) or right env. window
 ---
 
 Body of the letter as ordinary Markdown. Boxes, datatables and charts all
@@ -178,7 +181,9 @@ still work if needed.
 ```
 
 Everything except `to` is optional. The body is plain Markdown between the
-opening and the closing.
+opening and the closing. `window-position: right` swaps the address to the right
+(date/refs to the left) for right-window envelopes. `signature-image` takes a
+bare filename (brand folder) or full path; `signature-height` tunes it (18mm).
 
 **Letterhead** - two mutually exclusive ways to brand the page:
 
@@ -188,9 +193,12 @@ opening and the closing.
   plus a ruled footer from `letterhead-company:` and `letterhead-contact:` (a
   list of contact lines). Optional: `letterhead-logo-height` (default 16mm),
   `letterhead-rule-colour`, `letterhead-text-colour` (brand-colour names work).
+  Statutory second footer line: `letterhead-tel`, `letterhead-reg-number`,
+  `letterhead-vat` (each optional, shown only if set). A stylised divider can
+  replace the plain rule with `letterhead-rule-image: footer-rule.png`.
 
 Asset files (logo, artwork) resolve by bare filename from the brand folder, the
-same as brand logos. Layout can be nudged with `address-top` (default 45mm),
+same as brand logos. Layout can be nudged with `address-top` (default 40mm),
 `letter-margin`, `letter-top`, `letter-bottom`.
 
 ## Slides

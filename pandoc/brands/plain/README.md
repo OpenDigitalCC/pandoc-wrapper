@@ -83,7 +83,13 @@ letterhead-contact:
   - "1 High Street, Town AB1 2CD"
   - "hello@example.org"
 letterhead-rule-colour: plain-accent   # a brand-colour name
-# ...or a single full-page artwork instead:
+# Statutory footer line (constant per company, so set it here):
+letterhead-tel: "+44 161 000 0000"
+letterhead-reg-number: "12345678"
+letterhead-vat: "GB 123 4567 89"
+# Stylised divider instead of the plain rule (optional):
+# letterhead-rule-image: footer-rule.png
+# ...or a single full-page artwork instead of all the above:
 # letterhead: letterhead.pdf
 ```
 

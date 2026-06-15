@@ -432,18 +432,27 @@ $if(letterhead-logo)$
       \includegraphics[height=$if(letterhead-logo-height)$$letterhead-logo-height$$else$16mm$endif$]{$letterhead-logo$}%
     \end{minipage}}\fi}
 $endif$
-% Footer: a rule plus the company name and/or a contact line, in the bottom
-% margin of every page. Shown when either letterhead-company or letterhead-contact
-% is set, so a brand that supplies only a company name still gets a ruled footer.
+% Footer: a rule, the company name and contact line, and an optional statutory
+% line (tel / registered-company number / VAT number - the last two are legally
+% required on business letters in many jurisdictions). Sits in the bottom margin
+% of every page. Shown when any company/contact/statutory field is set, so a
+% brand that supplies only a company name still gets a ruled footer.
+\newcommand{\lhsep}{\enspace\textbullet\enspace}
 $if(letterhead-company)$\def\lhfooterwanted{}$endif$
 $if(letterhead-contact)$\def\lhfooterwanted{}$endif$
+$if(letterhead-tel)$\def\lhfooterwanted{}\def\lhstatwanted{}$endif$
+$if(letterhead-reg-number)$\def\lhfooterwanted{}\def\lhstatwanted{}$endif$
+$if(letterhead-vat)$\def\lhfooterwanted{}\def\lhstatwanted{}$endif$
 \ifdefined\lhfooterwanted
 \AddToShipoutPictureFG{%
   \put(\LenToUnit{\lhmargin},\LenToUnit{$if(letterhead-footer-bottom)$$letterhead-footer-bottom$$else$14mm$endif$}){%
     \begin{minipage}{\lhwidth}\footnotesize
-      {\color{$if(letterhead-rule-colour)$$letterhead-rule-colour$$else$black!35$endif$}\rule{\linewidth}{0.4pt}}\\[3pt]
+      $if(letterhead-rule-image)$\noindent\includegraphics[width=\linewidth]{$letterhead-rule-image$}\\[3pt]$else${\color{$if(letterhead-rule-colour)$$letterhead-rule-colour$$else$black!35$endif$}\rule{\linewidth}{0.4pt}}\\[3pt]$endif$
       {\color{$if(letterhead-text-colour)$$letterhead-text-colour$$else$black!60$endif$}%
-       $if(letterhead-company)$\textbf{$letterhead-company$}$if(letterhead-contact)$\quad{}$endif$$endif$$for(letterhead-contact)$$letterhead-contact$$sep$ \enspace\textbullet\enspace $endfor$}%
+       $if(letterhead-company)$\textbf{$letterhead-company$}$if(letterhead-contact)$\quad{}$endif$$endif$$for(letterhead-contact)$$letterhead-contact$$sep$\lhsep{}$endfor$%
+       \ifdefined\lhstatwanted\\[2pt]%
+       $if(letterhead-tel)$Tel\ $letterhead-tel$$endif$$if(letterhead-reg-number)$$if(letterhead-tel)$\lhsep{}$endif$Reg.\ No.\ $letterhead-reg-number$$endif$$if(letterhead-vat)$$if(letterhead-tel)$\lhsep{}$else$$if(letterhead-reg-number)$\lhsep{}$endif$$endif$VAT\ No.\ $letterhead-vat$$endif$%
+       \fi}%
     \end{minipage}}}
 \fi
 $endif$
@@ -548,20 +557,27 @@ $endif$
 \pagestyle{empty} % no page numbers; the letterhead footer owns the page foot
 $if(linestretch)$\setstretch{$linestretch$}$endif$
 
-% --- Letter header: window-envelope address (left), date + references (right) ---
+% --- Letter header: window-envelope address + date/references -----------------
 % \vspace* brings the recipient address to the window position measured from the
 % paper top, regardless of the top margin; page 2+ is unaffected.
+% window-position (left|right) puts the address block under a left or right
+% envelope window; the date/reference block takes the opposite side.
 \vspace*{\dimexpr $if(address-top)$$address-top$$else$40mm$endif$ - $if(letter-top)$$letter-top$$else$25mm$endif$\relax}
 
+\newcommand{\lwRecipient}{$if(to)$$for(to)$$to$$sep$ \\
+$endfor$$else$$if(address)$$address$$endif$$endif$}
+\newcommand{\lwDateRefs}{$if(from)$$for(from)$$from$$sep$ \\
+$endfor$ \\[1.5ex]$endif$$date$$if(our-ref)$ \\Our ref: $our-ref$$endif$$if(your-ref)$ \\Your ref: $your-ref$$endif$}
+\def\lwWindowPos{$if(window-position)$$window-position$$else$left$endif$}
+\def\lwWindowRight{right}
 \noindent
-\begin{minipage}[t]{0.56\textwidth}\raggedright
-$if(to)$$for(to)$$to$$sep$ \\
-$endfor$$else$$if(address)$$address$$endif$$endif$
-\end{minipage}\hfill
-\begin{minipage}[t]{0.40\textwidth}\raggedleft
-$if(from)$$for(from)$$from$$sep$ \\
-$endfor$ \\[1.5ex]$endif$$date$$if(our-ref)$ \\Our ref: $our-ref$$endif$$if(your-ref)$ \\Your ref: $your-ref$$endif$
-\end{minipage}
+\ifx\lwWindowPos\lwWindowRight
+  \begin{minipage}[t]{0.40\textwidth}\raggedright\lwDateRefs\end{minipage}\hfill
+  \begin{minipage}[t]{0.56\textwidth}\raggedright\lwRecipient\end{minipage}%
+\else
+  \begin{minipage}[t]{0.56\textwidth}\raggedright\lwRecipient\end{minipage}\hfill
+  \begin{minipage}[t]{0.40\textwidth}\raggedleft\lwDateRefs\end{minipage}%
+\fi
 
 \vspace{2\baselineskip}
 $if(subject)$
@@ -582,8 +598,9 @@ $if(closing)$
 
 \vspace{\baselineskip}
 \noindent\begin{minipage}{\linewidth}
-$closing$\\[3\baselineskip]
-$if(signature)$$signature$$endif$$if(signature-title)$\\$signature-title$$endif$
+$closing$\\[$if(signature-image)$0.4\baselineskip$else$3\baselineskip$endif$]
+$if(signature-image)$$for(signature-image)$\includegraphics[height=$if(signature-height)$$signature-height$$else$18mm$endif$]{$signature-image$}$sep$\hspace{1.5em}$endfor$\\[0.3\baselineskip]
+$endif$$if(signature)$$signature$$endif$$if(signature-title)$\\$signature-title$$endif$
 \end{minipage}
 $endif$
 

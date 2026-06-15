@@ -1,4 +1,4 @@
-.TH MD-TO-PDF 1 "June 2026" "pandoc-wrapper 1.0.4" "User Commands"
+.TH MD-TO-PDF 1 "June 2026" "pandoc-wrapper 1.0.5" "User Commands"
 .SH NAME
 md-to-pdf \- convert Markdown to a branded PDF via Pandoc and XeLaTeX
 .SH SYNOPSIS
@@ -31,17 +31,24 @@ of contents and styled body \- reports, briefings and policy documents.
 .RB "(" "template: letter" ")."
 No title page; the recipient address
 .RB "(" to: ", a list of lines)"
-is positioned for a DL window envelope, with the date and optional
+is positioned for a DL window envelope
+.RB "(" "window-position: left" "|" right ")"
+with the date and optional
 .BR our-ref / your-ref
-on the right, an optional bold
+on the opposite side, an optional bold
 .B subject
 and optional
 .BR opening / closing / signature .
+A scanned signature image (or several, side by side) may be supplied with
+.BR signature-image .
 A letterhead is either a full-page
 .B letterhead:
 artwork, or built from
 .BR letterhead-logo ", " letterhead-company " and " letterhead-contact
-(a ruled logo-and-contact footer).
+(a ruled logo-and-contact footer). An optional statutory line adds
+.BR letterhead-tel ", " letterhead-reg-number " and " letterhead-vat ;
+.B letterhead-rule-image
+replaces the plain footer rule with a graphic.
 .TP
 .B slides (beamer)
 .RB "(" "template: beamer" ")."

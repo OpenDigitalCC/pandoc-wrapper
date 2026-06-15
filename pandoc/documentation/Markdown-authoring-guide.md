@@ -798,6 +798,7 @@ opening: "Dear Ms Smith,"   # optional
 closing: "Yours sincerely," # optional
 signature: "S. J. Mackintosh"  # optional
 signature-title: "Director"    # optional
+window-position: left       # optional; left (default) or right envelope window
 ---
 
 The body of the letter follows as ordinary Markdown.
@@ -806,6 +807,22 @@ The body of the letter follows as ordinary Markdown.
 Only `to` is required; every other field is optional. The body - everything
 after the front matter - is ordinary Markdown and may use the boxes, datatables
 and charts described above.
+
+`window-position` controls which side the recipient address sits on, to match
+the envelope: `left` (the default) or `right`. The date and reference lines take
+the opposite side.
+
+A scanned signature can be dropped in above the typed name with
+`signature-image` - a single file or a list of files (for co-signatories,
+rendered side by side). Files live in the brand folder (bare filename) or at a
+full path, like any other asset:
+
+```yaml
+signature-image:
+  - signature-director.png    # one or more; rendered left-to-right
+  - signature-secretary.png
+signature-height: 18mm        # optional, per image (default 18mm)
+```
 
 ## Letterhead
 
@@ -836,8 +853,37 @@ Use one route or the other, not both - the full-page artwork is assumed to
 supply everything. Asset files (the logo or artwork) live in the brand folder
 and are referenced by bare filename, exactly like brand logos.
 
+### Statutory footer line
+
+Business letters in many jurisdictions must show the company's registered number
+and VAT number. Set them (and an optional phone number) and they appear on a
+second footer line, below the contact line:
+
+```yaml
+letterhead-tel: "+44 161 000 0000"      # optional
+letterhead-reg-number: "12345678"       # registered company number
+letterhead-vat: "GB 123 4567 89"        # VAT registration number
+```
+
+Each is optional and only the ones set are shown, separated by bullets
+(`Tel … • Reg. No. … • VAT No. …`). Because these are constant for a company
+they usually belong in the brand's `template.yaml`, not the individual letter.
+
+### Stylised footer rule
+
+By default the footer is separated from the page by a thin coloured rule
+(`letterhead-rule-colour`). To use a brand graphic instead - a stylised divider
+spanning the text width - point `letterhead-rule-image` at an image:
+
+```yaml
+letterhead-rule-image: footer-rule.png   # replaces the plain rule
+```
+
+The image is scaled to the text width; height follows its aspect ratio. When set
+it takes precedence over `letterhead-rule-colour`.
+
 The address position can be tuned with `address-top` (distance of the address
-from the top of the page, default `45mm`) and the page margins with
+from the top of the page, default `40mm`) and the page margins with
 `letter-margin`, `letter-top` and `letter-bottom`.
 
 # Slides
