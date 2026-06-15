@@ -208,11 +208,12 @@ same as brand logos. Layout can be nudged with `address-top` (default 40mm),
 ## Featured cover (`template: featured`)
 
 A client-facing report/proposal with a designed graphical cover: a brand-colour
-band, logo, title/subtitle, a metadata block, a "Document overview" panel, an
-optional classification chip, an optional circular `cover-image`, and decorative
-accent circles - then a section-based body with brand-coloured headings and a
-page X-of-Y footer. Cover colours come from the brand (title-page colour +
-accent); override with `cover-color` / `cover-text-color` / `cover-accent`.
+band across the lower third, logo, title/subtitle, a metadata block, a "Document
+overview" panel, an optional classification chip, and an optional `cover-image`
+(its own natural shape, placed under the title) - then a section-based body with
+brand-coloured headings and a page X-of-Y footer. Cover colours come from the
+brand (title-page colour + accent); override with `cover-color` /
+`cover-text-color` / `cover-accent`.
 
 ```yaml
 template: featured
@@ -222,11 +223,15 @@ classification: "Confidential" # optional chip + header
 fao: "The Board"              # optional
 docver: "v1.0"                # optional
 overview: [Reserves, Risk, Recommendations]   # optional panel
-cover-image: cover.png        # optional; clipped into the cover circle
+cover-image: cover.png        # optional; placed under the title (natural shape)
+watermark: "DRAFT"            # optional; diagonal text, content pages only
+page-background: texture.png  # optional; full-page image behind every page
 ```
 
 Everything except `title` is optional. Uses sections (not chapters) - best for
-briefings, proposals and board papers.
+briefings, proposals and board papers. Note: 16-bit PNGs silently fail to render
+in xelatex - re-save cover/background images as 8-bit. `scripts/build-bg-guides.sh`
+generates per-template "safe-area" masks for designing backgrounds.
 
 ## Slides
 

@@ -1,0 +1,24 @@
+\documentclass{article}
+\usepackage[paperwidth=256mm,paperheight=144mm,margin=0pt]{geometry}
+\input{common}
+\begin{document}
+% ---- Page 1: content slide ----
+\begin{tikzpicture}[x=1mm,y=1mm,remember picture,overlay]
+  \coordinate (O) at (current page.south west);
+  \pageframe{256}{144}{modern slides \textemdash{} content slide (25.6$\times$14.4cm) \quad\mdseries the slide ground fills the whole slide}
+  \zone{0}{141}{256}{144}{accent strip}
+  \zone{17}{110}{180}{130}{slide title}
+  \zone{17}{11}{239}{105}{content (auto-boxed images sit here)}
+  \legend{}
+\end{tikzpicture}
+\clearpage
+% ---- Page 2: title / section slide ----
+\begin{tikzpicture}[x=1mm,y=1mm,remember picture,overlay]
+  \coordinate (O) at (current page.south west);
+  \pageframe{256}{144}{modern slides \textemdash{} title / section slide}
+  \zone{0}{141}{256}{144}{accent strip}
+  \zone{30}{58}{226}{104}{title / subtitle}
+  \zone{30}{20}{150}{46}{author / date}
+  \legend{}
+\end{tikzpicture}
+\end{document}

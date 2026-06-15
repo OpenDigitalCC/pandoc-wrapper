@@ -1,0 +1,28 @@
+% Shared preamble for the background safe-area guides.
+% Built by scripts/build-bg-guides.sh into dist/bg-guides/*.pdf.
+% Each guide draws a template's page(s) with light hatching over the zones that
+% the template fills with content, so a designer making a background image knows
+% where it is safe to place focal points (the clear, un-hatched areas).
+\usepackage{tikz}
+\usetikzlibrary{patterns,calc}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\definecolor{guideink}{HTML}{555555}
+% Each page sets the origin coordinate (O) to the page's bottom-left corner, then
+% all zones are given in mm from there.
+% \zone{x1}{y1}{x2}{y2}{label} - a hatched "reserved for content" block.
+\newcommand{\zone}[5]{%
+  \fill[pattern=north east lines,pattern color=black!18] ($(O)+(#1,#2)$) rectangle ($(O)+(#3,#4)$);%
+  \draw[black!42,very thin] ($(O)+(#1,#2)$) rectangle ($(O)+(#3,#4)$);%
+  \node[guideink,font=\sffamily\scriptsize,align=center,inner sep=1pt] at ($(O)+({(#1+#3)/2},{(#2+#4)/2})$) {#5};%
+}
+% \pageframe{W}{H}{caption} - draw the page border + a caption.
+\newcommand{\pageframe}[3]{%
+  \draw[black!30] (O) rectangle ($(O)+(#1,#2)$);%
+  \node[anchor=north west,guideink,font=\sffamily\footnotesize,align=left] at ($(O)+(5,#2-4)$) {\bfseries #3};%
+}
+% Legend strip, bottom-left.
+\newcommand{\legend}[1]{%
+  \node[anchor=south west,black!55,font=\sffamily\scriptsize,align=left] at ($(O)+(5,3)$)%
+    {\tikz\fill[pattern=north east lines,pattern color=black!18,draw=black!42](0,0)rectangle(3mm,2.5mm);\ hatched = content area, keep focal points clear\quad#1};%
+}

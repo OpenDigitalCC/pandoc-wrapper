@@ -1,0 +1,22 @@
+\documentclass{article}
+\usepackage[paperwidth=160mm,paperheight=90mm,margin=0pt]{geometry}
+\input{common}
+\begin{document}
+% ---- Page 1: content frame ----
+\begin{tikzpicture}[x=1mm,y=1mm,remember picture,overlay]
+  \coordinate (O) at (current page.south west);
+  \pageframe{160}{90}{beamer slides \textemdash{} content frame (16:9) \quad\mdseries background-image fills the frame}
+  \zone{0}{78}{160}{90}{frame title (coloured bar)}
+  \zone{8}{8}{152}{74}{content}
+  \legend{}
+\end{tikzpicture}
+\clearpage
+% ---- Page 2: title frame ----
+\begin{tikzpicture}[x=1mm,y=1mm,remember picture,overlay]
+  \coordinate (O) at (current page.south west);
+  \pageframe{160}{90}{beamer slides \textemdash{} title frame}
+  \zone{15}{40}{145}{74}{title / subtitle}
+  \zone{15}{14}{100}{32}{author / institute / date}
+  \legend{}
+\end{tikzpicture}
+\end{document}

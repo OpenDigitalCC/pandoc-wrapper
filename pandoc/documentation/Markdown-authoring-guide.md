@@ -796,9 +796,9 @@ are: title top-left, date top-right, author bottom-left, page number bottom-righ
 
 For a client-facing report or proposal with a designed front page, select the
 featured format with `template: featured`. It produces a graphical cover page -
-a colour band, the brand logo, title/subtitle, a metadata block, a "Document
-overview" panel, an optional classification chip, an optional circular cover
-image, and decorative accent circles - followed by a section-based body with
+a brand-colour band across the lower third, the brand logo, title/subtitle, a
+metadata block, a "Document overview" panel, an optional classification chip,
+and an optional cover image - followed by a section-based body with
 brand-coloured headings and a page X-of-Y footer. All cover colours come from
 the brand (it reuses the title-page colour and the brand accent), so a featured
 document is on-brand with no styling in the document.
@@ -819,7 +819,10 @@ overview:                             # optional bulleted panel, top right
   - Current reserves position
   - Income concentration risk
   - Recommendations
-cover-image: cover.png                # optional; clipped into the cover circle
+cover-image: cover.png                # optional; placed under the title, its
+                                      #   own natural shape (no cropping)
+watermark: "DRAFT"                    # optional; light diagonal text, not on the cover
+page-background: texture.png          # optional; full-page image behind every page
 toc: true
 ---
 
@@ -829,13 +832,38 @@ The body is ordinary Markdown and uses all the boxes, datatables and charts
 described above. Blockquotes pick up an accent rule and tint.
 ```
 
-Everything except `title` is optional - omit `cover-image` and the circle is a
-solid accent disc; omit `overview` or `classification` and those elements simply
-do not appear. The cover colours can be overridden per document with
-`cover-color`, `cover-text-color` and `cover-accent` (a brand-colour name or
-hex), and a line of contact/publisher text can be placed in the colour band with
-`cover-footer`. The featured format always uses sections (not chapters), so it
-is best for briefings, proposals and board papers rather than long books.
+Everything except `title` is optional - omit `cover-image` and that area is left
+clear; omit `overview` or `classification` and those elements simply do not
+appear. The `cover-image` keeps its own shape and aspect (it is not cropped to a
+circle) and sits left-aligned beneath the title block, clear of the colour band.
+
+The cover colours can be overridden per document with `cover-color`,
+`cover-text-color` and `cover-accent` (a brand-colour name or hex), and a line of
+contact/publisher text can be placed in the colour band with `cover-footer`.
+
+`watermark` overlays light diagonal text on the content pages (not the cover);
+`page-background` lays a full-page image behind every page (behind the cover
+design too). When designing a background or cover image, the **background
+safe-area guides** show exactly which areas the template fills with content -
+see below.
+
+The featured format always uses sections (not chapters), so it is best for
+briefings, proposals and board papers rather than long books.
+
+## Background safe-area guides
+
+If you are creating a background image or cover artwork for a template, the
+repository can generate a mask that shows where each template places its content,
+so you keep your focal points in the clear areas:
+
+```bash
+scripts/build-bg-guides.sh      # writes dist/bg-guides/<template>-background-guide.pdf
+```
+
+There is one guide per template that has a background (featured, report, slides,
+beamer; letter has none). Each is a PDF with light hatching over the reserved
+zones - logo, title, overview panel, cover-image area, colour band, header and
+footer - which a designer can drop in as a mask layer.
 
 # Letters
 
@@ -1123,6 +1151,19 @@ header-includes: |
 
 If the failure persists, confirm the `multirow` package is installed in
 your TeX distribution (it ships in `texlive-latex-extra` on Debian).
+
+## A cover or background image is missing (but the build succeeds)
+
+If a `cover-image`, `page-background` or other image silently fails to appear -
+with no build error - it is most likely a **16-bit PNG**, which xelatex drops
+without complaint. Re-save it as 8-bit:
+
+```bash
+convert input.png -depth 8 -strip output.png
+```
+
+Most photos are already 8-bit; this mainly bites generated or 48-bit-exported
+images.
 
 ## Other PDF build failures
 

@@ -1,4 +1,4 @@
-.TH MD-TO-PDF 1 "June 2026" "pandoc-wrapper 1.0.9" "User Commands"
+.TH MD-TO-PDF 1 "June 2026" "pandoc-wrapper 1.0.10" "User Commands"
 .SH NAME
 md-to-pdf \- convert Markdown to a branded PDF via Pandoc and XeLaTeX
 .SH SYNOPSIS
@@ -42,11 +42,15 @@ title/subtitle, a metadata block
 .B "Document overview"
 panel
 .RB "(" overview ", a list), an optional " classification " chip, an optional"
-circular
 .B cover-image
-and decorative accents \- then a section-based body with brand-coloured
-headings and a page X-of-Y footer. Cover colours come from the brand
-.RB "(" cover-color ", " cover-text-color ", " cover-accent " override)."
+(its own natural shape, placed under the title) \- then a section-based body
+with brand-coloured headings and a page X-of-Y footer. Cover colours come from
+the brand
+.RB "(" cover-color ", " cover-text-color ", " cover-accent " override);"
+.B watermark
+adds diagonal text to the content pages and
+.B page-background
+lays a full-page image behind every page.
 .TP
 .B letter
 .RB "(" "template: letter" ")."

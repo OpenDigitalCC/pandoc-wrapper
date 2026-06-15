@@ -17,8 +17,11 @@ man/md-to-pdf.1                  man page
 scripts/
 ├── extract-frontmatter.pl       YAML::XS front-matter reader
 ├── install.sh                   user/system installer
+├── conformance.sh               render the fixture through each document template
+├── build-bg-guides.sh           background safe-area mask PDFs (dist/bg-guides/)
 └── build-deb.sh                 builds the .deb (dpkg-deb, no root)
 tools/make-sbom.pl               regenerates sbom.json from tools/sbom-config.json
+tools/bg-guides/                 TikZ sources for the background safe-area guides
 sbom.json                        CycloneDX 1.6 SBOM (regenerate after changing what ships)
 VERSION                          single source of truth for the version
 scripts/bump-version.sh          bump VERSION + stamp SCRIPT_VERSION/man page
@@ -122,17 +125,23 @@ Active templates (`template:` selects by name):
 
 - `featured.latex` - a report with a designed graphical cover. Pandoc default +
   `pipeline-preamble` (so the full body feature set works) + an original TikZ
-  cover (a brand-colour band, logo, title/subtitle, a metadata block, a
-  "Document overview" panel, an optional `classification` chip, an optional
-  circular `cover-image`, decorative accent circles), brand-coloured ragged-right
-  headings, a styled blockquote, and a page X-of-Y footer. All cover colours come
-  from the brand (`titlepage-color`/`-text-color`/`-rule-color` resolved to hex +
-  `beamer-accent` as a name); override with `cover-color`/`cover-text-color`/
-  `cover-accent`. Forced to **scrartcl** (sections, not chapters; chapter is
-  mapped onto section like the letter template), so it stays on the pdf writer
-  with `document-filters.lua` and needs **no driver change**. Ported from a
-  hand-crafted PSTricks template (the cover is re-implemented in TikZ; no PSTricks
-  dependency). Best for proposals/briefings, not long books.
+  cover: a half-height brand-colour band (lower 56mm), logo, title/subtitle, a
+  metadata block, a "Document overview" panel, an optional `classification` chip,
+  and an optional `cover-image` placed at its natural shape under the title (no
+  crop/circle, clear of the band). Plus brand-coloured ragged-right headings, a
+  styled blockquote, and a page X-of-Y footer (uses `\pageref*` so the total is
+  not a coloured link). All cover colours come from the brand
+  (`titlepage-color`/`-text-color`/`-rule-color` resolved to hex + `beamer-accent`
+  as a name); override with `cover-color`/`cover-text-color`/`cover-accent`. Also
+  supports `watermark` (diagonal text, content pages only, via `background`) and
+  `page-background` (full-page image behind every page, via eso-pic). Forced to
+  **scrartcl** (sections, not chapters; chapter mapped onto section like the
+  letter template), so it stays on the pdf writer with `document-filters.lua` and
+  needs **no driver change**. Ported from a hand-crafted PSTricks template (cover
+  re-implemented in TikZ; no PSTricks dependency). Cover zones are hand-measured;
+  if you change the cover layout, update `tools/bg-guides/featured.tex`. Best for
+  proposals/briefings, not long books. (16-bit PNGs silently fail in xelatex -
+  cover/background images must be 8-bit.)
 
 A document's `template:` overrides the brand default, so the letter, slides (and
 any alternative format) are selectable per document. The driver saves the

@@ -176,6 +176,18 @@ $endfor$
 \colorlet{cover-accent}{$if(cover-accent)$$cover-accent$$else$$if(beamer-accent)$$beamer-accent$$else$cover-band$endif$$endif$}
 \definecolor{cover-rule}{HTML}{$if(titlepage-rule-color)$$titlepage-rule-color$$else$5D6D7E$endif$}
 
+% Optional full-page background image (behind every page) and/or a diagonal text
+% watermark. The watermark is suppressed on the cover (it has its own design);
+% the background image, if any, still shows behind the cover.
+$if(page-background)$
+\usepackage{eso-pic}
+\AddToShipoutPictureBG{\put(0,0){\includegraphics[width=\paperwidth,height=\paperheight]{$page-background$}}}
+$endif$
+$if(watermark)$
+\usepackage{background}
+\backgroundsetup{angle=45,scale=2,opacity=0.07,color=cover-band,contents={\sffamily\bfseries $watermark$}}
+$endif$
+
 % Headings: brand accent colour, sans, ragged right (no full-justified titles).
 \titleformat{\section}{\sffamily\bfseries\Large\color{cover-band}\raggedright}{\color{cover-accent}\thesection}{0.8em}{}
 \titleformat{\subsection}{\sffamily\bfseries\large\color{cover-band}\raggedright}{\color{cover-accent}\thesubsection}{0.8em}{}
@@ -191,7 +203,9 @@ $endfor$
 \fancyhead[L]{\color{cover-rule}\sffamily\small $title$}
 $if(classification)$\fancyhead[R]{\color{cover-rule}\sffamily\small\MakeUppercase{$classification$}}$endif$
 \fancyfoot[L]{\color{cover-rule}\sffamily\small{}$for(author)$$author$$sep$, $endfor$}
-\fancyfoot[R]{\color{cover-rule}\sffamily\small\thepage\ of \pageref{LastPage}}
+% \pageref* (starred) so the total is plain text, not a coloured hyperlink -
+% otherwise "2 of 2" shows the second number in the link colour.
+\fancyfoot[R]{\color{cover-rule}\sffamily\small\thepage\ of \pageref*{LastPage}}
 
 % Styled blockquote: accent left rule on a tinted ground.
 \AtBeginEnvironment{quote}{%
@@ -202,25 +216,17 @@ $if(classification)$\fancyhead[R]{\color{cover-rule}\sffamily\small\MakeUppercas
 
 % The cover page itself.
 \newcommand{\pwFeaturedCover}{%
-\begingroup
 \thispagestyle{empty}%
+$if(watermark)$\NoBgThispage$endif$
 \begin{tikzpicture}[remember picture,overlay]
-  % Lower colour band
-  \fill[cover-band] (current page.south west) rectangle ([yshift=112mm]current page.south east);
-  % Decorative accent circles within the band
-  \fill[cover-accent,opacity=0.55] ([shift={(34mm,46mm)}]current page.south west) circle (3.2mm);
-  \fill[cover-rule,opacity=0.5]    ([shift={(-28mm,64mm)}]current page.south east) circle (5mm);
-  \draw[cover-text,opacity=0.45,line width=0.4mm] ([shift={(-22mm,30mm)}]current page.south east) circle (2.4mm);
-  \fill[cover-text,opacity=0.25]   ([shift={(60mm,86mm)}]current page.south west) circle (1.6mm);
-  % Circular cover image (or an accent disc) centred on the band's upper edge
+  % Lower colour band - half height (56mm), in a brand colour.
+  \fill[cover-band] (current page.south west) rectangle ([yshift=56mm]current page.south east);
+  % Cover image at its natural shape and aspect (no circle, no clip), left-aligned
+  % beneath the title/info block, anchored just above the band so it never
+  % overlaps it. Grows upward; capped so it clears the title block.
   $if(cover-image)$
-  \begin{scope}
-    \clip ([yshift=112mm]current page.south) circle (30mm);
-    \node at ([yshift=112mm]current page.south) {\includegraphics[width=66mm]{$cover-image$}};
-  \end{scope}
-  \draw[cover-text,line width=0.6mm] ([yshift=112mm]current page.south) circle (30mm);
-  $else$
-  \fill[cover-accent] ([yshift=112mm]current page.south) circle (28mm);
+  \node[anchor=south west] at ([shift={(22mm,64mm)}]current page.south west)
+    {\includegraphics[width=110mm,height=100mm,keepaspectratio]{$cover-image$}};
   $endif$
   % Logo, top-left
   $if(titlepage-logo)$
@@ -265,8 +271,7 @@ $if(classification)$\fancyhead[R]{\color{cover-rule}\sffamily\small\MakeUppercas
     at ([shift={(22mm,16mm)}]current page.south west) {$cover-footer$};
   $endif$
 \end{tikzpicture}%
-\clearpage
-\endgroup}
+\clearpage}
 %% <<< pandoc-wrapper
 
 $if(natbib)$

@@ -1,0 +1,27 @@
+\documentclass{article}
+\usepackage[paperwidth=210mm,paperheight=297mm,margin=0pt]{geometry}
+\input{common}
+\begin{document}
+% ---- Page 1: cover (page-background shows behind this) ----
+\begin{tikzpicture}[x=1mm,y=1mm,remember picture,overlay]
+  \coordinate (O) at (current page.south west);
+  \pageframe{210}{297}{featured \textemdash{} cover (A4) \quad\mdseries page-background sits behind these zones}
+  \zone{0}{0}{210}{56}{colour band}
+  \zone{22}{64}{132}{164}{cover image\\(placed, natural shape)}
+  \zone{22}{261}{67}{277}{logo}
+  \zone{153}{269}{188}{278}{classification}
+  \zone{22}{175}{127}{245}{title / subtitle / info}
+  \zone{136}{195}{188}{245}{overview panel}
+  \legend{}
+\end{tikzpicture}
+\clearpage
+% ---- Page 2: content page ----
+\begin{tikzpicture}[x=1mm,y=1mm,remember picture,overlay]
+  \coordinate (O) at (current page.south west);
+  \pageframe{210}{297}{featured \textemdash{} content page (A4)}
+  \zone{25}{268}{185}{278}{header (title / classification)}
+  \zone{25}{25}{185}{262}{body text}
+  \zone{25}{12}{185}{20}{footer (author / page x of y)}
+  \legend{}
+\end{tikzpicture}
+\end{document}

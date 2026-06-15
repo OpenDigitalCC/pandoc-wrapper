@@ -1,0 +1,24 @@
+\documentclass{article}
+\usepackage[paperwidth=210mm,paperheight=297mm,margin=0pt]{geometry}
+\input{common}
+\begin{document}
+% ---- Page 1: title page (with a titlepage-background image) ----
+\begin{tikzpicture}[x=1mm,y=1mm,remember picture,overlay]
+  \coordinate (O) at (current page.south west);
+  \pageframe{210}{297}{report (eisvogel) \textemdash{} title page (A4) \quad\mdseries titlepage-background sits behind these zones}
+  \zone{40}{266}{175}{270}{rule}
+  \zone{40}{130}{175}{215}{title / subtitle / author / date}
+  \zone{40}{33}{95}{55}{title-page logo}
+  \legend{}
+\end{tikzpicture}
+\clearpage
+% ---- Page 2: content page (page-background behind the text) ----
+\begin{tikzpicture}[x=1mm,y=1mm,remember picture,overlay]
+  \coordinate (O) at (current page.south west);
+  \pageframe{210}{297}{report \textemdash{} content page (A4)}
+  \zone{25}{270}{185}{280}{running header}
+  \zone{25}{28}{185}{263}{body text}
+  \zone{25}{14}{185}{22}{running footer}
+  \legend{}
+\end{tikzpicture}
+\end{document}
