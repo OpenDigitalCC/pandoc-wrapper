@@ -31,12 +31,16 @@ These are set per-document only when needed; the brand supplies sensible default
 : Use a pre-designed PDF as the cover instead of the generated title page
   (set `titlepage: false`).
 
-`backpage`, `backpage-text`, `backpage-publisher`, `backpage-website`
-: Optional back cover.
+`backpage`, `backpage-text`, `backpage-publisher`, `backpage-website`,
+`backpage-logo`, `backpage-color`, `backpage-text-color`
+: Optional full-page back cover (defaults to the brand's title-page colour). In
+  twoside it is always placed on a verso (the back of the last sheet).
 
-`classoption: [oneside|twoside]`, `printready: true|false`
-: Digital (symmetric, no crop marks) vs print (binding-ready, crop marks, page
-  count rounded to a multiple of 4).
+`classoption: [oneside|twoside]`
+: Single- vs double-sided. Reports number the front matter in roman (i, ii) and
+  restart at arabic 1 on the first content page. `twoside` is duplex-aware: even
+  page count, back cover on a verso, and `:::marginbox` notes on the outer edge
+  (swapping left/right by page side).
 
 `header-left/center/right`, `footer-left/center/right`
 : Override running heads/feet. `""` suppresses a position; omitting the field

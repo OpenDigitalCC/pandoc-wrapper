@@ -79,9 +79,18 @@ header-includes lines moved into the preamble/wrapper).
 Active templates (`template:` selects by name):
 
 - `eisvogel-wrapper.latex` - the default for all brands. Pristine Eisvogel
-  3.4.0 (`vendor/eisvogel-3.4.0.latex`) plus two marked inserts: an
-  `\input{pipeline-preamble}` and the shared Eisvogel-look overrides.
-  Upgrade Eisvogel by re-vendoring and re-applying the two inserts.
+  3.4.0 (`vendor/eisvogel-3.4.0.latex`) plus several `pandoc-wrapper` marked
+  inserts (each fenced `%% >>> pandoc-wrapper ... %% <<< pandoc-wrapper` or a
+  one-line marked comment): the `\input{pipeline-preamble}`, the shared
+  Eisvogel-look overrides, the duplex page-parity helpers, the roman/arabic
+  front-to-main numbering transition, and the back cover. Upgrade Eisvogel by
+  re-vendoring and re-applying every marked insert (grep `pandoc-wrapper`).
+  Front matter is roman, body arabic-from-1; `backpage:` renders a back cover;
+  `classoption: twoside` is duplex-aware (even page count, back cover on a
+  verso, outer-edge `marginbox`). Known edge case: with a back cover **and**
+  content that ends on a recto, the cover still lands on a verso and the total
+  is still even, but two blank pages can precede it (a scrbook `openright`
+  interaction; KOMA's own `\cleardoubleevenpage` does the same).
 - `mvp.latex` - standalone minimal template (pandoc default + the preamble).
 - `letter.latex` - letter format (pandoc default + preamble, forced to
   `scrartcl`). No title page; recipient address positioned for a DL window

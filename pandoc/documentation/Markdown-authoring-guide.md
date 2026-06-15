@@ -717,7 +717,8 @@ titlepage: false
 cover-pdf: Graphics/frontcover.pdf
 ```
 
-A back cover can also be added:
+A back cover can also be added. It is a full-page panel on the last page,
+coloured from the brand's title-page colour by default:
 
 ```yaml
 backpage: true
@@ -726,29 +727,52 @@ backpage-text: |
   Can span multiple lines.
 backpage-publisher: "Organisation Name"
 backpage-website: "www.example.com"
+backpage-logo: logo-white.png   # optional
+backpage-color: "1A1A2E"        # optional; defaults to titlepage-color
+backpage-text-color: "FFFFFF"   # optional; defaults to titlepage-text-color
 ```
+
+In two-sided documents the back cover is always placed on a **verso** (the
+physical back of the last sheet) so it prints on the reverse - see below.
+
+## Page numbering
+
+Reports number the **front matter** (title page, contents) in roman numerals
+(i, ii, iii …) and restart at arabic **1** on the first content page, the usual
+book convention. Nothing to configure - it is automatic whenever the document
+has a title page.
 
 ## Print vs digital output
 
 Documents can be produced in two modes. The brand or build process usually
 handles this, but you can control it from your front matter.
 
-For digital distribution (symmetric layout, no crop marks):
+For digital distribution (single-sided, symmetric layout):
 
 ```yaml
 classoption:
   - oneside
-printready: false
 ```
 
-For professional printing (binding-ready layout, crop marks, page count
-rounded to a multiple of 4):
+For double-sided (duplex) printing:
 
 ```yaml
 classoption:
   - twoside
-printready: true
 ```
+
+Two-sided mode is duplex-aware:
+
+- **Even page count** - the document is padded so the total is even and every
+  duplex sheet is fully printed.
+- **Back cover on the reverse** - if `backpage` is set, it always lands on a
+  verso (the back of a sheet).
+- **Outer-edge margin notes** - `:::marginbox` notes sit on the outer edge of
+  the page, swapping to the right on a right-hand page and the left on a
+  left-hand page; headers and footers mirror to the outer edge too.
+
+(`classoption: twoside` is what enables all of this; `printready` is an
+independent flag a brand/build may use for its own print toggles.)
 
 ## Headers and footers
 

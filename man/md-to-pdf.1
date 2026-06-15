@@ -1,4 +1,4 @@
-.TH MD-TO-PDF 1 "June 2026" "pandoc-wrapper 1.0.7" "User Commands"
+.TH MD-TO-PDF 1 "June 2026" "pandoc-wrapper 1.0.8" "User Commands"
 .SH NAME
 md-to-pdf \- convert Markdown to a branded PDF via Pandoc and XeLaTeX
 .SH SYNOPSIS
@@ -25,7 +25,14 @@ the brand system (colours, fonts, identity).
 .TP
 .B report
 The default (\fBeisvogel-wrapper\fR, or the minimal \fBmvp\fR): title page, table
-of contents and styled body \- reports, briefings and policy documents.
+of contents and styled body \- reports, briefings and policy documents. Front
+matter is numbered in roman, the body restarts at arabic 1. An optional
+.B backpage
+adds a full-page back cover. With
+.B "classoption: twoside"
+the output is duplex-aware: even page count, the back cover on a verso, and
+.B :::marginbox
+notes on the outer edge.
 .TP
 .B letter
 .RB "(" "template: letter" ")."

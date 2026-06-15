@@ -631,7 +631,7 @@ $if(page-background)$
 $endif$
 
 %
-% for the background color of the title page
+% for the background color of the title page (and the back cover)
 %
 $if(titlepage)$
 \usepackage{pagecolor}
@@ -643,6 +643,12 @@ $if(geometry)$
 $else$
 \usepackage[margin=2.5cm,includehead=true,includefoot=true,centering]{geometry}
 $endif$
+$endif$
+$if(backpage)$
+% Back cover needs the page-colour machinery even when there is no title page
+% (a redundant load when titlepage is set is harmless).
+\usepackage{pagecolor}
+\usepackage{afterpage}
 $endif$
 
 %
@@ -978,11 +984,35 @@ $endif$
   \fi
 }
 $endif$
+
+%% >>> pandoc-wrapper: duplex (twoside) page parity helpers
+% These keep the back cover on a physical verso and the total page count even
+% for duplex. They use the live page counter \value{page} (like \cleardoublepage
+% - stable, no oscillation). This is only correct because logical page parity
+% equals the physical sheet side: the front matter is numbered in roman and the
+% body starts (arabic 1) on a recto via \cleardoublepage, so the front matter
+% occupies a whole number of sheets and body page N sits on physical sheet-side
+% N. See the \pagenumbering{roman}/\cleardoublepage transition below.
+\makeatletter
+% Clear to a verso (even page = the back of a duplex sheet), where the back cover
+% belongs. Always clears; only pads to the verso in twoside.
+\newcommand{\pwClearToVerso}{%
+  \clearpage\if@twoside\ifodd\value{page}\hbox{}\thispagestyle{empty}\clearpage\fi\fi}
+% Pad with a trailing blank so the total page count is even (every duplex sheet
+% fully printed). twoside only.
+\newcommand{\pwPadToEven}{%
+  \if@twoside\clearpage\ifodd\value{page}\else\hbox{}\thispagestyle{empty}\clearpage\fi\fi}
+\makeatother
 %% <<< pandoc-wrapper
 
 \begin{document}
 
 $if(titlepage)$
+%% pandoc-wrapper: number the front matter in roman from the title page onward,
+% so roman i is physical page 1 - the roman counter then tracks the physical
+% page, which makes the \cleardoublepage at the front-to-main transition decide
+% recto/verso correctly for duplex.
+\pagenumbering{roman}
 \begin{titlepage}
 $if(titlepage-background)$
 \newgeometry{top=2cm, right=4cm, bottom=3cm, left=4cm}
@@ -1047,7 +1077,6 @@ $endif$
 \end{flushleft}
 \end{titlepage}
 \restoregeometry
-\pagenumbering{arabic}
 $endif$
 
 $if(has-frontmatter)$
@@ -1100,6 +1129,15 @@ $if(linestretch)$
 $endif$
 $if(has-frontmatter)$
 \mainmatter
+$else$
+$if(titlepage)$
+%% pandoc-wrapper: end of the roman-numbered front matter - start the content on
+% a recto at arabic 1. In twoside \cleardoublepage lands page 1 on a recto, so
+% body page parity then equals the physical sheet side (needed for the duplex
+% back cover and even-page padding).
+\cleardoublepage
+\pagenumbering{arabic}
+$endif$
 $endif$
 $body$
 
@@ -1130,4 +1168,34 @@ $for(include-after)$
 $include-after$
 
 $endfor$
+%% >>> pandoc-wrapper: back cover + duplex page-count parity
+$if(backpage)$
+% Back cover. In twoside it is forced onto a physical verso (the back of the last
+% sheet, so it prints on the reverse) - which also makes the total page count
+% even. In oneside it is simply the final page.
+\pwClearToVerso
+\thispagestyle{empty}
+\definecolor{pw-backpage-bg}{HTML}{$if(backpage-color)$$backpage-color$$else$$if(titlepage-color)$$titlepage-color$$else$2C3E50$endif$$endif$}
+% Defer the colour restore to after this page ships (as the title page does);
+% calling \restorepagecolor on the same page would cancel the background before
+% shipout and the cover would print white. It is the last page anyway.
+\newpagecolor{pw-backpage-bg}\afterpage{\restorepagecolor}
+{\color[HTML]{$if(backpage-text-color)$$backpage-text-color$$else$$if(titlepage-text-color)$$titlepage-text-color$$else$FFFFFF$endif$$endif$}%
+\begin{flushleft}
+\vspace*{\fill}
+$if(backpage-logo)$\noindent\includegraphics[width=$if(logo-width)$$logo-width$$else$35mm$endif$]{$backpage-logo$}\par\vskip 2.5em
+$endif$
+$if(backpage-text)$\noindent{\large\textsf{$backpage-text$}}\par\vskip 2.5em
+$endif$
+$if(backpage-publisher)$\noindent{\textsf{\textbf{$backpage-publisher$}}}\par\vskip 0.3em
+$endif$
+$if(backpage-website)$\noindent{\textsf{$backpage-website$}}\par
+$endif$
+\vspace*{\fill}
+\end{flushleft}}
+$else$
+% No back cover: in twoside, pad to an even physical page count.
+\pwPadToEven
+$endif$
+%% <<< pandoc-wrapper
 \end{document}
