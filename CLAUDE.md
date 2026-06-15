@@ -18,7 +18,7 @@ scripts/
 ├── extract-frontmatter.pl       YAML::XS front-matter reader
 ├── install.sh                   user/system installer
 ├── conformance.sh               render the fixture through each document template
-├── build-bg-guides.sh           background safe-area mask PDFs (dist/bg-guides/)
+├── build-bg-guides.sh           background safe-area masks (pandoc/documentation/bg-guides/)
 └── build-deb.sh                 builds the .deb (dpkg-deb, no root)
 tools/make-sbom.pl               regenerates sbom.json from tools/sbom-config.json
 tools/bg-guides/                 TikZ sources for the background safe-area guides

@@ -29,13 +29,7 @@ writing to the source Markdown (which may be non-local):
 - Inject the resolved version as `--metadata revision=...`, consumed by the template - never back into the source.
 - Implement as `scripts/version.pl` called by the driver. Offer an opt-in sidecar mode for git-tracked local docs.
 
-## 4. Slides
-
-Both PDF slide formats are now done: the beamer format (`template: beamer`,
-stock beamer + brand-colour wiring + beamer writer) and the modern full-bleed
-format (`template: slides`, article + eso-pic single-pass backgrounds, role
-colours, auto-boxed images, slide-splitting via `slides.lua`). One slide item
-remains:
+## 4. Web-native slide renderer (optional add-on)
 
 - **`pandoc-wrapper-js-renderer` (optional add-on package)**: an optional
   component bundling a telemetry-free Chromium so Pandoc's HTML slide writers
@@ -43,11 +37,12 @@ remains:
   `.deb` (no browser dependency in the base tool); installed only when a user
   wants web-native decks. Brand colours would map to CSS variables.
 
-## 5. Automated tests
+## 5. Unit tests for the pure-logic functions
 
-No automated tests yet. The pure-logic functions are the first candidates:
-filename generation, the front-matter registry parsing, and (once built) version
-bumping. Add these before any larger refactor.
+`scripts/conformance.sh` renders the fixture through every document template (an
+integration gate), but there are no *unit* tests yet. The pure-logic functions
+are the first candidates: filename generation, the front-matter registry
+parsing, and (once built) version bumping. Add these before any larger refactor.
 
 ## 6. Perl port - only when triggered
 

@@ -852,18 +852,19 @@ briefings, proposals and board papers rather than long books.
 
 ## Background safe-area guides
 
-If you are creating a background image or cover artwork for a template, the
-repository can generate a mask that shows where each template places its content,
-so you keep your focal points in the clear areas:
+If you are creating a background image or cover artwork for a template, use the
+mask that shows where each template places its content, so you keep your focal
+points in the clear areas. The PDFs are kept alongside the documentation:
 
-```bash
-scripts/build-bg-guides.sh      # writes dist/bg-guides/<template>-background-guide.pdf
+```
+pandoc/documentation/bg-guides/<template>-background-guide.pdf
 ```
 
 There is one guide per template that has a background (featured, report, slides,
 beamer; letter has none). Each is a PDF with light hatching over the reserved
 zones - logo, title, overview panel, cover-image area, colour band, header and
-footer - which a designer can drop in as a mask layer.
+footer - which a designer can drop in as a mask layer. Regenerate them after a
+layout change with `scripts/build-bg-guides.sh` (sources in `tools/bg-guides/`).
 
 # Letters
 
