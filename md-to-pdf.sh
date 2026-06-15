@@ -336,6 +336,7 @@ Options:
   --order-alpha   Sort multiple input files alphabetically
   --debug         Verbose debug output
   --no-viewer     Do not open the PDF viewer after building
+  --fields        List the front-matter fields this tool adds, then exit
   -h, --help      Show this help and exit
 
 Brands:
@@ -368,12 +369,120 @@ print_brands_hint() {
     echo "md-to-pdf: no brands_dir configured; using bundled 'plain'. Run 'md-to-pdf --help' to set up your own brands." >&2
 }
 
+# Quick reference for the pandoc-wrapper front-matter fields (the ones this tool
+# adds on top of Pandoc). Standard Pandoc/Eisvogel/beamer metadata still works -
+# see the pandoc(1) manual and the Eisvogel template for those. Full prose is in
+# 'man md-to-pdf' (FRONTMATTER FIELDS) and the authoring guide.
+print_fields() {
+    cat <<'EOF'
+md-to-pdf front-matter fields (pandoc-wrapper additions)
+
+These are the fields this tool adds. Standard Pandoc and Eisvogel metadata
+(title, author, date, abstract, toc, geometry, fontfamily, classoption,
+beamer theme/colortheme/aspectratio, ...) also work - see pandoc(1).
+Values that name a colour use a brand-colours name; values that take an image
+use a bare filename (found in the brand folder) or an absolute path.
+
+CORE (any document)
+  brand:                 brand to merge (default: plain)
+  template:              format - eisvogel-wrapper (default), mvp, featured,
+                         letter, beamer, slides
+
+BRAND COLOURS
+  brand-colours:         map of name -> hex; each becomes a usable colour
+  beamer-structure:      brand-colour name driving the primary/ground colour
+  beamer-accent:         brand-colour name driving the accent colour
+
+REPORT  (template: eisvogel-wrapper | mvp)
+  titlepage:             true to render the title page
+  titlepage-color:       title-page background (hex)
+  titlepage-text-color:  title-page text (hex)
+  titlepage-rule-color:  title-page rule (hex)
+  titlepage-rule-height: title-page rule thickness (pt)
+  titlepage-logo:        title-page logo image
+  logo-width:            title-page logo width (e.g. 35mm)
+  titlepage-background:  full-page title-page background image
+  toc-own-page:          put the table of contents on its own page
+  book:                  true for chaptered (scrbook) output
+  classoption: twoside   duplex-aware: even page count, outer-edge margin notes
+  backpage:              true to render a full-page back cover
+  backpage-color:        back-cover background (hex; defaults to titlepage-color)
+  backpage-text-color:   back-cover text (hex)
+  backpage-logo:         back-cover logo image
+  backpage-text:         back-cover body text
+  backpage-publisher:    back-cover publisher line
+  backpage-website:      back-cover website line
+  page-background:        full-page image behind every page
+  page-background-opacity:opacity for page-background (default 0.2)
+  watermark:             diagonal watermark text on content pages
+
+FEATURED  (template: featured)  - graphical-cover report
+  cover-image:           image placed under the title (natural shape)
+  cover-color:           cover band colour (hex; defaults to titlepage-color)
+  cover-text-color:      cover text colour (hex)
+  cover-accent:          cover accent colour (brand-colour name)
+  cover-footer:          cover footer line text
+  classification:        classification chip + running header (e.g. CONFIDENTIAL)
+  clientname:            client/recipient line on the cover
+  fao:                   "for the attention of" line
+  docver:                document version line
+  overview:              list -> the "Document overview" panel
+  page-background:        full-page image behind every page
+  watermark:             diagonal watermark text on content pages
+
+LETTER  (template: letter)
+  to:                    list of recipient address lines (window-envelope block)
+  from:                  sender address lines
+  window-position:       left | right - which envelope window the address suits
+  subject:               bold subject line
+  opening:               salutation (e.g. "Dear ...")
+  closing:               sign-off (e.g. "Yours sincerely")
+  signature:             typed signature name
+  signature-image:       scanned signature image(s) - one value or a list
+  signature-height:      signature image height (default 18mm)
+  signature-title:       line under the signature (role/title)
+  our-ref:               our reference (right column)
+  your-ref:              your reference (right column)
+  letterhead:            full-page letterhead artwork image
+  letterhead-logo:       letterhead logo image (built-in letterhead)
+  letterhead-logo-height:letterhead logo height (default 16mm)
+  letterhead-company:    letterhead company name
+  letterhead-contact:    letterhead contact block
+  letterhead-tel:        statutory line - telephone
+  letterhead-reg-number: statutory line - company registration number
+  letterhead-vat:        statutory line - VAT number
+  letterhead-rule-image: graphic replacing the plain footer rule
+  letterhead-rule-colour:footer rule colour (when no rule image)
+  letterhead-text-colour:letterhead footer text colour
+  letter-top/-bottom/-margin, address-top, letterhead-logo-top,
+  letterhead-footer-bottom:  layout fine-tuning (lengths, e.g. 25mm)
+
+SLIDES - beamer  (template: beamer)
+  beamer-structure:      brand-colour name -> beamer structure colour
+  beamer-accent:         brand-colour name -> beamer accent colour
+  (standard beamer theme/colortheme/fonttheme/aspectratio also apply)
+
+SLIDES - modern  (template: slides)
+  slide-title-bg:        title/section slide ground (brand-colour name)
+  slide-accent:          accent colour (brand-colour name)
+  (per-slide role via a heading attribute: {.light} {.dark} {.accent})
+
+Body features (:::box fences, datatables, charts) are Markdown, not front
+matter - see the authoring guide. Full descriptions: man md-to-pdf, and
+/usr/share/doc/pandoc-wrapper/Markdown-authoring-guide.md
+EOF
+}
+
 # Parse command-line options
 parse_options() {
     for arg in "$@"; do
         case "$arg" in
             -h|--help)
                 print_help
+                exit 0
+                ;;
+            --fields|--list-fields)
+                print_fields
                 exit 0
                 ;;
             --order-alpha)

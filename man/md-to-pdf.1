@@ -96,8 +96,199 @@ heading attribute. Grounds default from the brand's
 and are overridable per deck with
 .BR slide-title-bg / slide-accent .
 .PP
-Full field lists and worked examples are in the authoring guide (see
+The fields each format understands are listed under
+.B FRONTMATTER FIELDS
+below (or run
+.BR "md-to-pdf \-\-fields" );
+worked examples are in the authoring guide (see
 .BR FILES ).
+.SH FRONTMATTER FIELDS
+The fields below are the ones
+.B md-to-pdf
+adds on top of Pandoc. Standard Pandoc and Eisvogel metadata
+.RB ( title ", " author ", " date ", " abstract ", " toc ", " geometry ", "
+.BR fontfamily ", " classoption ,
+the beamer
+.BR theme / colortheme / aspectratio ", ...)"
+also apply \- see
+.BR pandoc (1)
+and the Eisvogel template documentation. A field whose value names a colour
+takes a
+.B brand\-colours
+name; a field whose value is an image takes a bare filename (resolved in the
+brand folder) or an absolute path.
+.SS Core (any document)
+.TP
+.B brand:
+Brand to merge into the document (default
+.BR plain ).
+Document fields override the brand's.
+.TP
+.B template:
+Output format:
+.B eisvogel\-wrapper
+(default),
+.BR mvp ", " featured ", " letter ", " beamer " or " slides .
+.SS Brand colours
+.TP
+.B brand\-colours:
+A map of
+.IR name " -> " "hex colour" ;
+each entry becomes a colour usable by name elsewhere.
+.TP
+.B beamer\-structure:
+Brand\-colour name driving the primary / ground colour (beamer and modern
+slides; also the default for featured/report accents).
+.TP
+.B beamer\-accent:
+Brand\-colour name driving the accent colour.
+.SS Report (template: eisvogel\-wrapper | mvp)
+.TP
+.B titlepage:
+.B true
+to render the title page.
+.TP
+.BR titlepage\-color: ", " titlepage\-text\-color: ", " titlepage\-rule\-color:
+Title\-page background, text and rule colours (hex).
+.TP
+.B titlepage\-rule\-height:
+Title\-page rule thickness (pt).
+.TP
+.BR titlepage\-logo: ", " logo\-width:
+Title\-page logo image and its width (e.g.\&
+.BR 35mm ).
+.TP
+.B titlepage\-background:
+Full\-page title\-page background image.
+.TP
+.B toc\-own\-page:
+Put the table of contents on its own page.
+.TP
+.B book:
+.B true
+for chaptered
+.RB ( scrbook )
+output.
+.TP
+.B "classoption: twoside"
+Duplex\-aware output: even page count, back cover on a verso, and
+.B :::marginbox
+notes on the outer edge.
+.TP
+.B backpage:
+.B true
+to render a full\-page back cover.
+.TP
+.BR backpage\-color: ", " backpage\-text\-color:
+Back\-cover background (defaults to
+.BR titlepage\-color )
+and text colour (hex).
+.TP
+.BR backpage\-logo: ", " backpage\-text: ", " backpage\-publisher: ", " backpage\-website:
+Back\-cover logo image, body text, publisher line and website line.
+.TP
+.BR page\-background: ", " page\-background\-opacity:
+Full\-page image behind every page, and its opacity (default
+.BR 0.2 ).
+.TP
+.B watermark:
+Diagonal watermark text on the content pages.
+.SS Featured (template: featured)
+A report with a designed graphical cover.
+.TP
+.B cover\-image:
+Image placed under the title at its natural shape.
+.TP
+.BR cover\-color: ", " cover\-text\-color: ", " cover\-accent:
+Cover band colour (defaults to
+.BR titlepage\-color ),
+text colour (hex) and accent colour (brand\-colour name).
+.TP
+.B cover\-footer:
+Cover footer line text.
+.TP
+.B classification:
+Classification chip on the cover and a running header (e.g.\&
+.BR CONFIDENTIAL ).
+.TP
+.BR clientname: ", " fao: ", " docver:
+Client/recipient line, "for the attention of" line and document version line
+on the cover.
+.TP
+.B overview:
+A list rendered as the
+.B Document overview
+panel.
+.TP
+.BR page\-background: ", " watermark:
+As for the report format.
+.SS Letter (template: letter)
+.TP
+.B to:
+List of recipient address lines (positioned for a window envelope).
+.TP
+.B from:
+Sender address lines.
+.TP
+.B window\-position:
+.B left
+or
+.B right
+\- which envelope window the recipient block suits.
+.TP
+.B subject:
+Bold subject line.
+.TP
+.BR opening: ", " closing:
+Salutation and sign\-off.
+.TP
+.B signature:
+Typed signature name.
+.TP
+.BR signature\-image: ", " signature\-height: ", " signature\-title:
+Scanned signature image(s) \- one value or a list \- their height (default
+.BR 18mm ),
+and a line beneath (role/title).
+.TP
+.BR our\-ref: ", " your\-ref:
+Reference lines in the right\-hand column.
+.TP
+.B letterhead:
+Full\-page letterhead artwork image (overrides the built\-in letterhead).
+.TP
+.BR letterhead\-logo: ", " letterhead\-logo\-height: ", " letterhead\-company: ", " letterhead\-contact:
+Built\-in letterhead: logo image, its height (default
+.BR 16mm ),
+company name and contact block.
+.TP
+.BR letterhead\-tel: ", " letterhead\-reg\-number: ", " letterhead\-vat:
+Statutory footer line: telephone, company registration number and VAT number.
+.TP
+.BR letterhead\-rule\-image: ", " letterhead\-rule\-colour: ", " letterhead\-text\-colour:
+A graphic replacing the plain footer rule, the rule colour (when no image), and
+the footer text colour.
+.TP
+.BR letter\-top: ", " letter\-bottom: ", " letter\-margin: ", " address\-top: ", " letterhead\-logo\-top: ", " letterhead\-footer\-bottom:
+Layout fine\-tuning lengths (e.g.\&
+.BR 25mm ).
+.SS Slides \- beamer (template: beamer)
+.TP
+.BR beamer\-structure: ", " beamer\-accent:
+Brand\-colour names mapped onto the beamer structure and accent colours.
+Standard beamer
+.BR theme / colortheme / fonttheme / aspectratio
+also apply and take precedence.
+.SS Slides \- modern (template: slides)
+.TP
+.BR slide\-title\-bg: ", " slide\-accent:
+Title/section\-slide ground and accent colours (brand\-colour names). Set a
+per\-slide role with a heading attribute:
+.BR {.light} ", " {.dark} ", " {.accent} .
+.PP
+Body features \-
+.B :::
+box fences, datatables and charts \- are written in the Markdown body, not the
+front matter; see the authoring guide.
 .SH OPTIONS
 .TP
 .B \-\-order\-alpha
@@ -108,6 +299,12 @@ Print verbose debug output.
 .TP
 .B \-\-no\-viewer
 Do not open the PDF viewer after a successful build.
+.TP
+.B \-\-fields
+List the front\-matter fields this tool adds (a quick reference grouped by
+format) and exit. See
+.B FRONTMATTER FIELDS
+below for the same list with descriptions.
 .TP
 .BR \-h ", " \-\-help
 Show a help summary (including the resolved paths) and exit.

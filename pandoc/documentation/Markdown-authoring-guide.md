@@ -52,6 +52,10 @@ Other settings can be added to the front matter when needed - for example,
 whether to show a table of contents, page numbering depth, or print settings.
 These will be specified for you when relevant.
 
+For a complete, grouped list of the front-matter fields this tool adds (for
+every format), run `md-to-pdf --fields`, or see the **FRONTMATTER FIELDS**
+section of `man md-to-pdf`. The sections below cover each one in context.
+
 ## Page margins and margin notes
 
 Brands default to a **wide outer margin** so that margin notes (the `marginbox`,
