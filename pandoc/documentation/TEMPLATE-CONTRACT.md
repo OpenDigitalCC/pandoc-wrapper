@@ -76,9 +76,25 @@ another). Keep them in the preamble.
 A template passes if it compiles `conformance-test.md` (bundled in
 `pandoc/templates/`) to PDF and the output contains every element. That fixture
 exercises: headings, prose, a definition list, a datatable with a row span,
-three box types (including an auto-numbered recommendation), a pie chart, a bar
-chart, and a footnote citation - using an inline colour-only brand so the test
-is template-independent.
+**every** box type the filter emits (widebox, recommendation, examplebox,
+textbox, budgetbox, marginbox), a pie chart, a bar chart, and a footnote
+citation - using an inline colour-only brand so the test is template-independent.
+
+Exercising every box matters: each box maps to specific LaTeX the preamble must
+support (e.g. `marginbox` -> `\marginnote` + `\checkoddpage`, from the
+`marginnote` and `changepage` packages). A box that the fixture omits is a box
+whose package dependency is unverified - exactly how a missing package reaches a
+user as an "Undefined control sequence" (exit 43) instead of failing here.
+
+The quickest way to run it is the bundled runner, which renders the fixture
+through each document template (eisvogel-wrapper, mvp, letter) and exits
+non-zero if any fail:
+
+```bash
+scripts/conformance.sh
+```
+
+To drive a single template by hand:
 
 ```bash
 cd pandoc/templates

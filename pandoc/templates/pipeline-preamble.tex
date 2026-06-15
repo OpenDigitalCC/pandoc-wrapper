@@ -31,6 +31,13 @@
 \usepackage{needspace}
 \usepackage{wrapfig}
 \usepackage{fontawesome5}
+% marginbox divs emit \marginnote plus \checkoddpage/\ifoddpage (the filter's
+% output) so the note can lean into the outer margin. Load both packages here so
+% the feature works under every base template, not just those that happen to pull
+% them in. Without these, ::: marginbox fails with "Undefined control sequence
+% \marginnote" (then \checkoddpage) - exit 43.
+\usepackage{marginnote}
+\usepackage{changepage}\strictpagecheck % \checkoddpage needs strict checking
 
 % --- Charts (piechart / barchart rendered to TikZ/pgf) ---
 \usepackage{pgfplots}

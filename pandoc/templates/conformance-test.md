@@ -63,6 +63,19 @@ Adopt a portable template contract so brands stop coupling to one template.
 A worked example sits here, prefixed by an icon.
 :::
 
+::: textbox
+A right-floating text box (wrapfigure), prefixed by an info icon.
+:::
+
+::: budgetbox
+A budgetary proposal box, prefixed by a currency icon.
+:::
+
+::: marginbox
+A margin note - exercises \marginnote and \checkoddpage so a missing package
+fails the conformance render here, not in a user document.
+:::
+
 ## Charts
 
 ```piechart
