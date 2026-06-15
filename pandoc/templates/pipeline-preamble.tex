@@ -38,6 +38,18 @@
 % \marginnote" (then \checkoddpage) - exit 43.
 \usepackage{marginnote}
 \usepackage{changepage}\strictpagecheck % \checkoddpage needs strict checking
+% Widen margin notes to fill the outer margin (the marginnote default ~2cm looks
+% cramped in brands' wide-margin report layouts). \pwMarginNoteWidth is called at
+% the point of use (in the marginbox / margin-chart output - see
+% document-filters.lua), NOT in a preamble hook: KOMA-Script recalculates the
+% type area - and \marginparwidth - in its own \AtBeginDocument hook that runs
+% after any we could register, so a preamble value gets clobbered. Computed from
+% the live geometry so it adapts to whatever margins the brand set; floored at
+% 1cm so a narrow-margin document can never get a zero/negative width.
+\newcommand{\pwMarginNoteWidth}{%
+  \setlength{\marginparsep}{4mm}%
+  \setlength{\marginparwidth}{\dimexpr\paperwidth-\oddsidemargin-1in-\textwidth-\marginparsep-6mm\relax}%
+  \ifdim\marginparwidth<1cm\setlength{\marginparwidth}{1cm}\fi}
 
 % --- Charts (piechart / barchart rendered to TikZ/pgf) ---
 \usepackage{pgfplots}

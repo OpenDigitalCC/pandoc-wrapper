@@ -364,6 +364,7 @@ local function figure_wrap(content, opts, chart_type, entry_count)
 
   if style == "margin" then
     table.insert(lines, string.format("\\Needspace{%.1fcm}", needspace))
+    table.insert(lines, "\\pwMarginNoteWidth")
     table.insert(lines, "\\checkoddpage")
     table.insert(lines, "\\ifoddpage")
     table.insert(lines, "\\marginnote{%")
@@ -838,6 +839,7 @@ local function handle_box(el)
   elseif el.classes:includes("marginbox") then
     local latex = string.format([[
 \Needspace{%scm}
+  \pwMarginNoteWidth
   \checkoddpage
   \ifoddpage
   \marginnote{

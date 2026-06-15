@@ -53,7 +53,9 @@ for t in "${TEMPLATES[@]}"; do
         printf '\n'
         tail -n +2 "$FIXTURE"
     } > "$src"
-    if bash "$DRIVER" --no-viewer "$src" > "$log" 2>&1; then
+    # Run from $WORK so the driver writes its output PDF there (under tmp/),
+    # not into the current directory.
+    if ( cd "$WORK" && bash "$DRIVER" --no-viewer "$src" ) > "$log" 2>&1; then
         printf '  %-18s PASS\n' "$t"
     else
         printf '  %-18s FAIL  (see %s)\n' "$t" "$log"
