@@ -1,3 +1,6 @@
+# Claude Code local (per-machine) settings
+/.claude/settings.local.json
+
 # Scratch / one-off diagnostics
 /tmp/
 
