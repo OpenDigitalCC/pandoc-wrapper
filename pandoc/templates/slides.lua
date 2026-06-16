@@ -88,10 +88,11 @@ end
 
 -- A row of cards as a tcbitemize (equal-height boxes via \tcbitem, single pass).
 -- `cols` boxes per row; items beyond that wrap to further rows.
-local function raster(cols, items)
+local function raster(cols, items, extra)
   if #items == 0 then return '' end
-  return '\\par\\medskip\\begin{tcbitemize}[slraster, raster columns='..cols..']'
-    .. table.concat(items) .. '\\end{tcbitemize}\\par\\medskip'
+  local opts = 'slraster, raster columns='..cols..(extra and (', '..extra) or '')
+  return '\\par\\begin{tcbitemize}['..opts..']'
+    .. table.concat(items) .. '\\end{tcbitemize}\\par'
 end
 
 local CARD_ITEM = { white = '\\carditemw', fill = '\\carditemf', dark = '\\carditemd' }
@@ -125,7 +126,9 @@ local function build_cards(div, kind)
       items[#items+1] = m..'{'..esc(title or '')..'}{'..render(rest)..'}'
     end
   end
-  return raw(raster(math.min(#items, 3), items))
+  -- people grids run to two rows, so keep them tighter to fit one slide
+  local extra = kind == 'people' and 'top=9pt,bottom=9pt,raster row skip=3mm' or nil
+  return raw(raster(math.min(#items, 3), items, extra))
 end
 
 local function build_tiers(div)
@@ -140,7 +143,7 @@ local function build_tiers(div)
     items[#items+1] = '\\tieritem{'..col..'}{'..esc(t.attributes.stage or '')..'}{'
       ..esc(figure)..'}{'..esc(label)..'}{'..render(body)..'}'
   end
-  return raw(raster(math.min(#items, 3), items))
+  return raw(raster(math.min(#items, 3), items, 'height=7.4cm'))
 end
 
 local function build_milestones(div)
@@ -187,7 +190,7 @@ local function build_columns(div)
       local title, rest = take_heading(c.content)
       items[#items+1] = CARD_ITEM[card_role(c)]..'{'..esc(title or '')..'}{'..render(rest)..'}'
     end
-    return raw(raster(#cols, items))
+    return raw(raster(#cols, items, 'height=6.8cm'))
   end
   local w = string.format('%.3f', 0.97 / #cols)
   local out = {}

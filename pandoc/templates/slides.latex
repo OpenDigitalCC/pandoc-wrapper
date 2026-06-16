@@ -103,14 +103,20 @@ $if(slide-logo-bar)$\includegraphics[height=6.5mm]{$slide-logo-bar$}$else$$if(sl
 % hard line break in the heading; slides.lua passes the second part as #2
 % (the accent line). Either may be empty.
 % =====================================================================
+% Typography knobs (front matter). Headline size, body leading and paragraph
+% spacing are all overridable per deck.
+\newlength{\headlinesize}\setlength{\headlinesize}{$if(slide-headline-size)$$slide-headline-size$pt$else$27pt$endif$}
+\newcommand{\slidebody}{\linespread{$if(slide-linespread)$$slide-linespread$$else$1.12$endif$}\selectfont
+  \setlength{\parskip}{$if(slide-parskip)$$slide-parskip$$else$2.8mm$endif$}}
+
 \newcommand{\BeginSlide}[2][light]{}% redefined below to take optional label
 \RenewDocumentCommand{\BeginSlide}{O{light} m m}{%
   % #1 role, #2 headline (may contain \\ for two-tone), #3 running label
   \slidebreak \slideroles{#1}\paintbg{\curbg}\chrome{\curbar}{\curbarfg}{#3}%
   \color{\curfg}%
-  {\dhead\bfseries\fontsize{23}{27}\selectfont #2\par}%
-  \vspace{1.5mm}{\color{\headrule}\rule{\linewidth}{1.5pt}}\par\vspace{3.5mm}%
-  \normalfont\normalsize}
+  {\dhead\bfseries\fontsize{\headlinesize}{1.18\headlinesize}\selectfont #2\par}%
+  \vspace{2mm}{\color{\headrule}\rule{\linewidth}{1.5pt}}\par\vspace{4.5mm}%
+  \normalfont\normalsize\slidebody}
 \newcommand{\EndSlide}{\par}
 
 % A second-colour headline line (accent). Used inside #2 as \htwo{...}.
@@ -134,56 +140,60 @@ $if(slide-logo-bar)$\includegraphics[height=6.5mm]{$slide-logo-bar$}$else$$if(sl
 % the reference uses). slides.lua emits \begin{tcbraster}[slraster, raster
 % columns=N] then one \xxxitem per card.
 \tcbset{slraster/.style={raster equal height=rows, raster left skip=0pt,
-  raster right skip=0pt, raster column skip=3mm, raster row skip=3.5mm,
-  enhanced, arc=4pt, boxrule=0.4pt, drop shadow={black!12}, valign=top,
-  left=11pt, right=11pt, top=12pt, bottom=12pt}}
+  raster right skip=0pt, raster column skip=4.5mm, raster row skip=4.5mm,
+  enhanced, arc=4pt, boxrule=0.4pt, drop fuzzy shadow={black!40},
+  valign=top, left=14pt, right=14pt, top=15pt, bottom=15pt}}
+% Body text inside a narrow box reads better ragged-left than fully justified;
+% set slide-card-justify: true to override. Cards keep tight leading (the
+% slide-body line spacing is for running prose, not packed cards).
+\newcommand{\cardbodyalign}{\linespread{1.05}\selectfont $if(slide-card-justify)$$else$\raggedright$endif$}
 
 % --- Stat / KPI item: big serif figure + label + note, on a coloured fill.
 \newcommand{\statitem}[4][saccent]{\tcbitem[colback=#1,colframe=#1,boxrule=0pt,halign=center,valign=center]{%
-  {\dhead\bfseries\color{white}\fontsize{30}{34}\selectfont #2\par}\vspace{2mm}%
-  {\sffamily\bfseries\color{white}\normalsize #3\par}\vspace{1mm}%
+  {\dhead\bfseries\color{white}\fontsize{34}{38}\selectfont #2\par}\vspace{2.5mm}%
+  {\sffamily\bfseries\color{white}\large #3\par}\vspace{1mm}%
   {\sffamily\color{white!85}\footnotesize #4\par}}}
 
 % --- Content card items: accent heading + prose. White / filled / dark variants.
-\newcommand{\carditemw}[2]{\tcbitem[colback=white,colframe=black!8]{%
-  \ifstrempty{#1}{}{{\sffamily\bfseries\color{saccent}\large #1\par}\vspace{2mm}}{\color{scontentfg}#2}}}
-\newcommand{\carditemf}[2]{\tcbitem[colback=scontentbg,colframe=scontentbg,boxrule=0pt]{%
-  \ifstrempty{#1}{}{{\sffamily\bfseries\color{saccent}\large #1\par}\vspace{2mm}}{\color{scontentfg}#2}}}
-\newcommand{\carditemd}[2]{\tcbitem[colback=stitlebg,colframe=stitlebg,boxrule=0pt]{%
-  \ifstrempty{#1}{}{{\sffamily\bfseries\color{saccent}\large #1\par}\vspace{2mm}}{\color{white}#2}}}
+\newcommand{\carditemw}[2]{\tcbitem[colback=white,colframe=black!8]{\cardbodyalign
+  \ifstrempty{#1}{}{{\sffamily\bfseries\color{saccent}\LARGE #1\par}\vspace{2.5mm}}{\color{scontentfg}#2}}}
+\newcommand{\carditemf}[2]{\tcbitem[colback=scontentbg,colframe=scontentbg,boxrule=0pt]{\cardbodyalign
+  \ifstrempty{#1}{}{{\sffamily\bfseries\color{saccent}\LARGE #1\par}\vspace{2.5mm}}{\color{scontentfg}#2}}}
+\newcommand{\carditemd}[2]{\tcbitem[colback=stitlebg,colframe=stitlebg,boxrule=0pt]{\cardbodyalign
+  \ifstrempty{#1}{}{{\sffamily\bfseries\color{saccent}\LARGE #1\par}\vspace{2.5mm}}{\color{white}#2}}}
 
 % --- Person item: name + accent role + bio, on a filled card.
-\newcommand{\personitem}[3]{\tcbitem[colback=scontentbg,colframe=scontentbg,boxrule=0pt]{%
-  {\sffamily\bfseries\large\color{scontentfg}#1\par}\vspace{1mm}%
+\newcommand{\personitem}[3]{\tcbitem[colback=scontentbg,colframe=scontentbg,boxrule=0pt]{\cardbodyalign
+  {\sffamily\bfseries\large\color{scontentfg}#1\par}\vspace{0.8mm}%
   {\sffamily\bfseries\color{saccent}\footnotesize #2\par}\vspace{2mm}%
   {\sffamily\color{smuted}\footnotesize #3}}}
 
 % --- Tier item: per-card colour, stage, big figure, sub-label, rule, body.
 \newcommand{\tieritem}[5]{\tcbitem[colback=#1,colframe=#1,boxrule=0pt,halign=center]{%
-  {\sffamily\bfseries\color{white!92}\footnotesize\MakeUppercase{#2}\par}\vspace{3mm}%
-  {\dhead\bfseries\color{white}\fontsize{26}{30}\selectfont #3\par}\vspace{2mm}%
-  {\sffamily\bfseries\color{white!95}\footnotesize\MakeUppercase{#4}\par}\vspace{2mm}%
-  {\color{white}\rule{0.7\linewidth}{0.6pt}\par}\vspace{3mm}%
+  {\sffamily\bfseries\color{white!92}\footnotesize\MakeUppercase{#2}\par}\vspace{3.5mm}%
+  {\dhead\bfseries\color{white}\fontsize{26}{30}\selectfont #3\par}\vspace{2.5mm}%
+  {\sffamily\bfseries\color{white!95}\small\MakeUppercase{#4}\par}\vspace{2.5mm}%
+  {\color{white}\rule{0.7\linewidth}{0.6pt}\par}\vspace{3.5mm}%
   {\sffamily\color{white!90}\footnotesize #5\par}}}
 
 % --- Milestone item: numbered square badge + title + date pill + body (white).
-\newcommand{\mileitem}[4]{\tcbitem[colback=white,colframe=black!8]{%
-  {\tikz\node[fill=saccent,text=white,rounded corners=3pt,minimum size=9mm,
-    font=\dhead\bfseries\large]{#1};\par}\vspace{3mm}%
-  {\sffamily\bfseries\color{scontentfg}\normalsize #2\par}\vspace{2mm}%
-  \pill{#3}\par\vspace{3mm}%
+\newcommand{\mileitem}[4]{\tcbitem[colback=white,colframe=black!8]{\cardbodyalign
+  {\tikz\node[fill=saccent,text=white,rounded corners=4pt,minimum size=13mm,
+    font=\dhead\bfseries\LARGE]{#1};\par}\vspace{4mm}%
+  {\sffamily\bfseries\color{scontentfg}\large #2\par}\vspace{2.5mm}%
+  \pill{#3}\par\vspace{4mm}%
   {\sffamily\color{smuted}\footnotesize #4\par}}}
 
 % --- Numbered step rows: a circular badge + heading + body, on a shaded strip.
 \newcommand{\steprow}[3]{% {number}{heading}{body}
-  \par\smallskip\noindent
+  \par\medskip\noindent
   \begin{tcolorbox}[enhanced,nobeforeafter,width=\linewidth,colback=scontentbg,colframe=scontentbg,
-    boxrule=0pt,arc=3pt,left=18mm,right=8pt,top=8pt,bottom=8pt,drop shadow={black!10}]%
+    boxrule=0pt,arc=3pt,left=24mm,right=12pt,top=12pt,bottom=12pt,drop fuzzy shadow={black!32}]%
   \begin{tikzpicture}[overlay,remember picture=false]
-    \node[anchor=west,xshift=-16mm,fill=saccent,text=white,circle,minimum size=10mm,
-      font=\sffamily\bfseries] at (0,0.2) {#1};
+    \node[anchor=west,xshift=-21mm,fill=saccent,text=white,circle,minimum size=14mm,
+      font=\sffamily\bfseries\large] at (0,0.1) {#1};
   \end{tikzpicture}%
-  {\sffamily\bfseries\color{saccent}\normalsize #2\par}\vspace{1mm}%
+  {\sffamily\bfseries\color{saccent}\large #2\par}\vspace{1.5mm}%
   {\color{scontentfg}#3\par}%
   \end{tcolorbox}}
 
