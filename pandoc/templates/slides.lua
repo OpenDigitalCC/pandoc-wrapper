@@ -86,95 +86,73 @@ local function card_role(div)
   return nil
 end
 
--- A row of N equal minipages, each holding `body_i` (a latex string).
-local function row(bodies)
-  local n = #bodies
-  if n == 0 then return '' end
-  local w = string.format('%.3f', 0.97 / n)
-  local out = {}
-  for i, b in ipairs(bodies) do
-    out[#out+1] = '\\begin{minipage}[t]{'..w..'\\linewidth}'..b..'\\end{minipage}'
-    if i < n then out[#out+1] = '\\hfill' end
-  end
-  return '\\par\\medskip\\noindent ' .. table.concat(out, '%\n')
+-- A row of cards as a tcbitemize (equal-height boxes via \tcbitem, single pass).
+-- `cols` boxes per row; items beyond that wrap to further rows.
+local function raster(cols, items)
+  if #items == 0 then return '' end
+  return '\\par\\medskip\\begin{tcbitemize}[slraster, raster columns='..cols..']'
+    .. table.concat(items) .. '\\end{tcbitemize}\\par\\medskip'
 end
+
+local CARD_ITEM = { white = '\\carditemw', fill = '\\carditemf', dark = '\\carditemd' }
 
 local function build_stats(div)
-  local out = {}
+  local items = {}
   for _, st in ipairs(children(div, 'stat')) do
-    local blocks = st.content
-    local figure = blocks[1] and stringify(blocks[1]) or ''
-    local label  = blocks[2] and stringify(blocks[2]) or ''
+    local b = st.content
+    local figure = b[1] and stringify(b[1]) or ''
+    local label  = b[2] and stringify(b[2]) or ''
     local note   = ''
-    for i = 3, #blocks do note = note .. (note ~= '' and ' ' or '') .. stringify(blocks[i]) end
+    for i = 3, #b do note = note .. (note ~= '' and ' ' or '') .. stringify(b[i]) end
     local col = st.attributes.color or 'saccent'
-    out[#out+1] = '\\statcard['..col..']{'..esc(figure)..'}{'..esc(label)..'}{'..esc(note)..'}'
+    items[#items+1] = '\\statitem['..col..']{'..esc(figure)..'}{'..esc(label)..'}{'..esc(note)..'}'
   end
-  return raw('\\begin{slidestats}'..table.concat(out)..'\\end{slidestats}')
-end
-
--- Emit `bodies` as successive rows of at most `per` minipages.
-local function rows(bodies, per)
-  local out = {}
-  for i = 1, #bodies, per do
-    local chunk = {}
-    for j = i, math.min(i + per - 1, #bodies) do chunk[#chunk+1] = bodies[j] end
-    out[#out+1] = row(chunk)
-  end
-  return table.concat(out, '\\par\\medskip ')
+  return raw(raster(math.min(#items, 3), items))
 end
 
 local function build_cards(div, kind)
-  local bodies = {}
-  local items = children(div, kind == 'people' and 'person' or 'card')
-  for _, c in ipairs(items) do
+  local items = {}
+  for _, c in ipairs(children(div, kind == 'people' and 'person' or 'card')) do
     if kind == 'people' then
       local name, rest = take_heading(c.content)
       local role = rest[1] and stringify(rest[1]) or ''
       local bio = {}
       for i = 2, #rest do bio[#bio+1] = rest[i] end
-      bodies[#bodies+1] = '\\begin{slidecardbox}[fill]{}'
-        ..'{\\sffamily\\bfseries\\large\\color{scontentfg}'..esc(name or '')..'\\par}\\vspace{1mm}'
-        ..'{\\sffamily\\bfseries\\color{saccent}\\footnotesize '..esc(role)..'\\par}\\vspace{2mm}'
-        ..'{\\sffamily\\color{smuted}\\footnotesize '..render(bio)..'}'
-        ..'\\end{slidecardbox}'
+      items[#items+1] = '\\personitem{'..esc(name or '')..'}{'..esc(role)..'}{'..render(bio)..'}'
     else
-      local role = card_role(c) or 'white'
+      local m = CARD_ITEM[card_role(c) or 'white']
       local title, rest = take_heading(c.content)
-      bodies[#bodies+1] = '\\begin{slidecardbox}['..role..']{'..esc(title or '')..'}'
-        ..render(rest)..'\\end{slidecardbox}'
+      items[#items+1] = m..'{'..esc(title or '')..'}{'..render(rest)..'}'
     end
   end
-  return raw(rows(bodies, 3))
+  return raw(raster(math.min(#items, 3), items))
 end
 
 local function build_tiers(div)
-  local out = {}
+  local items = {}
   for _, t in ipairs(children(div, 'tier')) do
-    local blocks = t.content
-    local figure = blocks[1] and stringify(blocks[1]) or ''
-    local label  = blocks[2] and stringify(blocks[2]) or ''
+    local b = t.content
+    local figure = b[1] and stringify(b[1]) or ''
+    local label  = b[2] and stringify(b[2]) or ''
     local body = {}
-    for i = 3, #blocks do body[#body+1] = blocks[i] end
+    for i = 3, #b do body[#body+1] = b[i] end
     local col = t.attributes.color or 'saccent'
-    local stage = t.attributes.stage or ''
-    out[#out+1] = '\\tiercard{'..col..'}{'..esc(stage)..'}{'..esc(figure)..'}{'..esc(label)
-      ..'}{'..render(body)..'}'
+    items[#items+1] = '\\tieritem{'..col..'}{'..esc(t.attributes.stage or '')..'}{'
+      ..esc(figure)..'}{'..esc(label)..'}{'..render(body)..'}'
   end
-  return raw('\\par\\medskip\\noindent '..table.concat(out))
+  return raw(raster(math.min(#items, 3), items))
 end
 
 local function build_milestones(div)
-  local out = {}
+  local items = {}
   local n = 0
   for _, m in ipairs(children(div, 'milestone')) do
     n = n + 1
     local title, rest = take_heading(m.content)
-    local date = m.attributes.date or ''
-    out[#out+1] = '\\milestonecard{'..string.format('%02d', n)..'}{'..esc(title or '')
-      ..'}{'..esc(date)..'}{'..render(rest)..'}'
+    items[#items+1] = '\\mileitem{'..string.format('%02d', n)..'}{'..esc(title or '')
+      ..'}{'..esc(m.attributes.date or '')..'}{'..render(rest)..'}'
   end
-  return raw('\\par\\medskip\\noindent '..table.concat(out))
+  return raw(raster(math.min(#items, 3), items))
 end
 
 -- ::: steps wraps an ordered list; each item -> a numbered badge row.
@@ -199,18 +177,25 @@ end
 local function build_columns(div)
   local cols = children(div, 'column')
   if #cols == 0 then return nil end
-  local bodies = {}
-  for _, c in ipairs(cols) do
-    local role = card_role(c)
-    if role then
+  -- If every column carries a card role, lay them out as an equal-height panel
+  -- raster (the two-panel compare). Otherwise plain side-by-side minipages.
+  local all_card = true
+  for _, c in ipairs(cols) do if not card_role(c) then all_card = false break end end
+  if all_card then
+    local items = {}
+    for _, c in ipairs(cols) do
       local title, rest = take_heading(c.content)
-      bodies[#bodies+1] = '\\begin{slidecardbox}['..role..']{'..esc(title or '')..'}'
-        ..render(rest)..'\\end{slidecardbox}'
-    else
-      bodies[#bodies+1] = render(c.content)
+      items[#items+1] = CARD_ITEM[card_role(c)]..'{'..esc(title or '')..'}{'..render(rest)..'}'
     end
+    return raw(raster(#cols, items))
   end
-  return raw(row(bodies))
+  local w = string.format('%.3f', 0.97 / #cols)
+  local out = {}
+  for i, c in ipairs(cols) do
+    out[#out+1] = '\\begin{minipage}[t]{'..w..'\\linewidth}'..render(c.content)..'\\end{minipage}'
+    if i < #cols then out[#out+1] = '\\hfill' end
+  end
+  return raw('\\par\\medskip\\noindent '..table.concat(out, '%\n'))
 end
 
 local function build_actions(div)
@@ -246,19 +231,22 @@ function Div(div)
   if div.classes:includes('actions') then return build_actions(div) end
 end
 
--- Role keyword from an H2's classes.
+-- Role keyword from an H2's classes (.invert is an alias for .dark).
 local function role_of(h)
   for _, r in ipairs({'dark', 'accent', 'light'}) do
     if h.classes:includes(r) then return r end
   end
+  if h.classes:includes('invert') then return 'dark' end
   return 'light'
 end
 
--- Regroup the document into slides.
+-- Regroup the document into slides. Body blocks within a slide are separated by
+-- \vfill so they distribute down the full slide height (vertical justification)
+-- rather than bunching under the headline.
 function Pandoc(doc)
   local out = pandoc.List()
   local open = false
-  local function close() if open then out:insert(raw('\\EndSlide')); open = false end end
+  local function close() if open then out:insert(raw('\\vfill\\EndSlide')); open = false end end
   for _, blk in ipairs(doc.blocks) do
     if blk.t == 'Header' and blk.level == 1 then
       close()
@@ -274,6 +262,7 @@ function Pandoc(doc)
       out:insert(raw('\\BeginSlide['..role_of(blk)..']{'..title..'}{'..esc(label)..'}'))
       open = true
     else
+      if open then out:insert(raw('\\vfill')) end
       out:insert(blk)
     end
   end
