@@ -103,6 +103,10 @@
 % a long line would overflow the panel. Loading it here (it pulls in fancyvrb,
 % and a second load under eisvogel is a harmless no-op) makes wrapping uniform.
 \usepackage{fvextra}
+% accsupp lets us give the line numbers empty "ActualText" so they stay visible
+% but are skipped by PDF text extraction - i.e. they are not picked up when the
+% reader copies the code (genuinely outside the copy region, not just visually).
+\usepackage{accsupp}
 \providecolor{code-background}{HTML}{F7F7F7}
 \providecolor{code-accent}{HTML}{435489}
 \providecolor{code-linenum}{HTML}{B0B0B0}
@@ -140,8 +144,10 @@
 \AtBeginDocument{%
   \ifdefined\theFancyVerbLine
     \renewcommand{\theFancyVerbLine}{%
-      \color{code-linenum}\scriptsize\sffamily\arabic{FancyVerbLine}}%
-    \fvset{numbersep=13pt,breaklines=true}%
+      \BeginAccSupp{ActualText={}}%
+      \color{code-linenum}\scriptsize\sffamily\arabic{FancyVerbLine}%
+      \EndAccSupp{}}%
+    \fvset{numbersep=13pt,breaklines=true,breaksymbolleft={},breakautoindent=false}%
   \fi
 }
 
