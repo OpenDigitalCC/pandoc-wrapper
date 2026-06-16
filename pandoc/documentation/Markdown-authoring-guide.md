@@ -731,6 +731,24 @@ PDF created: report.pdf
 ```
 ````
 
+**Long lines and copy-paste.** A line too wide for the page wraps automatically,
+and the line numbers and the wrap are kept out of the PDF's text layer, so a copy
+of the block is just the code. But a *visual* wrap is still a line break when
+copied - a long command or path pastes split across two lines and won't run. To
+keep it paste-runnable, hand-wrap the line in the source with a trailing `\` (for
+shell) so you control where it breaks:
+
+````markdown
+```bash
+DISPATCH=/usr/lib/xi-toolchain/build/\
+  cross_platform_build_scripts/dispatch.sh
+```
+````
+
+Keep each physical line within the template's width - roughly 50 monospace
+characters on the report and `mvp`, 60 on the wider `featured`. The report is
+narrower because the default brand reserves a wide right margin for margin notes.
+
 # Document layout options
 
 ## Covers and title pages

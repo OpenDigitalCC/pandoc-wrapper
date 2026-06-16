@@ -75,6 +75,7 @@ the brand the user specifies; otherwise `plain`.
 - Single space after a full stop. Blank line before and after every block element.
 - No horizontal rules (`---`) in body content - `---` is only the front-matter delimiter. Structure comes from headings.
 - Code blocks always carry a language identifier (` ```bash `, ` ```python `, ` ```yaml `).
+- Keep code lines short enough not to wrap. A long line still wraps in the PDF, but a wrap becomes a stray line break when the reader copies the block, so a pasted command/path breaks. Hand-wrap long shell commands in the source with a trailing `\` continuation (and indent the next line), sized to the template's content width: aim for **≤ 50 characters** on the report (`eisvogel-wrapper`) and `mvp`, **≤ 60** on the wider `featured`. See REFERENCE (Long code lines) for the why and the exact budgets.
 - British English throughout: organise, realise, colour, favour, whilst, programme, licence (noun) / license (verb). Single quotes for quotes; dates as 15 January 2026 or 15/01/2026.
 
 ## Special boxes

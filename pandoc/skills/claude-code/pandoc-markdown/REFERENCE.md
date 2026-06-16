@@ -140,3 +140,42 @@ Blocks: `piechart`, `barchart`. Data lines are `Label: Value`.
 
 Full text width by default; add `{ width=50% }` after the image for a different
 size. `![Caption](path/to/image.png){ width=50% }`.
+
+## Long code lines (paste-friendly wrapping)
+
+The pipeline wraps over-long code lines so they never overflow the page, and the
+line numbers and the wrap itself are excluded from the PDF's text layer (so they
+are not copied). But a *visual* wrap is still a line break when the reader copies
+the block — a long command or path pastes split across two lines and won't run.
+The only fix is to hand-wrap the line in the source, so you control where the
+break lands and it stays paste-runnable.
+
+When a code line would exceed the template's content width, break it yourself
+with the language's own line-continuation and keep each physical line within the
+budget below:
+
+- Shell: trailing `\`, continuation indented two spaces.
+- Python and most C-likes: break inside the brackets/parens that are already open,
+  or a trailing `\`.
+
+Budgets are monospace characters per line, for the default brand margins:
+
+| Template | Content width | Aim for | Hard limit |
+|---|---|---|---|
+| `eisvogel-wrapper` (report) | ~14 cm | **≤ 50** | ~61 |
+| `mvp` | ~14 cm | **≤ 50** | ~56 |
+| `featured` (widest) | ~16 cm | **≤ 60** | ~65 |
+| `letter` | ~16 cm | **≤ 60** | ~65 |
+
+The report is narrow because the default brand reserves a 5 cm right margin for
+margin notes; a brand with wider or narrower margins shifts the budget, so treat
+these as guidance, not exact. When unsure, target ~50 — it is safe everywhere.
+
+Example (shell, report budget):
+
+````markdown
+```bash
+DISPATCH=/usr/lib/xi-toolchain/build/\
+  cross_platform_build_scripts/dispatch.sh
+```
+````
