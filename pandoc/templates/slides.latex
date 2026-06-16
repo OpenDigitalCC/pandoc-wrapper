@@ -1,20 +1,31 @@
 % slides.latex - modern full-bleed PDF slides (xelatex, not beamer).
-% Paired with slides.lua, which splits the body into \SectionSlide/\BeginSlide.
-% Single-pass: backgrounds are painted via eso-pic (no TikZ remember-picture).
-% Brand identity = colours (reuses beamer-structure/beamer-accent) + a clean
-% sans; report-oriented brand header-includes are deliberately not pulled in.
+% Paired with slides.lua, which splits the body into \SectionSlide/\BeginSlide
+% and turns the ::: component divs into the card/step/callout macros below.
+% Single-pass: backgrounds and chrome are painted via eso-pic (no TikZ
+% remember-picture). Brand identity = colours (beamer-structure/beamer-accent) +
+% a serif display face over a sans body.
 \documentclass[11pt]{article}
-\usepackage[paperwidth=25.6cm,paperheight=14.4cm,top=1.4cm,bottom=1.1cm,left=1.7cm,right=1.7cm]{geometry}
-\usepackage[default]{sourcesanspro}
+\usepackage[paperwidth=25.6cm,paperheight=14.4cm,top=1.7cm,bottom=1.2cm,left=1.7cm,right=1.7cm]{geometry}
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage{eso-pic}
 \usepackage{tikz}
 \usetikzlibrary{shadows.blur}
+\usepackage[most]{tcolorbox}
+\usepackage{etoolbox}
+\usepackage{fontspec}
 \pagestyle{empty}
 \setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
 \setcounter{secnumdepth}{-\maxdimen}
 \newlength{\slideh}\setlength{\slideh}{\paperheight}
+
+% --- Fonts: a serif display face for headlines/figures over a sans body. Both
+%     brand-overridable (slide-display-font / mainfont); defaults are installed. ---
+\usepackage[default]{sourcesanspro}        % body sans (package-bundled, reliable)
+$if(mainfont)$\setmainfont{$mainfont$}$endif$
+\newfontfamily\displayfont{$if(slide-display-font)$$slide-display-font$$else$Noto Serif Display$endif$}[Ligatures=TeX]
+\newcommand{\dhead}{\displayfont}
 
 % --- Brand palette (defined straight from metadata; no filter injection) ---
 $for(brand-colours/pairs)$
@@ -25,47 +36,203 @@ $endfor$
 %     deck matches house style; override with slide-title-bg / slide-accent. ---
 \colorlet{stitlebg}{$if(slide-title-bg)$$slide-title-bg$$else$$if(beamer-structure)$$beamer-structure$$else$black$endif$$endif$}
 \colorlet{saccent}{$if(slide-accent)$$slide-accent$$else$$if(beamer-accent)$$beamer-accent$$else$gray$endif$$endif$}
-\colorlet{scontentbg}{stitlebg!7!white}
+\colorlet{sbar}{$if(slide-bar)$$slide-bar$$else$saccent$endif$}        % top chrome bar
+\colorlet{scontentbg}{$if(slide-content-bg)$$slide-content-bg$$else$stitlebg!6!white$endif$}
 \colorlet{scontentfg}{stitlebg}
+\colorlet{smuted}{stitlebg!55!white}
 
-% Full-bleed background + thin top accent rule for the current page only.
-\newcommand{\paintslide}[1]{\AddToShipoutPictureBG*{\put(0,0){%
-  \begin{tikzpicture}
-    \useasboundingbox (0,0) rectangle (\paperwidth,\paperheight);
-    \fill[#1] (0,0) rectangle (\paperwidth,\paperheight);
-    \fill[saccent] (0,\paperheight-3mm) rectangle (\paperwidth,\paperheight);
-  \end{tikzpicture}}}}
+% Card palette: cycled across stat/tier cards when no explicit colour is given.
+\definecolor{scardrow}{HTML}{F2F4F5}
 
 \providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\expandafter\def\csname slrolelight\endcsname{\def\curbg{scontentbg}\def\curfg{scontentfg}}
-\expandafter\def\csname slroledark\endcsname{\def\curbg{stitlebg}\def\curfg{white}}
-\expandafter\def\csname slroleaccent\endcsname{\def\curbg{saccent}\def\curfg{white}}
+
+% =====================================================================
+% Per-slide chrome: full-bleed ground + (on content slides) a top brand bar
+% carrying the logo and the running section label, and a footer line.
+% =====================================================================
+\newcommand{\slidefoot}{$if(slide-footer)$$slide-footer$$else$$if(classification)$$classification$$if(date)$ \textbullet\ $date$$endif$$else$$date$$endif$$endif$}
+
+% logo: an image (slide-logo) or a text wordmark fallback (slide-logo-text /
+% institute). Drawn in the top bar, in white.
+\newcommand{\slidelogo}{%
+$if(slide-logo)$\includegraphics[height=8mm]{$slide-logo$}$else$%
+{\bfseries\sffamily\large $if(slide-logo-text)$$slide-logo-text$$else$$if(institute)$$institute$$endif$$endif$}$endif$}
+
+% \chrome{barcolor}{textcolor}{label} - paint the top bar + logo + label + footer
+% onto the current page foreground (eso-pic, cleared after shipout).
+\newcommand{\paintbg}[1]{\AddToShipoutPictureBG*{\put(0,0){%
+  \begin{tikzpicture}\useasboundingbox (0,0) rectangle (\paperwidth,\paperheight);
+    \fill[#1] (0,0) rectangle (\paperwidth,\paperheight);
+  \end{tikzpicture}}}}
+\newcommand{\chrome}[3]{\AddToShipoutPictureFG*{%
+  % top bar
+  \put(0,\LenToUnit{\dimexpr\paperheight-1.05cm\relax}){%
+    \begin{tikzpicture}\fill[#1] (0,0) rectangle (\paperwidth,1.05cm);\end{tikzpicture}}%
+  % logo (left) + running label (right), vertically centred on the bar
+  \put(\LenToUnit{1.7cm},\LenToUnit{\dimexpr\paperheight-0.72cm\relax}){%
+    \makebox(0,0)[l]{\color{#2}\slidelogo}}%
+  \put(\LenToUnit{\dimexpr\paperwidth-1.7cm\relax},\LenToUnit{\dimexpr\paperheight-0.62cm\relax}){%
+    \makebox(0,0)[r]{\color{#2}\sffamily\footnotesize\MakeUppercase{#3}}}%
+  % footer
+  \put(\LenToUnit{0.5\paperwidth},\LenToUnit{0.7cm}){%
+    \makebox(0,0){\color{smuted}\sffamily\scriptsize\slidefoot}}%
+}}
+
+% Slide roles: choose the ground + foreground for a content slide.
+% Each role sets: ground (curbg), text (curfg), bar colour/text, plus the
+% headline second-colour (headaccent) and rule (headrule) - white on a coloured
+% ground so they stay visible.
+\expandafter\def\csname slrolelight\endcsname{\def\curbg{scontentbg}\def\curfg{scontentfg}\def\curbar{sbar}\def\curbarfg{white}\def\headaccent{saccent}\def\headrule{saccent}}
+\expandafter\def\csname slroledark\endcsname{\def\curbg{stitlebg}\def\curfg{white}\def\curbar{sbar}\def\curbarfg{white}\def\headaccent{white}\def\headrule{saccent}}
+\expandafter\def\csname slroleaccent\endcsname{\def\curbg{saccent}\def\curfg{white}\def\curbar{saccent}\def\curbarfg{white}\def\headaccent{white}\def\headrule{white}}
 \newcommand{\slideroles}[1]{\csname slrole#1\endcsname}
 
 % First-slide guard: do not ship a blank page 1 before the first slide.
 \newif\ifslidestarted \slidestartedfalse
 \newcommand{\slidebreak}{\ifslidestarted\clearpage\else\global\slidestartedtrue\fi}
 
-\newcommand{\BeginSlide}[2][light]{%
-  \slidebreak \slideroles{#1}\paintslide{\curbg}\color{\curfg}%
-  {\bfseries\fontsize{23}{27}\selectfont #2\par}%
-  \vspace{1.5mm}{\color{saccent}\rule{0.30\linewidth}{2pt}}\par\vspace{5mm}%
-  \bfseries\large}
-\newcommand{\EndSlide}{}
+% =====================================================================
+% Headline: a serif display title. A two-tone headline is authored by a
+% hard line break in the heading; slides.lua passes the second part as #2
+% (the accent line). Either may be empty.
+% =====================================================================
+\newcommand{\BeginSlide}[2][light]{}% redefined below to take optional label
+\RenewDocumentCommand{\BeginSlide}{O{light} m m}{%
+  % #1 role, #2 headline (may contain \\ for two-tone), #3 running label
+  \slidebreak \slideroles{#1}\paintbg{\curbg}\chrome{\curbar}{\curbarfg}{#3}%
+  \color{\curfg}%
+  {\dhead\bfseries\fontsize{23}{27}\selectfont #2\par}%
+  \vspace{1.5mm}{\color{\headrule}\rule{\linewidth}{1.5pt}}\par\vspace{3.5mm}%
+  \normalfont\normalsize}
+\newcommand{\EndSlide}{\par}
+
+% A second-colour headline line (accent). Used inside #2 as \htwo{...}.
+\newcommand{\htwo}[1]{\\{\color{saccent}#1}}
+
 \newcommand{\SectionSlide}[1]{%
-  \slidebreak \paintslide{stitlebg}\color{white}%
-  \vfill {\bfseries\fontsize{38}{44}\selectfont #1\par}%
-  \vspace{2mm}{\color{saccent}\rule{0.30\linewidth}{3pt}}\vfill}
+  \slidebreak \paintbg{stitlebg}\color{white}%
+  \vfill {\dhead\bfseries\fontsize{40}{46}\selectfont #1\par}%
+  \vspace{3mm}{\color{saccent}\rule{0.30\linewidth}{3pt}}\vfill}
+
+% =====================================================================
+% Components (also intended for document templates - the macro names are the
+% contract; here they are slide-tuned).
+% =====================================================================
+
+% Image card (kept from the original).
 \newcommand{\slidecard}[1]{\tikz\node[fill=white,rounded corners=5pt,inner sep=8pt,blur shadow={shadow blur steps=6}]{#1};}
+
+% --- Stat / KPI cards: a row of coloured cards, big serif figure + label + note.
+\newcounter{sxcard}
+\newenvironment{slidestats}{\par\medskip\setcounter{sxcard}{0}%
+  \noindent\begin{minipage}[t]{\linewidth}\centering}%
+  {\end{minipage}\par\medskip}
+% \statcard[fillcolor]{figure}{label}{note}
+\newcommand{\statcard}[4][saccent]{%
+  \begin{tcolorbox}[enhanced,nobeforeafter,width=0.315\linewidth,halign=center,
+    colback=#1,colframe=#1,boxrule=0pt,arc=3pt,left=4pt,right=4pt,top=10pt,bottom=10pt,
+    valign=top,height=3.6cm,drop shadow={black!12}]%
+    {\dhead\bfseries\color{white}\fontsize{30}{34}\selectfont #2\par}%
+    \vspace{2mm}{\sffamily\bfseries\color{white}\normalsize #3\par}%
+    \vspace{1.5mm}{\sffamily\color{white!85}\footnotesize #4\par}%
+  \end{tcolorbox}\hspace{0.01\linewidth}}
+
+% --- Content cards: white (default) or filled, accent heading + prose body.
+%     \cardbegin[role]{title} ... body ... \cardend  (role: white|fill|dark)
+\newcommand{\cardpalettewhite}{\def\ccback{white}\def\cchead{saccent}\def\ccbody{scontentfg}\def\ccframe{black!8}}
+\newcommand{\cardpalettefill}{\def\ccback{scontentbg}\def\cchead{saccent}\def\ccbody{scontentfg}\def\ccframe{scontentbg}}
+\newcommand{\cardpalettedark}{\def\ccback{stitlebg}\def\cchead{saccent}\def\ccbody{white}\def\ccframe{stitlebg}}
+\newenvironment{slidecardbox}[2][white]{%
+  \csname cardpalette#1\endcsname
+  \begin{tcolorbox}[enhanced,nobeforeafter,width=\linewidth,colback=\ccback,colframe=\ccframe,
+    boxrule=0.4pt,arc=4pt,left=10pt,right=10pt,top=10pt,bottom=10pt,height fill=false,
+    drop shadow={black!10}]%
+  \color{\ccbody}%
+  \ifstrempty{#2}{}{{\sffamily\bfseries\color{\cchead}\large #2\par}\vspace{2mm}}%
+}{\end{tcolorbox}}
+
+% --- Numbered step rows: a circular badge + heading + body, on a tinted strip.
+\newcommand{\steprow}[3]{% {number}{heading}{body}
+  \par\smallskip\noindent
+  \begin{tcolorbox}[enhanced,nobeforeafter,width=\linewidth,colback=scontentbg,colframe=scontentbg,
+    boxrule=0pt,arc=3pt,left=18mm,right=8pt,top=7pt,bottom=7pt]%
+  \begin{tikzpicture}[overlay,remember picture=false]
+    \node[anchor=west,xshift=-16mm,fill=saccent,text=white,circle,minimum size=10mm,
+      font=\sffamily\bfseries] at (0,0.2) {#1};
+  \end{tikzpicture}%
+  {\sffamily\bfseries\color{saccent}\normalsize #2\par}\vspace{1mm}%
+  {\color{scontentfg}#3\par}%
+  \end{tcolorbox}}
+
+% --- Tier card: per-card colour, stage label, big figure, sub-label, body.
+\newcommand{\tiercard}[5]{% {fillcolor}{stage}{figure}{label}{body}
+  \begin{tcolorbox}[enhanced,nobeforeafter,width=0.315\linewidth,colback=#1,colframe=#1,
+    boxrule=0pt,arc=3pt,left=8pt,right=8pt,top=10pt,bottom=10pt,valign=top,height=6.6cm,
+    halign=center,drop shadow={black!12}]%
+    {\sffamily\bfseries\color{white!92}\footnotesize\MakeUppercase{#2}\par}\vspace{3mm}%
+    {\dhead\bfseries\color{white}\fontsize{26}{30}\selectfont #3\par}\vspace{2mm}%
+    {\sffamily\bfseries\color{white!95}\footnotesize\MakeUppercase{#4}\par}\vspace{2mm}%
+    {\color{white}\rule{0.7\linewidth}{0.6pt}\par}\vspace{3mm}%
+    {\sffamily\color{white!90}\footnotesize #5\par}%
+  \end{tcolorbox}\hspace{0.01\linewidth}}
+
+% --- Milestone card: numbered square badge + title + date pill + body (white).
+\newcommand{\milestonecard}[4]{% {number}{title}{date}{body}
+  \begin{tcolorbox}[enhanced,nobeforeafter,width=0.315\linewidth,colback=white,colframe=black!8,
+    boxrule=0.4pt,arc=4pt,left=10pt,right=10pt,top=10pt,bottom=10pt,valign=top,height=6.4cm,
+    drop shadow={black!10}]%
+    {\tikz\node[fill=saccent,text=white,rounded corners=3pt,minimum size=9mm,
+      font=\dhead\bfseries\large]{#1};\par}\vspace{3mm}%
+    {\sffamily\bfseries\color{scontentfg}\normalsize #2\par}\vspace{2mm}%
+    \pill{#3}\par\vspace{3mm}%
+    {\sffamily\color{smuted}\footnotesize #4\par}%
+  \end{tcolorbox}\hspace{0.01\linewidth}}
+
+% --- Callout card: a small filled pull-out (used top-right of a slide).
+\newenvironment{slidecallout}{%
+  \begin{tcolorbox}[enhanced,nobeforeafter,width=\linewidth,colback=saccent,colframe=saccent,
+    boxrule=0pt,arc=4pt,left=10pt,right=10pt,top=8pt,bottom=8pt,halign=center,
+    drop shadow={black!12}]\color{white}\sffamily}%
+  {\end{tcolorbox}}
+
+% --- Takeaway banner: a full-width tinted box with bold text.
+\newenvironment{slidetakeaway}{%
+  \par\medskip\begin{tcolorbox}[enhanced,nobeforeafter,width=\linewidth,colback=scontentbg,
+    colframe=scontentbg,boxrule=0pt,arc=3pt,left=12pt,right=12pt,top=9pt,bottom=9pt]%
+  \sffamily\bfseries\color{scontentfg}}%
+  {\end{tcolorbox}\par\medskip}
+
+% --- Pill / chip: a small rounded tag.
+\newcommand{\pill}[1]{\tikz[baseline=(p.base)]\node[fill=scontentbg,text=saccent,
+  rounded corners=3pt,inner xsep=6pt,inner ysep=2pt,font=\sffamily\bfseries\footnotesize](p){#1};}
+
+% --- Action buttons: rounded pill links. \slidebutton{style}{text}  (style: dark|light)
+\newcommand{\slidebutton}[2]{%
+  \tikz[baseline]\node[fill=$if(slide-title-bg)$$slide-title-bg$$else$stitlebg$endif$,text=white,
+    rounded corners=5pt,inner xsep=14pt,inner ysep=9pt,font=\sffamily\bfseries]{#2};}
+\newcommand{\slidebuttonlight}[1]{%
+  \tikz[baseline]\node[fill=white,text=saccent,draw=black!10,
+    rounded corners=5pt,inner xsep=14pt,inner ysep=9pt,font=\sffamily\bfseries]{#1};}
+
+% --- Columns (kept; minipage row). slides.lua wraps card-roled columns itself.
+% (no macro needed - emitted inline)
 
 \begin{document}
 $if(title)$
-\paintslide{stitlebg}\color{white}
-\vspace*{3.2cm}
-{\bfseries\fontsize{40}{46}\selectfont $title$\par}
-$if(subtitle)$\vspace{8mm}{\color{saccent!45!white}\fontsize{22}{26}\selectfont $subtitle$\par}$endif$
-\vfill
-{\fontsize{13}{16}\selectfont\color{white!75}$for(author)$$author$$sep$, $endfor$$if(date)$\quad\textbullet\quad $date$$endif$\par}
+% ---- Title slide: dark ground, logo top-right, bottom accent band ----
+\paintbg{stitlebg}\color{white}
+\AddToShipoutPictureFG*{%
+  \put(\LenToUnit{\dimexpr\paperwidth-1.7cm\relax},\LenToUnit{\dimexpr\paperheight-1.4cm\relax}){\makebox(0,0)[r]{\slidelogo}}%
+  \put(0,0){\begin{tikzpicture}\fill[saccent](0,0)rectangle(\paperwidth,2.5cm);\end{tikzpicture}}%
+  \put(\LenToUnit{1.7cm},\LenToUnit{1.25cm}){\makebox(0,0)[l]{\begin{minipage}{0.85\paperwidth}%
+    {\sffamily\bfseries\large\color{white}$if(institute)$$institute$$endif$\par}\vspace{1.5mm}%
+    {\sffamily\color{white!90}$if(partnership)$$partnership$$endif$\par}%
+    $if(collaboration)$\vspace{0.5mm}{\sffamily\itshape\small\color{white!80}$collaboration$\par}$endif$%
+  \end{minipage}}}%
+}
+\vspace*{3cm}
+{\dhead\bfseries\fontsize{46}{52}\selectfont $title$$if(title-accent)$\\{\color{saccent!55!white}$title-accent$}$endif$\par}
+$if(subtitle)$\vspace{7mm}{\sffamily\fontsize{15}{19}\selectfont\color{white!80}$subtitle$\par}$endif$
 \global\slidestartedtrue
 $endif$
 $body$
