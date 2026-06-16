@@ -232,6 +232,10 @@ $if(beamer)$
 \geometry{$for(geometry)$$geometry$$sep$,$endfor$}
 $else$
 \usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
+$if(standard-margins)$
+% No margin notes: collapse the wide brand gutter to a centred, symmetric page.
+\geometry{reset,margin=2.5cm,centering}
+$endif$
 $endif$
 $endif$
 $if(beamer)$

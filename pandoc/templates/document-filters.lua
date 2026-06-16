@@ -1301,7 +1301,77 @@ local function handle_codeblock(el)
   return default_line_numbers(el)
 end
 
+-- ===============================================================
+-- Margin-note space: margin-note-space = auto | on | off
+-- ---------------------------------------------------------------
+-- Report brands reserve a wide outer margin so margin notes (:::marginbox,
+-- charts with style: margin) have room. That space is wasted when a document
+-- uses no margin notes. This pass resolves the setting to the template's
+-- existing `standard-margins` switch (which collapses the gutter to a centred,
+-- symmetric page):
+--   on   -> keep the wide gutter            (standard-margins off)
+--   off  -> collapse it                     (standard-margins on)
+--   auto -> collapse it unless the document actually uses margin content
+-- Default is auto. An explicit `standard-margins:` set by the author is honoured
+-- when margin-note-space is not given (back-compat).
+-- ===============================================================
+local function has_margin_content(blocks)
+  local found = false
+  pandoc.walk_block(pandoc.Div(blocks), {
+    Div = function(d)
+      if d.classes:includes("marginbox") then found = true end
+    end,
+    CodeBlock = function(cb)
+      if (cb.classes:includes("piechart") or cb.classes:includes("barchart"))
+         and cb.text:match("style%s*:%s*margin") then found = true end
+    end,
+  })
+  return found
+end
+
+local function resolve_margin_note_space(doc)
+  local m = doc.meta
+  local raw = m["margin-note-space"]
+  -- A YAML boolean (on/off coerced) arrives as a Lua boolean, which is falsy for
+  -- `off` - so map it explicitly before any truthiness test, then fall back to
+  -- stringify for the word forms (auto, wide, ...).
+  local mns = nil
+  if type(raw) == "boolean" then
+    mns = raw and "on" or "off"
+  elseif raw ~= nil then
+    mns = pandoc.utils.stringify(raw):lower()
+    if mns == "" then mns = nil end
+  end
+  local standard  -- true = collapse gutter; false = keep it; nil = leave as-is
+
+  -- YAML 1.1 coerces the bare words on/off/yes/no to booleans, so by the time
+  -- the value reaches here `on` is "true" and `off` is "false". Accept both the
+  -- coerced and the literal spellings.
+  if mns == "off" or mns == "false" or mns == "no" or mns == "none"
+     or mns == "narrow" or mns == "standard" then
+    standard = true
+  elseif mns == "on" or mns == "true" or mns == "yes" or mns == "wide"
+     or mns == "notes" then
+    standard = false
+  else
+    -- auto (explicit) or unset. An author's explicit standard-margins wins only
+    -- when margin-note-space was not given at all.
+    if mns == nil and m["standard-margins"] ~= nil then
+      standard = nil
+    else
+      standard = not has_margin_content(doc.blocks)
+    end
+  end
+
+  if standard ~= nil then
+    m["standard-margins"] = standard or nil
+  end
+  doc.meta = m
+  return doc
+end
+
 return {
+  { Pandoc = resolve_margin_note_space },
   { Meta = read_meta },
   { CodeBlock = handle_codeblock, Div = handle_box }
 }

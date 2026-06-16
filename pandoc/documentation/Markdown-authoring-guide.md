@@ -58,17 +58,21 @@ section of `man md-to-pdf`. The sections below cover each one in context.
 
 ## Page margins and margin notes
 
-Brands default to a **wide outer margin** so that margin notes (the `marginbox`,
-see below) have somewhere to sit. If your document does not use margin notes, a
-standard centred page with even margins often reads better. Switch to it with a
-single front-matter line:
+Report brands reserve a **wide outer margin** so that margin notes (the
+`marginbox`, see below) have somewhere to sit. That space is wasted on a
+document with no margin notes, so by default the pipeline reserves it only when
+it is needed:
 
 ```yaml
-standard-margins: true
+margin-note-space: auto   # the default - you can omit it
 ```
 
-Leave it out (the default) whenever the document uses `marginbox` or other
-margin content - those need the wide margin to display.
+`auto` keeps the wide gutter when the document actually uses margin content
+(a `marginbox`, or a chart with `style: margin`) and otherwise collapses to a
+centred, full-width page. Force it either way when you want to: `on` always
+reserves the gutter (e.g. you plan to add notes later), `off` never does. (The
+older `standard-margins: true` still works, as a synonym for
+`margin-note-space: off`.)
 
 # Heading structure
 
@@ -303,8 +307,9 @@ development, achieving €15 million in successful procurement outcomes.
 
 Placed in the wide outer margin of the page, alongside the main text. Good for
 quotes, attributions, or brief highlights that complement the prose without
-interrupting it. Requires the wide outer margin, which brands provide by default
-- so do **not** set `standard-margins: true` in a document that uses `marginbox`.
+interrupting it. It needs the wide outer margin, which `margin-note-space: auto`
+(the default) reserves automatically whenever a `marginbox` is present - so you
+normally need set nothing; just don't force `margin-note-space: off`.
 
 Write this:
 

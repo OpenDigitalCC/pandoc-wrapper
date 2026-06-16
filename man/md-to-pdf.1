@@ -129,6 +129,22 @@ Output format:
 .B eisvogel\-wrapper
 (default),
 .BR mvp ", " featured ", " letter ", " beamer " or " slides .
+.TP
+.B margin\-note\-space:
+Whether to reserve the wide outer margin that hosts margin notes
+.RB ( marginbox ,
+charts with
+.BR "style: margin" ).
+.B auto
+(default) reserves it only when the document actually uses margin content and
+otherwise collapses to a centred, full\-width page;
+.B on
+always reserves it;
+.B off
+never does. (The older
+.B standard\-margins: true
+is still accepted, as a synonym for
+.BR off .)
 .SS Brand colours
 .TP
 .B brand\-colours:

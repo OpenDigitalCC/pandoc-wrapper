@@ -387,6 +387,8 @@ CORE (any document)
   brand:                 brand to merge (default: plain)
   template:              format - eisvogel-wrapper (default), mvp, featured,
                          letter, beamer, slides
+  margin-note-space:     reserve the wide margin-note gutter: auto (default;
+                         only when margin notes are present), on, or off
 
 BRAND COLOURS
   brand-colours:         map of name -> hex; each becomes a usable colour

@@ -49,11 +49,12 @@ brand: plain
 ---
 ```
 
-Optional page-layout field: brands default to a **wide outer margin** that hosts
-margin notes (`marginbox`). For a document that uses no margin notes, add
-`standard-margins: true` to get a centred page with normal symmetric margins.
-Omit it (the default) whenever the document uses `marginbox` or other margin
-content.
+Optional page-layout field: report brands reserve a **wide outer margin** for
+margin notes (`marginbox`). This is automatic - `margin-note-space: auto` (the
+default) keeps the gutter only when the document actually uses margin content
+and otherwise collapses to a centred, full-width page, so you normally set
+nothing. Force it with `margin-note-space: on` (always reserve) or `off`
+(never).
 
 The `brand` value selects a visual identity (colours, fonts, layout). Use exactly
 the brand the user specifies; otherwise `plain`.
