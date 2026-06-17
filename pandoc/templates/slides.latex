@@ -35,11 +35,21 @@
   \@latex@warning@no@line{Rerun to get equal-height slide boxes right}}{}}
 \makeatother
 
-% --- Fonts: a serif display face for headlines/figures over a sans body. Both
-%     brand-overridable (slide-display-font / mainfont); defaults are installed. ---
+% --- Fonts: a serif display face for figures/headlines over a sans body. All
+%     brand-overridable; defaults are installed (so a deck needs no extra fonts).
+%     Three display roles, each defaulting to slide-display-font:
+%       \dhead    big figures (stat/tier/milestone numbers)  - slide-display-font
+%       \headfont H2 content-slide headlines                 - slide-headline-font
+%       \titlefont H1 section dividers + the title slide      - slide-title-font
+%     so a deck can keep the serif for figures while giving headlines a readable
+%     sans and the title a brand display face (e.g. Inter Display + Audiowide).
+%     A single-weight display face (Audiowide) renders \bfseries as its regular
+%     weight (harmless "shape undefined" warning) - it needs no separate bold. ---
 \usepackage[default]{sourcesanspro}        % body sans (package-bundled, reliable)
 $if(mainfont)$\setmainfont{$mainfont$}$endif$
 \newfontfamily\displayfont{$if(slide-display-font)$$slide-display-font$$else$Noto Serif Display$endif$}[Ligatures=TeX]
+\newfontfamily\headfont{$if(slide-headline-font)$$slide-headline-font$$else$$if(slide-display-font)$$slide-display-font$$else$Noto Serif Display$endif$$endif$}[Ligatures=TeX]
+\newfontfamily\titlefont{$if(slide-title-font)$$slide-title-font$$else$$if(slide-display-font)$$slide-display-font$$else$Noto Serif Display$endif$$endif$}[Ligatures=TeX]
 \newcommand{\dhead}{\displayfont}
 
 % --- Brand palette (defined straight from metadata; no filter injection) ---
@@ -128,7 +138,7 @@ $if(slide-logo-bar)$\includegraphics[height=6.5mm]{$slide-logo-bar$}$else$$if(sl
   % #1 role, #2 headline (may contain \\ for two-tone), #3 running label
   \slidebreak \slideroles{#1}\paintbg{\curbg}\chrome{\curbar}{\curbarfg}{#3}%
   \color{\curfg}%
-  {\dhead\bfseries\fontsize{\headlinesize}{1.18\headlinesize}\selectfont #2\par}%
+  {\headfont\bfseries\fontsize{\headlinesize}{1.18\headlinesize}\selectfont #2\par}%
   \vspace{2mm}{\color{\headrule}\rule{\linewidth}{1.5pt}}\par\vspace{4.5mm}%
   \normalfont\normalsize\slidebody}
 \newcommand{\EndSlide}{\par}
@@ -138,7 +148,7 @@ $if(slide-logo-bar)$\includegraphics[height=6.5mm]{$slide-logo-bar$}$else$$if(sl
 
 \newcommand{\SectionSlide}[1]{%
   \slidebreak \paintbg{stitlebg}\color{white}%
-  \vfill {\dhead\bfseries\fontsize{40}{46}\selectfont #1\par}%
+  \vfill {\titlefont\bfseries\fontsize{40}{46}\selectfont #1\par}%
   \vspace{3mm}{\color{saccent}\rule{0.30\linewidth}{3pt}}\vfill}
 
 % =====================================================================
@@ -255,7 +265,7 @@ $if(title)$
   \end{minipage}}}%
 }
 \vspace*{3cm}
-{\dhead\bfseries\fontsize{46}{52}\selectfont $title$$if(title-accent)$\\{\color{saccent!55!white}$title-accent$}$endif$\par}
+{\titlefont\bfseries\fontsize{46}{52}\selectfont $title$$if(title-accent)$\\{\color{saccent!55!white}$title-accent$}$endif$\par}
 $if(subtitle)$\vspace{7mm}{\sffamily\fontsize{15}{19}\selectfont\color{white!80}$subtitle$\par}$endif$
 \global\slidestartedtrue
 $endif$
