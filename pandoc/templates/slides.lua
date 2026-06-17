@@ -143,7 +143,7 @@ local function build_tiers(div)
     items[#items+1] = '\\tieritem{'..col..'}{'..esc(t.attributes.stage or '')..'}{'
       ..esc(figure)..'}{'..esc(label)..'}{'..render(body)..'}'
   end
-  return raw(raster(math.min(#items, 3), items, 'height=7.4cm'))
+  return raw(raster(math.min(#items, 3), items))
 end
 
 local function build_milestones(div)
@@ -190,7 +190,7 @@ local function build_columns(div)
       local title, rest = take_heading(c.content)
       items[#items+1] = CARD_ITEM[card_role(c)]..'{'..esc(title or '')..'}{'..render(rest)..'}'
     end
-    return raw(raster(#cols, items, 'height=6.8cm'))
+    return raw(raster(#cols, items))
   end
   local w = string.format('%.3f', 0.97 / #cols)
   local out = {}

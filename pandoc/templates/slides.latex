@@ -1,9 +1,14 @@
 % slides.latex - modern full-bleed PDF slides (xelatex, not beamer).
 % Paired with slides.lua, which splits the body into \SectionSlide/\BeginSlide
 % and turns the ::: component divs into the card/step/callout macros below.
-% Single-pass: backgrounds and chrome are painted via eso-pic (no TikZ
-% remember-picture). Brand identity = colours (beamer-structure/beamer-accent) +
-% a serif display face over a sans body.
+% Backgrounds and chrome are painted via eso-pic (no TikZ remember-picture, which
+% would itself need two passes). Brand identity = colours (beamer-structure/
+% beamer-accent) + a serif display face over a sans body.
+%
+% Two passes: equal-height card rows (raster equal height=rows) settle over two
+% runs - tcolorbox writes each row's max height to the .aux and reads it back on
+% the next run, but never *asks* for a rerun. So on the first pass we request one
+% (pandoc reruns the PDF engine whenever the log asks); the second pass equalises.
 \documentclass[11pt]{article}
 \usepackage[paperwidth=25.6cm,paperheight=14.4cm,top=1.7cm,bottom=1.2cm,left=1.7cm,right=1.7cm]{geometry}
 \usepackage{graphicx}
@@ -20,6 +25,15 @@
 \setlength{\parskip}{0pt}
 \setcounter{secnumdepth}{-\maxdimen}
 \newlength{\slideh}\setlength{\slideh}{\paperheight}
+
+% Force a second pass on a fresh build so equal-height card rows settle (see the
+% header note). The flag is written to the .aux on pass 1 and is present from the
+% start on pass 2, so exactly one rerun is requested.
+\makeatletter
+\AtBeginDocument{\immediate\write\@mainaux{\string\global\string\let\string\slides@settled\string\@empty}}
+\AtEndDocument{\@ifundefined{slides@settled}{%
+  \@latex@warning@no@line{Rerun to get equal-height slide boxes right}}{}}
+\makeatother
 
 % --- Fonts: a serif display face for headlines/figures over a sans body. Both
 %     brand-overridable (slide-display-font / mainfont); defaults are installed. ---
@@ -135,10 +149,11 @@ $if(slide-logo-bar)$\includegraphics[height=6.5mm]{$slide-logo-bar$}$else$$if(sl
 % Image card (kept from the original).
 \newcommand{\slidecard}[1]{\tikz\node[fill=white,rounded corners=5pt,inner sep=8pt,blur shadow={shadow blur steps=6}]{#1};}
 
-% Card rows are laid out with tcbraster, which equalises the height of every
-% box in a row in a single pass and gives them a soft drop shadow (the "shading"
-% the reference uses). slides.lua emits \begin{tcbraster}[slraster, raster
-% columns=N] then one \xxxitem per card.
+% Card rows are laid out with tcbitemize: slides.lua emits
+% \begin{tcbitemize}[slraster, raster columns=N] then one \xxxitem per card.
+% `raster equal height=rows' gives every box in a row the height of the tallest
+% (settling over two passes - see the rerun note at the top); the soft drop
+% shadow supplies the "shading" the reference deck uses.
 \tcbset{slraster/.style={raster equal height=rows, raster left skip=0pt,
   raster right skip=0pt, raster column skip=4.5mm, raster row skip=4.5mm,
   enhanced, arc=4pt, boxrule=0.4pt, drop fuzzy shadow={black!40},
