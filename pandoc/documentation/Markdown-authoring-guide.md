@@ -1153,6 +1153,27 @@ side-by-side blocks.
 in the front matter with `slide-title-bg:` and `slide-accent:` (any defined
 brand colour name or an `HTML` value via a `\definecolor`).
 
+**Fonts.** There are three display roles, each overridable per deck or in the
+brand and each defaulting to the previous one (ultimately Noto Serif Display):
+
+| Field | Used for |
+|-------|----------|
+| `slide-display-font` | big figures — stat / tier / milestone numbers |
+| `slide-headline-font` | `##` content-slide headlines |
+| `slide-title-font` | the title slide, `#` section dividers, and the text wordmark |
+
+The default high-contrast display serif reads as spindly at headline size, so
+for content headlines pick a readable sans (e.g. `slide-headline-font: "Inter
+Display"`); for the title and wordmark use a brand/logo face (e.g.
+`slide-title-font: "Audiowide"`) while the big figures keep the serif. Typography
+is tunable too: `slide-headline-size` (default 27), `slide-linespread`,
+`slide-parskip`, and `slide-card-justify` (default ragged-left card text).
+
+Any non-default font must be installed where the deck is built (xelatex resolves
+fonts through fontconfig, not the brand resource-path). If a named font is
+missing, xelatex substitutes and the deck still builds; a single-weight display
+face such as Audiowide needs no separate bold.
+
 The datatable, chart and `:::` callout-box constructs are report features and do
 not apply on either slide format; use columns, lists and images instead.
 

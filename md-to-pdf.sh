@@ -475,7 +475,17 @@ SLIDES - beamer  (template: beamer)
 SLIDES - modern  (template: slides)
   slide-title-bg:        title/section slide ground (brand-colour name)
   slide-accent:          accent colour (brand-colour name)
+  slide-bar:             top chrome-bar colour (default: accent)
+  slide-logo / -bar:     cover / content-bar logo image (else a text wordmark)
+  slide-logo-text:       text wordmark when no logo image (uses the title font)
+  slide-display-font:    big figures - stat/tier numbers (default Noto Serif Display)
+  slide-headline-font:   H2 content-slide headlines (default: the display font)
+  slide-title-font:      H1 dividers + title slide + wordmark (default: display font)
+  slide-headline-size:   headline point size (default 27)
+  slide-linespread / -parskip:  body line spacing / paragraph gap
   (per-slide role via a heading attribute: {.light} {.dark} {.accent})
+  (a non-default font - e.g. Inter Display, Audiowide - must be installed; if it
+   is not, xelatex substitutes and the deck still builds)
 
 Body features (:::box fences, datatables, charts) are Markdown, not front
 matter - see the authoring guide. Full descriptions: man md-to-pdf, and

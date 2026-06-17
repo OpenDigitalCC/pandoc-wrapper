@@ -310,6 +310,13 @@ date: "24 October 2024"
 - **Columns** use the same `::: columns` / `:::: column` divs as beamer.
 - **Override grounds** per deck with `slide-title-bg:` / `slide-accent:` in the
   front matter (any brand colour name).
+- **Fonts** are three display roles, each overridable in front matter (or the
+  brand): `slide-display-font` (big stat/tier figures), `slide-headline-font`
+  (`##` content headlines — a readable sans like `Inter Display` reads far better
+  than the default high-contrast serif), `slide-title-font` (the title slide,
+  `#` dividers and the text wordmark — e.g. a brand logo face like `Audiowide`).
+  A non-default font must be installed where the deck is built; if it is not,
+  xelatex substitutes and the build still succeeds.
 
 The datatable, chart and `:::` box constructs are report features and are not
 available on either slide format; use columns, lists and images instead.

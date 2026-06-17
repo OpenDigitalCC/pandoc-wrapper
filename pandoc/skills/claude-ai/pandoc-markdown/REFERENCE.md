@@ -52,6 +52,33 @@ These are set per-document only when needed; the brand supplies sensible default
   by default (numbers sit in the margin, outside the copy text); opt a block out
   with the `.nonumber` class, e.g. ` ```{.python .nonumber} `.
 
+## Slides (`template: slides`) front matter
+
+The modern slide deck. Colours default from the brand; fonts and typography are
+overridable per deck or in the brand.
+
+`slide-title-bg`, `slide-accent`, `slide-bar`
+: Title/section ground, accent colour, and top chrome-bar colour (brand-colour
+  names). Per-slide role via an H2 attribute: `{.light}` (default), `{.dark}`,
+  `{.accent}`.
+
+`slide-logo`, `slide-logo-bar`, `slide-logo-text`
+: Cover and content-bar logo images; or a text wordmark when no image is set
+  (the wordmark uses `slide-title-font`).
+
+`slide-display-font`, `slide-headline-font`, `slide-title-font`
+: Three display roles, each defaulting to the one before it (ultimately Noto
+  Serif Display): big stat/tier figures, `##` content headlines, and the title
+  slide + `#` dividers + wordmark respectively. Pick a readable sans for
+  `slide-headline-font` (e.g. `Inter Display`) and a brand/logo face for
+  `slide-title-font` (e.g. `Audiowide`) while figures keep the serif. A
+  non-default font must be installed where the deck is built; if absent, xelatex
+  substitutes and the deck still builds. A single-weight face (no bold) is fine.
+
+`slide-headline-size`, `slide-linespread`, `slide-parskip`, `slide-card-justify`
+: Headline point size (default 27), body line spacing, paragraph gap, and
+  whether card text is justified (default ragged-left).
+
 ## Special boxes — full list
 
 | Box | Purpose | Auto-decoration |

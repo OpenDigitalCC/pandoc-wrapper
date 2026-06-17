@@ -78,16 +78,17 @@ $endfor$
 \newcommand{\slidefoot}{$if(slide-footer)$$slide-footer$$else$$if(classification)$$classification$$if(date)$ \textbullet\ $date$$endif$$else$$date$$endif$$endif$}
 
 % logo: an image (slide-logo) or a text wordmark fallback (slide-logo-text /
-% institute). Drawn in the top bar, in white.
+% institute). Drawn in the top bar, in white. The text wordmark uses \titlefont
+% (slide-title-font) so it shares the brand's display/logo face - e.g. Audiowide.
 % Cover logo (title slide) - typically the full lock-up.
 \newcommand{\slidelogo}{%
 $if(slide-logo)$\includegraphics[height=12mm]{$slide-logo$}$else$%
-{\bfseries\sffamily\Large $if(slide-logo-text)$$slide-logo-text$$else$$if(institute)$$institute$$endif$$endif$}$endif$}
+{\titlefont\bfseries\Large $if(slide-logo-text)$$slide-logo-text$$else$$if(institute)$$institute$$endif$$endif$}$endif$}
 % Content-slide bar logo - usually a smaller / mono / reversed mark. Falls back
 % to the cover logo, then to the text wordmark.
 \newcommand{\slidebarlogo}{%
 $if(slide-logo-bar)$\includegraphics[height=6.5mm]{$slide-logo-bar$}$else$$if(slide-logo)$\includegraphics[height=6.5mm]{$slide-logo$}$else$%
-{\bfseries\sffamily\large $if(slide-logo-text)$$slide-logo-text$$else$$if(institute)$$institute$$endif$$endif$}$endif$$endif$}
+{\titlefont\bfseries\large $if(slide-logo-text)$$slide-logo-text$$else$$if(institute)$$institute$$endif$$endif$}$endif$$endif$}
 
 % \chrome{barcolor}{textcolor}{label} - paint the top bar + logo + label + footer
 % onto the current page foreground (eso-pic, cleared after shipout).
