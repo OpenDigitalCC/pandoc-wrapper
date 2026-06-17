@@ -289,7 +289,22 @@ add_path() {
     local p="$1"
     
     debug_log "add_path called with: $p"
-    
+
+    # "-" reads Markdown from stdin into a temp .md, then flows through normally
+    # (front-matter extraction still works since it is a real file). The output
+    # name falls back to "stdin" unless the piped document carries a title.
+    if [[ "$p" == "-" ]]; then
+        if [[ -t 0 ]]; then
+            echo "Error: '-' given but stdin is a terminal (no Markdown piped in)." >&2
+            exit 1
+        fi
+        local stdin_file="${TMPDIR:-/tmp}/stdin.md"
+        cat > "$stdin_file"
+        MDSRC+=("$stdin_file")
+        debug_log "Read stdin into $stdin_file"
+        return
+    fi
+
     # Check if it's a URL - download and add to sources
     if is_url "$p"; then
         debug_log "Detected as URL, calling download_url"
@@ -328,9 +343,12 @@ collect_source_files() {
 
 print_help() {
     cat <<EOF
-Usage: md-to-pdf [OPTIONS] <markdown file(s) / directory / URL>
+Usage: md-to-pdf [OPTIONS] <markdown file(s) / directory / URL / ->
 
 Convert Markdown with YAML front matter to a branded PDF via Pandoc and XeLaTeX.
+
+A "-" argument reads the Markdown from stdin, e.g.  cat doc.md | md-to-pdf -
+(the PDF is named from the document's title, or "stdin" if it has none).
 
 Options:
   --order-alpha   Sort multiple input files alphabetically
@@ -526,7 +544,7 @@ parse_options() {
 validate_arguments() {
     if [[ -z "$MDSRC" ]]; then
         echo ""
-        echo "Usage: $0 [OPTIONS] <markdown source files / URL> [working directory (optional)]"
+        echo "Usage: $0 [OPTIONS] <markdown source files / URL / - for stdin> [working directory (optional)]"
         echo ""
         echo "Options:"
         echo "  --order-alpha    Sort input files alphabetically (dictionary order)"

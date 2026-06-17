@@ -4,7 +4,7 @@ md-to-pdf \- convert Markdown to a branded PDF via Pandoc and XeLaTeX
 .SH SYNOPSIS
 .B md-to-pdf
 .RI [ OPTIONS ]
-.IR "markdown-file(s) | directory | URL"
+.IR "markdown-file(s) | directory | URL | \-"
 .SH DESCRIPTION
 .B md-to-pdf
 turns Markdown with YAML front matter into a styled, branded PDF. It merges a
@@ -16,7 +16,15 @@ Multiple input files are concatenated in order; a directory is searched for
 .I .md
 and
 .I .yaml
-files; an http(s) URL is downloaded first.
+files; an http(s) URL is downloaded first. A single
+.B \-
+reads the Markdown from standard input (for example
+.RB "\[dq]" "cat doc.md | md-to-pdf \-" "\[dq])."
+The PDF is named from the document's
+.B title:
+field, or
+.I stdin
+when it has none.
 .SH FORMATS
 A document selects its output format with the
 .B template:
