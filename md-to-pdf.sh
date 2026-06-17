@@ -484,8 +484,9 @@ SLIDES - modern  (template: slides)
   slide-headline-size:   headline point size (default 27)
   slide-linespread / -parskip:  body line spacing / paragraph gap
   (per-slide role via a heading attribute: {.light} {.dark} {.accent})
-  (a non-default font - e.g. Inter Display, Audiowide - must be installed; if it
-   is not, xelatex substitutes and the deck still builds)
+  (a non-default font - e.g. Inter Display, Audiowide - must be installed OR
+   dropped into the brand folder, where any .ttf/.otf is auto-registered for the
+   render; if unavailable either way, xelatex substitutes and the deck builds)
 
 Body features (:::box fences, datatables, charts) are Markdown, not front
 matter - see the authoring guide. Full descriptions: man md-to-pdf, and
@@ -798,6 +799,7 @@ run_pandoc() {
     if [[ -n "$BRAND_ASSET_DIR" ]]; then
         export TEXINPUTS="${BRAND_ASSET_DIR}:${TEXINPUTS}"
         debug_log "Brand assets on path: $BRAND_ASSET_DIR"
+        setup_brand_fonts "$BRAND_ASSET_DIR"
     fi
 
     # Build the complete pandoc command
@@ -853,6 +855,40 @@ initialize_environment() {
     # Let templates \input shared includes (e.g. pipeline-preamble.tex) from the
     # templates directory. Trailing colon preserves the default search path.
     export TEXINPUTS="${INCDIR}:${TEXINPUTS:-}"
+}
+
+# If the selected brand ships font files (e.g. a logo/display typeface), register
+# the brand folder with fontconfig for this run so xelatex resolves them by family
+# name - the same way logos resolve by bare filename, with no per-machine install.
+# Generates a throwaway fontconfig that includes the system config and adds the
+# brand dir; only activates when there is a system fontconfig to extend (so other
+# platforms fall back to the normal "install the font" behaviour).
+setup_brand_fonts() {
+    local dir="$1"
+    shopt -s nullglob nocaseglob
+    local fonts=( "$dir"/*.ttf "$dir"/*.otf "$dir"/*.ttc )
+    shopt -u nullglob nocaseglob
+    if [[ ${#fonts[@]} -eq 0 ]]; then
+        return 0
+    fi
+    if [[ ! -f /etc/fonts/fonts.conf ]]; then
+        debug_log "Brand ships fonts but no system fontconfig to extend; install needed"
+        return 0
+    fi
+    local fcdir="${TMPDIR}/fontconfig"
+    mkdir -p "${fcdir}/cache"
+    local conf="${fcdir}/fonts.conf"
+    {
+        printf '%s\n' '<?xml version="1.0"?>'
+        printf '%s\n' '<!DOCTYPE fontconfig SYSTEM "fonts.dtd">'
+        printf '%s\n' '<fontconfig>'
+        printf '  <include ignore_missing="yes">/etc/fonts/fonts.conf</include>\n'
+        printf '  <dir>%s</dir>\n' "$dir"
+        printf '  <cachedir>%s</cachedir>\n' "${fcdir}/cache"
+        printf '%s\n' '</fontconfig>'
+    } > "$conf"
+    export FONTCONFIG_FILE="$conf"
+    debug_log "Registered ${#fonts[@]} brand font(s) from $dir via $conf"
 }
 
 cleanup() {

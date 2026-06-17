@@ -1187,10 +1187,13 @@ Display"`); for the title and wordmark use a brand/logo face (e.g.
 is tunable too: `slide-headline-size` (default 27), `slide-linespread`,
 `slide-parskip`, and `slide-card-justify` (default ragged-left card text).
 
-Any non-default font must be installed where the deck is built (xelatex resolves
-fonts through fontconfig, not the brand resource-path). If a named font is
-missing, xelatex substitutes and the deck still builds; a single-weight display
-face such as Audiowide needs no separate bold.
+Any non-default font must be available where the deck is built. Two ways: install
+it system-wide, **or** drop the font file straight into the brand folder — the
+driver auto-registers any `.ttf`/`.otf`/`.ttc` it finds there with fontconfig for
+the run, so the deck resolves it by family name with no per-machine install (the
+same convenience as referencing a logo by bare filename). If a named font cannot
+be found either way, xelatex substitutes and the deck still builds; a
+single-weight display face such as Audiowide needs no separate bold.
 
 The datatable, chart and `:::` callout-box constructs are report features and do
 not apply on either slide format; use columns, lists and images instead.

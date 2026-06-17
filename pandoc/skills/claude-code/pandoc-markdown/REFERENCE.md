@@ -76,8 +76,11 @@ overridable per deck or in the brand.
   slide + `#` dividers + wordmark respectively. Pick a readable sans for
   `slide-headline-font` (e.g. `Inter Display`) and a brand/logo face for
   `slide-title-font` (e.g. `Audiowide`) while figures keep the serif. A
-  non-default font must be installed where the deck is built; if absent, xelatex
-  substitutes and the deck still builds. A single-weight face (no bold) is fine.
+  non-default font must be available where the deck is built — either installed
+  system-wide, or simply dropped into the brand folder (any `.ttf`/`.otf`/`.ttc`
+  there is auto-registered for the render, like the logo assets). If it cannot be
+  found, xelatex substitutes and the deck still builds. A single-weight face (no
+  bold) is fine.
 
 `slide-headline-size`, `slide-linespread`, `slide-parskip`, `slide-card-justify`
 : Headline point size (default 27), body line spacing, paragraph gap, and

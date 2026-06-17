@@ -69,7 +69,12 @@ defaults, then legacy flat `brand-<name>.yaml`. The external base is
 → a co-located/XDG default. Because bundled defaults are the fallback,
 `plain` always resolves no matter where `brands_dir` points. The selected
 brand's folder is added to `--resource-path` and `TEXINPUTS`, so assets
-resolve by bare filename. The installer ships the bundled defaults and
+resolve by bare filename. A brand may also bundle **font files**: any
+`.ttf`/`.otf`/`.ttc` in the brand folder is auto-registered with fontconfig
+for the run (`setup_brand_fonts` generates a throwaway fontconfig that
+includes the system config and adds the brand dir), so a brand can ship its
+own typeface (e.g. a logo display face) and decks resolve it by family name
+with no per-machine install. The installer ships the bundled defaults and
 writes the config pointing `brands_dir` at the external base.
 
 ## Template layering (see documentation/TEMPLATE-CONTRACT.md)

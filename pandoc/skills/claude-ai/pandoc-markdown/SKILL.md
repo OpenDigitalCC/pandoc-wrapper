@@ -316,8 +316,10 @@ date: "24 October 2024"
   (`##` content headlines — a readable sans like `Inter Display` reads far better
   than the default high-contrast serif), `slide-title-font` (the title slide,
   `#` dividers and the text wordmark — e.g. a brand logo face like `Audiowide`).
-  A non-default font must be installed where the deck is built; if it is not,
-  xelatex substitutes and the build still succeeds.
+  A non-default font must be available where the deck is built — installed
+  system-wide, or just dropped into the brand folder (any `.ttf`/`.otf`/`.ttc`
+  there is auto-registered for the render). If missing, xelatex substitutes and
+  the build still succeeds.
 
 The datatable, chart and `:::` box constructs are report features and are not
 available on either slide format; use columns, lists and images instead.
