@@ -129,12 +129,13 @@ width; `text: 2` weights column 2 x2, `text: 2*3` x3), `tone`
 continues the cell above as a row span. `**bold**` and LaTeX special characters
 in cells are handled automatically.
 
-**Sizing columns.** By default every column shares the width equally, so a
-prose-heavy column wraps after almost every word next to short label columns.
-Always size a table that has one long-text column, by either: giving the short
-columns fixed widths and the prose column `X` (`widths: 3cm | X | 2cm`), or
-flagging the prose column with `text:` to weight it wider (`text: 2`). Reserve
-`X` and `text` for the column(s) that carry full sentences.
+**Sizing columns.** Omit `widths:` and every column is flexible (`X`),
+auto-sized by how much text it carries - a prose column gets the room it needs
+while short label columns stay narrow, and columns of similar length come out
+equal. So a one-long-column table is usually handled with no options at all.
+Override only for a specific proportion: give the short columns fixed widths and
+the prose column `X` (`widths: 3cm | X | 2cm`), or weight a column with `text:`
+(`text: 2`), which overrides the automatic sizing for that column.
 
 ## Charts
 

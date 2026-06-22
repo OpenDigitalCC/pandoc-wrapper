@@ -367,18 +367,24 @@ columns
   first data row and no header is shown.
 
 widths
-: Pipe-separated column widths. `X` for flexible (remaining space divided
-  among X columns by weight), or a fixed width as `Ncm` (e.g. `3.5cm`). If
-  omitted, all columns default to `X` and share equally - so a prose column
-  next to short label columns wraps every word. Size such tables with fixed
-  widths on the labels (`3cm | X | 2cm`) or with `text:` below.
+: Pipe-separated column widths. `X` for flexible (shares the remaining space),
+  or a fixed width as `Ncm` (e.g. `3.5cm`). If omitted, all columns default to
+  `X`. Flexible columns are **auto-sized by how much text each carries**, so a
+  prose column beside short label columns is given the room it needs instead of
+  an equal slice that wraps every word; columns of similar length still come out
+  equal. Override the automatic split with explicit `Ncm` widths (e.g.
+  `2.5cm | X | 4.5cm`) or the `text:` weights below. The cheapest fix for a
+  squeezed table is usually to do nothing - the auto-sizing already favours the
+  prose column - and only reach for `widths:`/`text:` when you want a specific
+  proportion.
 
 bold
 : Comma-separated column numbers (1-based) to auto-bold. Optional.
 
 text
 : Comma-separated prose column numbers (1-based) that should take a heavier
-  share of the flexible width. `text: 2` weights column 2 at x2 relative to the
+  share of the flexible width, **overriding** the automatic content-based
+  sizing for those columns. `text: 2` weights column 2 at x2 relative to the
   other `X` columns; `text: 2*3` at x3. Only affects `X` columns. Optional.
 
 tone

@@ -480,13 +480,14 @@ The options available are:
 
 `widths`
 : Pipe-separated column widths. Use `X` for a flexible column that shares the
-  remaining space equally with other `X` columns. Use a fixed measurement like
-  `3.5cm` for columns with known content width. If you omit this option,
-  all columns share space equally - which makes a prose-heavy column wrap after
-  almost every word when it sits next to short label columns. Whenever one
-  column holds full sentences, size the table: give the short columns fixed
-  widths and the prose column `X` (`widths: 3cm | X | 2cm`), or use `text:`
-  below.
+  remaining space with other `X` columns. Use a fixed measurement like `3.5cm`
+  for columns with known content width. If you omit this option, all columns
+  default to `X` and are **auto-sized by how much text each holds** - a prose
+  column full of sentences is given the room it needs, while short label columns
+  beside it stay narrow; columns of similar length still come out equal. So a
+  squeezed table is usually already handled. Reach for explicit sizing only when
+  you want a specific proportion: give the short columns fixed widths and the
+  prose column `X` (`widths: 3cm | X | 2cm`), or use `text:` below.
 
 `bold`
 : A comma-separated list of column numbers (starting from 1) whose content
@@ -494,10 +495,11 @@ The options available are:
 
 `text`
 : A comma-separated list of prose column numbers that should claim a larger
-  share of the flexible width instead of an equal slice. `text: 2` weights
-  column 2 at twice the width of the other flexible columns; `text: 2*3` weights
-  it three times. Only flexible (`X`) columns are affected. This is the quick
-  alternative to working out fixed `widths` by hand.
+  share of the flexible width, **overriding** the automatic content-based
+  sizing for those columns. `text: 2` weights column 2 at twice the width of the
+  other flexible columns; `text: 2*3` weights it three times. Only flexible
+  (`X`) columns are affected. Use it when the automatic split is close but you
+  want to nudge a specific proportion by hand.
 
 `tone`
 : Controls how strongly the brand colour is applied to the header and alternating

@@ -102,8 +102,9 @@ The `recommendation` counter increments across the whole document.
 : Pipe-separated header labels. Omit the option entirely for a headerless table.
 
 `widths`
-: Pipe-separated. `X` = flexible (shares leftover space equally); `Ncm` = fixed.
-  Omit to share all columns equally.
+: Pipe-separated. `X` = flexible; `Ncm` = fixed. Omit and every column is `X`,
+  auto-sized by how much text it holds - a prose column gets more room, similar
+  columns stay equal. Override with `Ncm` widths or `text:` weights.
 
 `bold`
 : Comma-separated 1-based column numbers to embolden (e.g. `bold: 1, 2`).

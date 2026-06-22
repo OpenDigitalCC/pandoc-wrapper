@@ -1110,6 +1110,40 @@ local function make_datatable(opts, rows)
     end
   end
 
+  -- Auto-size flexible (X) columns by how much text they carry, so a prose
+  -- column is not handed the same slice as a one-word column and then forced to
+  -- wrap every word. For each X column measure its content mass (header + data
+  -- cell lengths); the lightest X column is the unit, the others scale up by
+  -- their relative mass, rounded and capped at 4x. Rounding means columns within
+  -- ~1.5x of each other stay equal (balanced tables are unchanged) - only a
+  -- genuinely heavier column claims more room. An explicit `text:` weight always
+  -- overrides this, and fixed-width (cm) columns are unaffected.
+  local auto_weight = {}
+  do
+    local mass = {}
+    for c = 1, num_cols do
+      local m = #(col_headers[c] or "")
+      for r = 1, #rows do
+        m = m + #(rows[r][c] or "")
+      end
+      mass[c] = m
+    end
+    local min_x_mass = nil
+    for c = 1, num_cols do
+      if widths[c] == "X" and (min_x_mass == nil or mass[c] < min_x_mass) then
+        min_x_mass = mass[c]
+      end
+    end
+    if min_x_mass == nil or min_x_mass < 1 then min_x_mass = 1 end
+    for c = 1, num_cols do
+      if widths[c] == "X" then
+        local w = math.floor(mass[c] / min_x_mass + 0.5)
+        if w < 1 then w = 1 elseif w > 4 then w = 4 end
+        auto_weight[c] = w
+      end
+    end
+  end
+
   -- Resolve tone
   local header_colour, row_colour, accent_hex = resolve_tone(opts["tone"])
 
@@ -1124,7 +1158,7 @@ local function make_datatable(opts, rows)
   for i, w in ipairs(widths) do
     if w == "X" then
       x_count = x_count + 1
-      x_weight_total = x_weight_total + (text_weight[i] or 1)
+      x_weight_total = x_weight_total + (text_weight[i] or auto_weight[i] or 1)
     else
       local cm = w:match("p{([%d%.]+)cm}")
       if cm then fixed_total = fixed_total + tonumber(cm) end
@@ -1147,9 +1181,9 @@ local function make_datatable(opts, rows)
       -- num_cols * 0.4cm is a safe estimate for 2mm tabcolsep.
       local padding_cm = num_cols * 0.4
       local subtract = fixed_total + padding_cm
-      -- Share the leftover width by weight: equal slices by default, but a
-      -- column flagged via `text:` claims a proportionally larger slice.
-      local weight = text_weight[i] or 1
+      -- Share the leftover width by weight: a column flagged via `text:` wins,
+      -- otherwise the content-derived auto weight, otherwise an equal slice.
+      local weight = text_weight[i] or auto_weight[i] or 1
       col_spec_parts[i] = prefix .. string.format(
         "p{\\dimexpr(\\textwidth - %.1fcm) * %d / %d\\relax}",
         subtract, weight, x_weight_total
