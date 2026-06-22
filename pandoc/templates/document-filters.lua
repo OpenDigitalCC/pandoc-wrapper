@@ -1168,8 +1168,11 @@ local function make_datatable(opts, rows)
   -- Inter-column gap count: num_cols - 1
   local gap_count = num_cols - 1
 
-  -- Build column spec parts
+  -- Build column spec parts. col_dim[i] keeps the bare width expression of each
+  -- column (without the >{...}p{} wrapper) so a colspanning \multicolumn can sum
+  -- the widths of the columns it covers.
   local col_spec_parts = {}
+  local col_dim = {}
   for i, w in ipairs(widths) do
     local prefix = ">{\\raggedright\\arraybackslash}"
     if bold_cols[i] then
@@ -1184,16 +1187,31 @@ local function make_datatable(opts, rows)
       -- Share the leftover width by weight: a column flagged via `text:` wins,
       -- otherwise the content-derived auto weight, otherwise an equal slice.
       local weight = text_weight[i] or auto_weight[i] or 1
-      col_spec_parts[i] = prefix .. string.format(
-        "p{\\dimexpr(\\textwidth - %.1fcm) * %d / %d\\relax}",
+      col_dim[i] = string.format(
+        "\\dimexpr(\\textwidth - %.1fcm) * %d / %d\\relax",
         subtract, weight, x_weight_total
       )
+      col_spec_parts[i] = prefix .. "p{" .. col_dim[i] .. "}"
     else
+      col_dim[i] = w:match("p{(.-)}") or w
       col_spec_parts[i] = prefix .. w
     end
   end
 
   local col_spec = table.concat(col_spec_parts, " ")
+
+  -- Width of a \multicolumn spanning columns c1..c2: the spanned columns' widths
+  -- plus the inter-column padding the merge reclaims (~0.4cm per gap, matching
+  -- the per-column estimate above), so the merged cell fills the visual span.
+  local function span_width_expr(c1, c2)
+    local parts = {}
+    for c = c1, c2 do
+      table.insert(parts, col_dim[c])
+    end
+    local gaps = c2 - c1
+    return string.format("\\dimexpr %s + %.1fcm\\relax",
+      table.concat(parts, " + "), gaps * 0.4)
+  end
 
   -- Compute rowspans (must run before the row-group markers are stripped, so a
   -- "+" first cell counts as content and never triggers a multirow merge).
@@ -1270,27 +1288,41 @@ local function make_datatable(opts, rows)
   -- Data rows
   for r, row in ipairs(rows) do
     local cells = {}
-    for c = 1, num_cols do
+    local c = 1
+    while c <= num_cols do
       if spans[r][c] == 0 then
-        -- Covered by multirow above: emit empty cell
-        table.insert(cells, "")
-      elseif spans[r][c] > 1 then
-        -- Start of a multirow span
-        local content = process_cell(row[c] or "")
-        local span_count = spans[r][c]
-        -- = uses the column p{} width for word wrapping
-        -- [t] aligns to top of the span instead of vertical centre
-        table.insert(cells, string.format(
-          "\\multirow[t]{%d}{=}{%s}", span_count, content
-        ))
+        -- Covered by a multirow above: emit an empty cell holder.
+        local content = (#cells == 0) and "\\dtstrut " or ""
+        table.insert(cells, content)
+        c = c + 1
       else
-        -- Normal cell
-        table.insert(cells, process_cell(row[c] or ""))
+        -- Colspan: count the ">" continuation cells to the right, which merge
+        -- leftward into this cell via \multicolumn.
+        local cspan = 1
+        while c + cspan <= num_cols and trim(row[c + cspan] or "") == ">" do
+          cspan = cspan + 1
+        end
+        -- Cell content, wrapped in \multirow first if it also spans rows
+        -- (= uses the cell width for wrapping; [t] tops-aligns the span).
+        local content = process_cell(row[c] or "")
+        if spans[r][c] > 1 then
+          content = string.format("\\multirow[t]{%d}{=}{%s}", spans[r][c], content)
+        end
+        -- Strut on the first cell of the row for a consistent row height; it
+        -- must sit INSIDE a \multicolumn, which has to lead the cell.
+        if #cells == 0 then
+          content = "\\dtstrut " .. content
+        end
+        if cspan > 1 then
+          local align = bold_cols[c]
+            and ">{\\bfseries\\raggedright\\arraybackslash}"
+            or ">{\\raggedright\\arraybackslash}"
+          local spec = align .. "p{" .. span_width_expr(c, c + cspan - 1) .. "}"
+          content = string.format("\\multicolumn{%d}{%s}{%s}", cspan, spec, content)
+        end
+        table.insert(cells, content)
+        c = c + cspan
       end
-    end
-    -- Add strut to first cell for consistent row height
-    if cells[1] then
-      cells[1] = "\\dtstrut " .. cells[1]
     end
     -- Shade by group parity: odd groups take the row colour, even groups white.
     -- With no "+" markers each row is its own group, so this is the usual stripe.

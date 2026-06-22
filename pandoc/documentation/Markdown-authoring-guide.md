@@ -578,6 +578,25 @@ Delivery | Build and test | weeks 5-8
 
 "Discovery" becomes one shaded band of three rows and "Delivery" the next band.
 
+## Column spans
+
+A cell of `>` merges leftward into its neighbour, so one cell can run across
+several columns. Use it for a full-width banner row, a group header, or a totals
+label that spans the lead columns.
+
+```datatable
+columns: Item | Q1 | Q2
+tone: medium
+---
+Whole-year summary | > | >
+Revenue | 100 | 200
+Net total over both quarters | > | 300
+```
+
+"Whole-year summary" spans all three columns; "Net total over both quarters"
+spans the first two, leaving its figure in the last column. Column spans work
+together with row spans and `+` row groups.
+
 # Charts
 
 Charts are defined as fenced code blocks. Data lines use `Label: Value` format.

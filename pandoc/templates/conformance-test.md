@@ -49,7 +49,7 @@ def total(items):
 plain output, no line numbers
 ```
 
-## A datatable with a row span
+## A datatable with a row span, column span and row group
 
 ```datatable
 columns: Group | Item | Notes
@@ -57,10 +57,12 @@ widths: 3cm | X | X
 bold: 1
 tone: medium
 ---
+Annual operating budget | > | >
 Operations | Administration, compliance, accounts | shared label
  | Networking | spans down
  | Storage | spans down
 Software | Licences | annual
++ | Support contract | grouped with Software
 ```
 
 ## Boxes

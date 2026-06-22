@@ -124,6 +124,11 @@ Row groups: a leading cell of `+` joins a row to the shaded band above (the
 stripe advances per group, not per row), so several rows read as one block.
 Cells are not merged - only the shading is shared, and the `+` prints blank.
 
+Column spans: a cell of `>` merges leftward into its neighbour (rendered with
+`\multicolumn`), so one cell spans several columns - a banner row, a group
+header, or a totals label across the lead columns. Composes with rowspans and
+`+` groups.
+
 ## Chart options
 
 Blocks: `piechart`, `barchart`. Data lines are `Label: Value`.

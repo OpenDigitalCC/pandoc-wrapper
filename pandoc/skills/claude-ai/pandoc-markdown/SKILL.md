@@ -124,8 +124,9 @@ width; `text: 2` weights column 2 x2, `text: 2*3` x3), `tone`
 (`grey|light|medium|strong` or a number), `caption`. A blank leading cell
 continues the cell above as a row span; a leading `+` instead joins the row to
 the shaded band above (row group - one shade across several rows, cells not
-merged). `**bold**` and LaTeX special characters in cells are handled
-automatically by the pipeline.
+merged); a cell of `>` merges leftward into its neighbour (column span, e.g. a
+full-width banner or a totals label). `**bold**` and LaTeX special characters in
+cells are handled automatically by the pipeline.
 
 **Sizing columns.** Omit `widths:` and every column is flexible (`X`),
 auto-sized by how much text it carries - a prose column gets the room it needs

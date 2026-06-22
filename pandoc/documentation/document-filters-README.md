@@ -384,6 +384,28 @@ Here "Discovery" is one shaded band of three rows and "Delivery" the next band
 combined - a `+` row may still carry blank cells in other columns to continue a
 rowspan there.
 
+### Column spans
+
+A cell of `>` merges leftward into its neighbour, so one cell can span several
+columns (rendered with `\multicolumn`). Use it for a full-width banner row, a
+group header, or a totals label that runs across the lead columns. The merged
+cell's width is the sum of the columns it covers, so its text still wraps.
+
+````markdown
+```datatable
+columns: Item | Q1 | Q2
+tone: medium
+---
+Whole-year summary | > | >
+Revenue | 100 | 200
+Net total over both quarters | > | 300
+```
+````
+
+"Whole-year summary" spans all three columns; the totals label spans the first
+two, leaving its figure in the last. Column spans compose with both rowspans and
+`+` row groups.
+
 ### Datatable options
 
 Options appear before the `---` separator, one per line.
