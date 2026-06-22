@@ -120,6 +120,10 @@ Row spans: a blank leading cell continues the cell above in that column. The
 pipeline renders this with `\multirow` and loads the package automatically, so
 row spans are safe to use.
 
+Row groups: a leading cell of `+` joins a row to the shaded band above (the
+stripe advances per group, not per row), so several rows read as one block.
+Cells are not merged - only the shading is shared, and the `+` prints blank.
+
 ## Chart options
 
 Blocks: `piechart`, `barchart`. Data lines are `Label: Value`.

@@ -557,6 +557,27 @@ anything. If you ever see a build fail with `Undefined control sequence`
 on a line ending in `\multirow` (exit code 43), see the troubleshooting
 note at the end of this guide.
 
+## Row groups (one shaded band)
+
+To make several rows read as a single shaded block rather than alternating
+stripes, start a row's first cell with `+`. That row joins the shading group
+above, and the stripe colour then advances per group instead of per row. Unlike
+a row span (a *blank* leading cell, which merges the cell), `+` keeps every
+cell separate and only shares the background; the `+` itself prints as blank.
+
+```datatable
+columns: Phase | Step | Note
+tone: medium
+---
+Discovery | Interviews and audit | weeks 1-2
++ | Baseline metrics | week 3
++ | Findings workshop | week 4
+Delivery | Build and test | weeks 5-8
++ | Handover | week 9
+```
+
+"Discovery" becomes one shaded band of three rows and "Delivery" the next band.
+
 # Charts
 
 Charts are defined as fenced code blocks. Data lines use `Label: Value` format.

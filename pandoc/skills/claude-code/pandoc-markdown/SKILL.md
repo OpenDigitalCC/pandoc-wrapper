@@ -126,8 +126,10 @@ Options: `columns`, `widths` (`X` flexible / `Ncm` fixed), `bold` (1-based colum
 list), `text` (1-based prose columns - they claim a larger share of the flexible
 width; `text: 2` weights column 2 x2, `text: 2*3` x3), `tone`
 (`grey|light|medium|strong` or a number), `caption`. A blank leading cell
-continues the cell above as a row span. `**bold**` and LaTeX special characters
-in cells are handled automatically.
+continues the cell above as a row span; a leading `+` instead joins the row to
+the shaded band above (row group - one shade across several rows, cells not
+merged). `**bold**` and LaTeX special characters in cells are handled
+automatically.
 
 **Sizing columns.** Omit `widths:` and every column is flexible (`X`),
 auto-sized by how much text it carries - a prose column gets the room it needs

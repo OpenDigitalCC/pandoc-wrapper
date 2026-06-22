@@ -1195,8 +1195,28 @@ local function make_datatable(opts, rows)
 
   local col_spec = table.concat(col_spec_parts, " ")
 
-  -- Compute rowspans
+  -- Compute rowspans (must run before the row-group markers are stripped, so a
+  -- "+" first cell counts as content and never triggers a multirow merge).
   local spans = compute_rowspans(rows, num_cols)
+
+  -- Row-group shading: a data row whose first cell is "+" continues the previous
+  -- row's shading group, so several rows read as one shaded band instead of
+  -- alternating stripes. group_id increments only on a non-continuation row, so
+  -- with no markers each row is its own group and the shading is the usual
+  -- per-row stripe (unchanged). The "+" marker is then blanked for display.
+  local group_id = {}
+  do
+    local g = 0
+    for r = 1, #rows do
+      if r > 1 and trim(rows[r][1] or "") == "+" then
+        group_id[r] = group_id[r - 1]
+        rows[r][1] = ""
+      else
+        g = g + 1
+        group_id[r] = g
+      end
+    end
+  end
 
   -- Build LaTeX
   local lines = {}
@@ -1211,9 +1231,6 @@ local function make_datatable(opts, rows)
   -- Add vertical padding to rows via a strut in every first column
   -- This avoids touching \arraystretch which conflicts with some templates
   table.insert(lines, "\\newcommand{\\dtstrut}{\\rule{0pt}{2.4ex}}")
-  table.insert(lines, string.format(
-    "\\rowcolors{2}{%s}{white}", row_colour
-  ))
 
   table.insert(lines, string.format(
     "\\begin{longtable}{%s}", col_spec
@@ -1275,7 +1292,11 @@ local function make_datatable(opts, rows)
     if cells[1] then
       cells[1] = "\\dtstrut " .. cells[1]
     end
-    table.insert(lines, table.concat(cells, " & ") .. " \\\\")
+    -- Shade by group parity: odd groups take the row colour, even groups white.
+    -- With no "+" markers each row is its own group, so this is the usual stripe.
+    local rcol = (group_id[r] % 2 == 1) and row_colour or "white"
+    table.insert(lines, string.format("\\rowcolor{%s} ", rcol)
+      .. table.concat(cells, " & ") .. " \\\\")
   end
 
   table.insert(lines, "\\end{longtable}")

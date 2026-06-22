@@ -358,6 +358,32 @@ Least privilege | ANNEX-1.PT1.2.d | Supports access limitation.
 In the output, "Trust boundaries" spans three rows and "Least privilege" spans
 two rows in the first column.
 
+### Row groups (one shaded band)
+
+A leading cell of `+` joins a row to the shading group above, so several rows
+read as a single shaded block instead of alternating stripes. The shading
+stripe then advances per group, not per row. Unlike a rowspan (blank leading
+cell) the cells are *not* merged - each row keeps its own cells; only the
+background is shared. The `+` itself is rendered blank.
+
+````markdown
+```datatable
+columns: Phase | Step | Note
+tone: medium
+---
+Discovery | Interviews and audit | weeks 1-2
++ | Baseline metrics | week 3
++ | Findings workshop | week 4
+Delivery | Build and test | weeks 5-8
++ | Handover | week 9
+```
+````
+
+Here "Discovery" is one shaded band of three rows and "Delivery" the next band
+(unshaded) of two. Blank-cell rowspans and `+` groups are independent and can be
+combined - a `+` row may still carry blank cells in other columns to continue a
+rowspan there.
+
 ### Datatable options
 
 Options appear before the `---` separator, one per line.
