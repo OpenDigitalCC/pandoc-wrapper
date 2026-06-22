@@ -46,10 +46,32 @@
 % after any we could register, so a preamble value gets clobbered. Computed from
 % the live geometry so it adapts to whatever margins the brand set; floored at
 % 1cm so a narrow-margin document can never get a zero/negative width.
+% \checkoddpage (under \strictpagecheck) only reports the TRUE page parity on a
+% second LaTeX run - it labels the page on one run and reads that label back on
+% the next. Pandoc runs xelatex once unless the log requests a rerun, so on a
+% single pass every margin note guesses its side and can lean to the wrong
+% (inner) edge - or, on a verso page, fail to swap to the outer margin at all.
+% Every margin placement (marginbox and margin charts) calls \pwMarginNoteWidth,
+% so arm a one-shot rerun there: write a "settled" marker into the .aux at
+% begin-document (it is read back on the NEXT run only) and, if it is still
+% undefined at end-document while a margin note was used, emit a warning pandoc
+% recognises as a rerun request. This forces exactly the second pass that
+% \checkoddpage needs, and only when the document actually has margin notes.
+\makeatletter
+\newif\ifpw@marginused
 \newcommand{\pwMarginNoteWidth}{%
+  \global\pw@marginusedtrue
   \setlength{\marginparsep}{4mm}%
   \setlength{\marginparwidth}{\dimexpr\paperwidth-\oddsidemargin-1in-\textwidth-\marginparsep-6mm\relax}%
   \ifdim\marginparwidth<1cm\setlength{\marginparwidth}{1cm}\fi}
+\AtBeginDocument{\immediate\write\@mainaux{%
+  \string\global\string\let\string\pw@margin@settled\string\@empty}}
+\AtEndDocument{%
+  \ifpw@marginused
+    \@ifundefined{pw@margin@settled}{%
+      \@latex@warning@no@line{Rerun to get margin-note page parity right}}{}%
+  \fi}
+\makeatother
 
 % --- Charts (piechart / barchart rendered to TikZ/pgf) ---
 \usepackage{pgfplots}
